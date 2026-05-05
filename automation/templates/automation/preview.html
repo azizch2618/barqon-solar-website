@@ -1,0 +1,135 @@
+{% extends "layouts/site_base.html" %}
+{% load static %}
+
+{% block title %}Solar Result | BARQON{% endblock %}
+
+{% block content %}
+<section class="bq-section bq-section--dark" style="min-height: 90vh; display: flex; align-items: center; background: radial-gradient(circle at top right, rgba(16, 185, 129, 0.05), transparent);">
+    <div class="bq-wrap">
+        <div class="max-w-3xl mx-auto text-center">
+            
+            <div class="mb-12" style="animation: fadeInDown 0.8s ease-out;">
+                <div class="bq-badge mb-6 mx-auto">
+                    <span class="bq-badge-dot"></span>
+                    Engineering Analysis Complete
+                </div>
+                <h1 class="text-5xl md:text-6xl font-bold bq-text-white mb-6">
+                    Start Saving <br>
+                    <span class="bq-gradient-text">PKR {{ calculation.monthly_savings|floatformat:0 }}</span> / mo
+                </h1>
+                <p class="text-slate-400 text-lg">We've engineered the perfect system for {{ lead.name }}.</p>
+            </div>
+
+            <!-- Result Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16" style="animation: fadeInUp 1s ease-out;">
+                <div class="p-8 rounded-3xl bg-white/5 border border-white/10 hover:border-brand-500/50 transition-all duration-500 group">
+                    <div class="text-brand-500 mb-4 group-hover:scale-110 transition-transform"><i data-lucide="zap" class="w-10 h-10 mx-auto"></i></div>
+                    <div class="text-4xl font-bold text-white mb-2">{{ calculation.system_size_kw }} <span class="text-sm font-normal text-slate-500">kW</span></div>
+                    <div class="text-xs text-slate-400 uppercase tracking-widest font-bold">System Size</div>
+                </div>
+                
+                <div class="p-8 rounded-3xl bg-white/5 border border-white/10 hover:border-emerald-500/50 transition-all duration-500 group">
+                    <div class="text-emerald-500 mb-4 group-hover:scale-110 transition-transform"><i data-lucide="history" class="w-10 h-10 mx-auto"></i></div>
+                    <div class="text-4xl font-bold text-white mb-2">{{ calculation.payback_years }} <span class="text-sm font-normal text-slate-500">Yrs</span></div>
+                    <div class="text-xs text-slate-400 uppercase tracking-widest font-bold">Payback Period</div>
+                </div>
+
+                <div class="p-8 rounded-3xl bg-white/5 border border-white/10 hover:border-blue-500/50 transition-all duration-500 group">
+                    <div class="text-blue-500 mb-4 group-hover:scale-110 transition-transform"><i data-lucide="battery-charging" class="w-10 h-10 mx-auto"></i></div>
+                    <div class="text-4xl font-bold text-white mb-2">Hybrid</div>
+                    <div class="text-xs text-slate-400 uppercase tracking-widest font-bold">Backup System</div>
+                </div>
+            </div>
+
+            <!-- CTA -->
+            <div class="space-y-6" style="animation: fadeInUp 1.2s ease-out;">
+                <button id="gen-proposal-btn" onclick="generateProposal('{{ lead.id }}')" class="bq-btn bq-btn-primary bq-btn-lg bq-btn-full bq-btn-gen-proposal">
+                    <i data-lucide="file-check"></i>
+                    Get Full Proposal (PDF)
+                </button>
+                <p class="text-sm text-slate-500">Includes hardware specs, ROI charts, and survey timeline.</p>
+            </div>
+
+            <!-- Loading Overlay -->
+            <div id="loading-overlay" class="hidden fixed inset-0 bg-dark-950/90 backdrop-blur-md flex flex-col items-center justify-center z-[100]">
+                <div class="relative">
+                    <div class="w-24 h-24 rounded-full border-2 border-brand-500/20 border-t-brand-500 animate-spin"></div>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <i data-lucide="zap" class="w-8 h-8 text-brand-500 animate-pulse"></i>
+                    </div>
+                </div>
+                <p class="text-white font-bold mt-8 text-xl tracking-wide">Building your proposal...</p>
+                <p class="text-slate-400 mt-2">Almost ready for download</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    async function generateProposal(leadId) {
+        const btn = document.getElementById('gen-proposal-btn');
+        const overlay = document.getElementById('loading-overlay');
+        
+        btn.disabled = true;
+        overlay.classList.remove('hidden');
+        
+        try {
+            const response = await fetch(`/automation/generate-proposal/${leadId}/`);
+            
+            if (response.ok) {
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `Solar_Proposal_${leadId}.pdf`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                
+                // Hide overlay after download starts
+                setTimeout(() => {
+                    overlay.classList.add('hidden');
+                    btn.disabled = false;
+                }, 2000);
+            } else {
+                const data = await response.json();
+                alert('Error: ' + (data.error || 'Failed to generate proposal'));
+                overlay.classList.add('hidden');
+                btn.disabled = false;
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An unexpected error occurred.');
+            overlay.classList.add('hidden');
+            btn.disabled = false;
+        }
+    }
+</script>
+
+<style>
+    @keyframes fadeInDown {
+        from { opacity: 0; transform: translateY(-20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .bq-gradient-text {
+        background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    .bq-btn-gen-proposal {
+        padding: 1.8rem;
+        font-size: 1.25rem;
+        border-radius: 1.25rem;
+        box-shadow: 0 20px 40px -10px rgba(16, 185, 129, 0.3);
+    }
+    .bq-btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 25px 50px -12px rgba(16, 185, 129, 0.4);
+    }
+</style>
+{% endblock %}

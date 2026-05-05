@@ -1,0 +1,49 @@
+{% extends "layouts/workspace_base.html" %}
+
+{% block title %}Customer Portal Login | BARQON{% endblock %}
+
+{% block content %}
+    <div class="split-panel">
+        <div class="surface">
+            <div class="eyebrow">Customer Portal</div>
+            <h1 class="display-title">See your quotation and profile in one secure place.</h1>
+            <p class="lede">
+                Sign in to review your BARQON quotations, update your profile details, and keep your project information easy to access.
+            </p>
+            <div class="stack section-space">
+                <div class="feature-card">
+                    <strong>Quotation visibility</strong>
+                    <div class="muted">Download your branded PDFs whenever you need to review or share them.</div>
+                </div>
+                <div class="feature-card">
+                    <strong>Profile updates</strong>
+                    <div class="muted">Keep your name and contact email current so future quotations stay aligned.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="surface">
+            <div class="eyebrow">Sign in</div>
+            <h2 class="section-title">Welcome back</h2>
+            <form method="post" class="section-space">
+                {% csrf_token %}
+                <div class="stack">
+                    {% for field in form %}
+                        <div class="field">
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {{ field }}
+                            {{ field.errors }}
+                        </div>
+                    {% endfor %}
+                    {% if form.non_field_errors %}
+                        <div class="message-box error">{{ form.non_field_errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="page-actions section-space">
+                    <button class="pill-btn primary" type="submit">Open portal</button>
+                    <a class="pill-btn" href="{% url 'register' %}">Create account</a>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

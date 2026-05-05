@@ -1,0 +1,117 @@
+{% extends "layouts/site_base.html" %}
+{% load static %}
+
+{% block title %}Lead Dashboard | BARQON{% endblock %}
+
+{% block content %}
+<section class="bq-section bq-section--light" style="padding-top: 140px; min-height: 100vh;">
+    <div class="bq-wrap">
+        <div class="bq-section-head bq-section-head--row">
+            <div>
+                <div class="bq-eyebrow">CRM Dashboard</div>
+                <h2 class="bq-section-h2">Recent Solar Leads</h2>
+            </div>
+            <div class="bq-nav-cta">
+                <span class="bq-badge">{{ leads.count }} Total Leads</span>
+            </div>
+        </div>
+
+        <div class="bq-card" style="padding: 0; overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                <thead>
+                    <tr style="background: #f8fafc; border-bottom: 1px solid #dfe7f0;">
+                        <th
+                            style="padding: 16px 24px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: #5c6b7c;">
+                            Date</th>
+                        <th
+                            style="padding: 16px 24px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: #5c6b7c;">
+                            Customer</th>
+                        <th
+                            style="padding: 16px 24px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: #5c6b7c;">
+                            Contact</th>
+                        <th
+                            style="padding: 16px 24px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: #5c6b7c;">
+                            Location</th>
+                        <th
+                            style="padding: 16px 24px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: #5c6b7c;">
+                            Monthly Units</th>
+                        <th
+                            style="padding: 16px 24px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: #5c6b7c;">
+                            System Size</th>
+                        <th
+                            style="padding: 16px 24px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: #5c6b7c;">
+                            Est. Cost (PKR)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for lead in leads %}
+                    <tr style="border-bottom: 1px solid #f1f5f9; transition: background 0.2s;"
+                        onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='white'">
+                        <td style="padding: 16px 24px; font-size: 0.85rem; color: #64748b;">{{ lead.created_at|date:"M
+                            d, Y" }}</td>
+                        <td style="padding: 16px 24px; font-size: 0.95rem; font-weight: 700; color: #0b1c2c;">{{
+                            lead.name }}</td>
+                        <td style="padding: 16px 24px; font-size: 0.9rem; color: #0b1c2c;">{{ lead.phone }}</td>
+                        <td style="padding: 16px 24px; font-size: 0.9rem; color: #5c6b7c;">{{ lead.city }}</td>
+                        <td style="padding: 16px 24px; font-size: 0.9rem; font-weight: 600; color: #0b1c2c;">{{
+                            lead.monthly_units }} Units</td>
+                        <td style="padding: 16px 24px;">
+                            <span
+                                style="background: rgba(245, 166, 35, 0.1); color: #F5A623; padding: 4px 12px; border-radius: 50px; font-size: 0.8rem; font-weight: 700;">
+                                {{ lead.system_size }} kW
+                            </span>
+                        </td>
+                        <td style="padding: 16px 24px; font-size: 0.95rem; font-weight: 800; color: #10b981;">
+                            {{ lead.estimated_cost|floatformat:0 }}
+                        </td>
+                    </tr>
+                    {% if lead.appliance_data %}
+                    <tr style="background: #fafcff; border-bottom: 1px solid #dfe7f0;">
+                        <td colspan="7" style="padding: 16px 24px;">
+                            <details style="cursor: pointer;">
+                                <summary style="font-size: 0.85rem; font-weight: 600; color: #3b82f6;">View Detailed Load & Property Info</summary>
+                                <div style="margin-top: 12px; font-size: 0.85rem; color: #475569; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; padding: 12px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
+                                    {% if lead.appliance_data.roof_type %}<div><strong>Roof Type:</strong> {{ lead.appliance_data.roof_type|title }}</div>{% endif %}
+                                    {% if lead.appliance_data.property_type %}<div><strong>Property Type:</strong> {{ lead.appliance_data.property_type|title }}</div>{% endif %}
+                                    {% if lead.appliance_data.connection_phase %}<div><strong>Connection Phase:</strong> {{ lead.appliance_data.connection_phase }} Phase</div>{% endif %}
+                                    {% if lead.appliance_data.wants_earth_bore %}<div><strong>Earth Bore:</strong> Yes</div>{% endif %}
+                                    {% if lead.appliance_data.net_metering == 'yes' %}<div><strong>Net Metering:</strong> Yes</div>{% endif %}
+                                    {% if lead.appliance_data.fans %}<div><strong>Fans:</strong> {{ lead.appliance_data.fans }}</div>{% endif %}
+                                    {% if lead.appliance_data.lights %}<div><strong>Lights:</strong> {{ lead.appliance_data.lights }}</div>{% endif %}
+                                    {% if lead.appliance_data.iron %}<div><strong>Iron:</strong> {{ lead.appliance_data.iron }}</div>{% endif %}
+                                    {% if lead.appliance_data.motors %}<div><strong>Motors:</strong> {{ lead.appliance_data.motors }}</div>{% endif %}
+                                    {% if lead.appliance_data.computers %}<div><strong>Laptops/PCs:</strong> {{ lead.appliance_data.computers }}</div>{% endif %}
+                                    {% if lead.appliance_data.fridge_inv %}<div><strong>Inverter Fridge:</strong> {{ lead.appliance_data.fridge_inv }}</div>{% endif %}
+                                    {% if lead.appliance_data.fridge_non %}<div><strong>Non-Inverter Fridge:</strong> {{ lead.appliance_data.fridge_non }}</div>{% endif %}
+                                    {% if lead.appliance_data.deep_freezer %}<div><strong>Deep Freezer:</strong> {{ lead.appliance_data.deep_freezer }}</div>{% endif %}
+                                    {% if lead.appliance_data.washing_machine %}<div><strong>Washing Machine:</strong> {{ lead.appliance_data.washing_machine }}</div>{% endif %}
+                                    {% if lead.appliance_data.other_load_watts %}<div><strong>Other Load:</strong> {{ lead.appliance_data.other_load_watts }} W</div>{% endif %}
+                                    {% if lead.appliance_data.desired_backup_hours %}<div><strong>Backup Needed:</strong> {{ lead.appliance_data.desired_backup_hours }} hrs</div>{% endif %}
+                                    {% if lead.appliance_data.acs %}
+                                        <div style="grid-column: 1 / -1;">
+                                            <strong>Air Conditioners:</strong>
+                                            <ul style="margin: 4px 0 0 20px; padding: 0;">
+                                            {% for ac in lead.appliance_data.acs %}
+                                                <li>{{ ac.ton }} Ton ({{ ac.type|title }})</li>
+                                            {% endfor %}
+                                            </ul>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </details>
+                        </td>
+                    </tr>
+                    {% endif %}
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" style="padding: 48px; text-align: center; color: #64748b; font-style: italic;">
+                            No leads found in the system yet.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+{% endblock %}

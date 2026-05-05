@@ -1,0 +1,85 @@
+{% extends "layouts/site_base.html" %}
+{% load static %}
+
+{% block title %}Solar Insights & Guides | BARQON{% endblock %}
+
+{% block extra_css %}
+<!-- Premium styles are loaded from site.css -->
+{% endblock %}
+
+{% block content %}
+<!-- Page Hero -->
+<section class="bq-page-hero">
+    <div class="bq-container">
+        <div class="bq-page-hero-content" data-reveal>
+            <span class="bq-page-hero-kicker">Solar Insights</span>
+            <h1 class="bq-page-hero-h1">Latest from our engineers</h1>
+            <p class="bq-page-hero-sub">Expert guides, technical deep-dives, and energy saving tips from the BARQON engineering team.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Blog Grid Section -->
+<section class="bq-content-section">
+    <div class="bq-container">
+        <!-- Blog Grid -->
+        <div class="bq-grid-3">
+            {% for post in posts %}
+            <article class="stagger-reveal-{{ forloop.counter|default:1 }}" data-reveal>
+                <a href="{% url 'blog-detail-page' post.slug %}" class="blog-card-ultra">
+                    <div class="blog-card-image-wrap">
+                        {% if post.image_url %}
+                            <img src="{{ post.image_url }}" alt="{{ post.title }}" class="bq-img-standard" loading="lazy">
+                        {% elif post.image %}
+                            <img src="{{ post.image.url }}" alt="{{ post.title }}" class="bq-img-standard" loading="lazy">
+                        {% else %}
+                            <img src="https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?auto=format&fit=crop&w=800&q=80" alt="Solar energy" class="bq-img-standard">
+                        {% endif %}
+                        <div class="bottom-fade"></div>
+                        <span class="category-pill">{{ post.category|default:"Solar Insights" }}</span>
+                    </div>
+                    
+                    <div class="blog-card-content">
+                        <h3 class="blog-card-title">{{ post.title }}</h3>
+                        <p class="blog-card-excerpt">
+                            {{ post.excerpt|default:post.content|striptags|truncatechars:120 }}
+                        </p>
+                        
+                        <div class="blog-card-footer">
+                            <span class="read-guide-link">
+                                Read Guide <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                            </span>
+                            <span class="reading-time">
+                                {{ post.read_time|default:"5 min read" }}
+                            </span>
+                        </div>
+                    </div>
+                </a>
+            </article>
+            {% empty %}
+            <div class="col-span-full py-20 text-center" data-reveal>
+                <div class="inline-flex p-6 rounded-full bg-slate-100 mb-6">
+                    <i data-lucide="book-open" class="w-12 h-12 text-slate-300"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-navy-900 mb-2">No Insights Published Yet</h3>
+                <p class="text-slate-500">Check back soon for expert guides and solar technology news.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+
+{% block extra_js %}
+<script src="{% static 'js/blog_animations.js' %}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        if (window.lucide) {
+            window.lucide.createIcons();
+        }
+    });
+</script>
+{% endblock %}
+
+

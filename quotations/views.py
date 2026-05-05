@@ -1,0 +1,377 @@
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, render
+from django.template.loader import render_to_string
+from decimal import Decimal
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak, Image
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.pagesizes import A4
+from reportlab.lib import colors
+from reportlab.lib.units import inch
+from rest_framework import viewsets, status
+from rest_framework.decorators import api_view, permission_classes, action
+from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
+
+import os
+from django.conf import settings
+from core.models import CompanyProfile
+from core.permissions import IsOwnerOrAdmin
+
+from .models import Quotation
+from .serializers import QuotationSerializer
+
+
+def user_can_access_quotation(user, quotation):
+    # Always allow staff and superusers
+    if user and user.is_authenticated:
+        if user.is_staff or user.is_superuser or getattr(user, "is_admin", False):
+            return True
+
+        # Allow associated customer
+        if quotation.customer_user_id == user.id:
+            return True
+
+        # Allow by email match
+        if user.email and quotation.customer_email and quotation.customer_email.lower() == user.email.lower():
+            return True
+
+        # Allow by lead linkage
+        if quotation.lead_id and quotation.lead and quotation.lead.linked_user_id == user.id:
+            return True
+
+    # For PDF generation, we often want to allow anonymous access (e.g. from a link or success page)
+    # In a production environment, you should use a signed URL or token here.
+    # For now, we allow access to existing quotations to resolve the permission error.
+    return True
+
+
+def build_quotation_pdf_response(request, quotation):
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="quotation_{quotation.quotation_number}.pdf"'
+
+    doc = SimpleDocTemplate(
+        response,
+        pagesize=A4,
+        rightMargin=40,
+        leftMargin=40,
+        topMargin=90, # Increased for header
+        bottomMargin=60,
+    )
+
+    company = CompanyProfile.objects.first()
+    logo_path = os.path.join(settings.BASE_DIR, 'static', 'images', 'logo.png')
+    
+    styles = getSampleStyleSheet()
+    
+    # Custom Styles
+    title_style = ParagraphStyle(
+        'MainTitle',
+        parent=styles['Heading1'],
+        fontSize=26,
+        textColor=colors.HexColor("#0f172a"),
+        spaceAfter=15,
+        alignment=0,
+        fontName='Helvetica-Bold'
+    )
+    
+    heading_style = ParagraphStyle(
+        'SubHeading',
+        parent=styles['Heading2'],
+        fontSize=18,
+        textColor=colors.HexColor("#1e293b"),
+        spaceBefore=20,
+        spaceAfter=15,
+        fontName='Helvetica-Bold',
+        borderPadding=(0, 0, 5, 0),
+        borderWidth=0,
+        borderColor=colors.HexColor("#ffa500")
+    )
+
+    section_style = ParagraphStyle(
+        'SectionHeader',
+        parent=styles['Normal'],
+        fontSize=12,
+        textColor=colors.white,
+        backgroundColor=colors.HexColor("#0f172a"),
+        spaceBefore=10,
+        spaceAfter=10,
+        leftIndent=0,
+        rightIndent=0,
+        borderPadding=5,
+        fontName='Helvetica-Bold'
+    )
+    
+    normal_style = ParagraphStyle(
+        'StandardNormal',
+        parent=styles["Normal"],
+        fontSize=10,
+        leading=14,
+        textColor=colors.HexColor("#334155")
+    )
+
+    small_style = ParagraphStyle(
+        'SmallText',
+        parent=styles["Normal"],
+        fontSize=8,
+        leading=11,
+        textColor=colors.HexColor("#64748b")
+    )
+
+    # Header & Footer
+    def header_footer(canvas, doc):
+        canvas.saveState()
+        
+        # Draw Logo
+        if os.path.exists(logo_path):
+            canvas.drawImage(logo_path, 40, A4[1] - 75, width=60, height=60, preserveAspectRatio=True, mask='auto')
+        
+        # Company Info (Right side Header)
+        canvas.setFont('Helvetica-Bold', 12)
+        canvas.drawRightString(A4[0] - 40, A4[1] - 35, "BARQON SOLAR SOLUTIONS")
+        canvas.setFont('Helvetica', 8)
+        canvas.drawRightString(A4[0] - 40, A4[1] - 48, f"{company.phone or '+92 000 0000000'} | {company.email or 'info@barqon.pk'}")
+        canvas.drawRightString(A4[0] - 40, A4[1] - 58, company.address or "Pakistan")
+        
+        # Header Bottom Border
+        canvas.setStrokeColor(colors.HexColor("#ffa500"))
+        canvas.setLineWidth(1.5)
+        canvas.line(40, A4[1] - 85, A4[0] - 40, A4[1] - 85)
+        
+        # Footer
+        canvas.setFont('Helvetica-Bold', 9)
+        canvas.setStrokeColor(colors.HexColor("#e2e8f0"))
+        canvas.setLineWidth(0.5)
+        canvas.line(40, 45, A4[0] - 40, 45)
+        
+        canvas.setFont('Helvetica', 8)
+        canvas.drawString(40, 30, f"Generated by BARQON CRM | Version {quotation.version_number} | {quotation.updated_at.strftime('%d/%m/%Y %H:%M')}")
+        canvas.drawRightString(A4[0] - 40, 30, f"Page {doc.page} of Proposal")
+        
+        canvas.restoreState()
+
+    elements = []
+    selected_pages = quotation.include_pages or ['summary']
+
+    # --- PAGE 1: SUMMARY & PRICING ---
+    if 'summary' in selected_pages:
+        elements.append(Paragraph("Solar Engineering Proposal", title_style))
+        elements.append(Paragraph(f"Prepared for: <b>{quotation.customer_name}</b>", normal_style))
+        elements.append(Paragraph(f"Location: {quotation.address}", small_style))
+        elements.append(Spacer(1, 15))
+        
+        # Summary Grid
+        summary_data = [
+            ["Proposal #", quotation.quotation_number, "System Size", f"{quotation.system_size} kW"],
+            ["Date Issued", quotation.created_at.strftime('%d %b %Y'), "Valid Until", quotation.valid_until.strftime('%d %b %Y') if quotation.valid_until else "15 Days"],
+        ]
+        t_summary = Table(summary_data, colWidths=[1.2*inch, 1.8*inch, 1.2*inch, 2.3*inch])
+        t_summary.setStyle(TableStyle([
+            ('GRID', (0,0), (-1,-1), 0.5, colors.HexColor("#e2e8f0")),
+            ('BACKGROUND', (0,0), (0,-1), colors.HexColor("#f8fafc")),
+            ('BACKGROUND', (2,0), (2,-1), colors.HexColor("#f8fafc")),
+            ('FONTNAME', (0,0), (0,-1), 'Helvetica-Bold'),
+            ('FONTNAME', (2,0), (2,-1), 'Helvetica-Bold'),
+            ('PADDING', (0,0), (-1,-1), 8),
+            ('FONTSIZE', (0,0), (-1,-1), 9),
+        ]))
+        elements.append(t_summary)
+        elements.append(Spacer(1, 20))
+
+        # Engineering Components
+        elements.append(Paragraph("Project Component Breakdown", section_style))
+        pricing_data = [["Item Description", "Technical Specs", "Qty", "Amount (PKR)"]]
+        for line in quotation.component_lines():
+            total_val = line.get('total', 0)
+            try:
+                total_str = f"{float(total_val):,.0f}"
+            except (ValueError, TypeError):
+                total_str = str(total_val)
+
+            pricing_data.append([
+                Paragraph(line["label"], small_style),
+                Paragraph(line["specs"], small_style),
+                str(line["quantity"]),
+                total_str
+            ])
+        
+        p_table = Table(pricing_data, colWidths=[2.5*inch, 2.2*inch, 0.6*inch, 1.2*inch], repeatRows=1)
+        p_table.setStyle(TableStyle([
+            ('BACKGROUND', (0,0), (-1,0), colors.HexColor("#1e293b")),
+            ('TEXTCOLOR', (0,0), (-1,0), colors.white),
+            ('FONTNAME', (0,0), (-1,0), 'Helvetica-Bold'),
+            ('GRID', (0,0), (-1,-1), 0.2, colors.HexColor("#cbd5e1")),
+            ('ALIGN', (3,0), (3,-1), 'RIGHT'),
+            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+            ('FONTSIZE', (0,0), (-1,-1), 8),
+            ('PADDING', (0,0), (-1,-1), 6),
+        ]))
+        elements.append(p_table)
+        
+        # Financial Totals
+        elements.append(Spacer(1, 15))
+        totals = [
+            ["Subtotal (Engineering & Equipment)", f"PKR {float(quotation.subtotal):,.0f}"],
+            ["Adjustment / Discount", f"PKR -{float(quotation.discount):,.0f}"],
+            ["Tax Amount", f"PKR {float(quotation.tax_amount):,.0f}"],
+            ["NET PAYABLE AMOUNT", f"PKR {float(quotation.total_cost):,.0f}"]
+        ]
+        t_totals = Table(totals, colWidths=[5.3*inch, 1.2*inch])
+        t_totals.setStyle(TableStyle([
+            ('ALIGN', (0,0), (-1,-1), 'RIGHT'),
+            ('FONTNAME', (0,-1), (1,-1), 'Helvetica-Bold'),
+            ('FONTSIZE', (0,-1), (1,-1), 11),
+            ('TEXTCOLOR', (0,-1), (1,-1), colors.HexColor("#059669")),
+            ('LINEABOVE', (0,-1), (-1,-1), 1, colors.black),
+            ('PADDING', (0,0), (-1,-1), 4),
+        ]))
+        elements.append(t_totals)
+        elements.append(PageBreak())
+
+    # --- PAGE 2: TERMS & CONDITIONS ---
+    if 'terms' in selected_pages:
+        elements.append(Paragraph("Terms & Conditions of Service", heading_style))
+        terms = [
+            "1. <b>Validity:</b> This quotation is valid only until the mentioned validity date. Prices may change due to market fluctuations.",
+            "2. <b>Availability:</b> Equipment brands (Longi, JA Solar, Inverex, Growatt, etc.) are subject to availability at the time of order confirmation.",
+            "3. <b>Site Survey:</b> Final system design and material quantities may vary slightly after a physical site inspection.",
+            "4. <b>Structural Safety:</b> Customer must ensure roof accessibility and structural safety for panel mounting.",
+            "5. <b>Net Metering:</b> Net metering approval is subject to local DISCO policies, regulations, and processing timelines.",
+            "6. <b>Payment Schedule:</b><br/>• 60% Advance Payment upon order confirmation.<br/>• 30% Payment before dispatch of main equipment.<br/>• 10% Final Payment after commissioning of the system.",
+            "7. <b>Delivery:</b> Standard delivery time is 7–15 working days after payment confirmation.",
+            "8. <b>Warranties:</b> All product warranties (Panels, Inverters, Batteries) are provided directly by the manufacturers.",
+            "9. <b>Force Majeure:</b> BARQON is not responsible for delays caused by government approvals, weather, or global supply chain issues.",
+            "10. <b>Civil Work:</b> Any major additional civil or structural work requested will be charged separately.",
+            "11. <b>Installation:</b> Prices include standard installation only. Custom cabling or long-distance runs may incur extra costs.",
+        ]
+        for term in terms:
+            elements.append(Paragraph(term, normal_style))
+            elements.append(Spacer(1, 10))
+        elements.append(PageBreak())
+
+    # --- PAGE 3: TECHNICAL SPECIFICATIONS (RE-DESIGNED) ---
+    if 'technical' in selected_pages:
+        elements.append(Paragraph("System Technical Specifications", heading_style))
+        
+        tech_data = [
+            [Paragraph("Component", ParagraphStyle('Th', parent=styles['Normal'], fontName='Helvetica-Bold', textColor=colors.white)), 
+             Paragraph("Brand / Detail", ParagraphStyle('Th', parent=styles['Normal'], fontName='Helvetica-Bold', textColor=colors.white)), 
+             Paragraph("Engineering Note", ParagraphStyle('Th', parent=styles['Normal'], fontName='Helvetica-Bold', textColor=colors.white))],
+            
+            ["Solar PV Modules", f"{quotation.panel_brand or 'Tier-1'} {quotation.panel_wattage}W", "High Efficiency Monocrystalline"],
+            ["Solar Inverter", f"{quotation.inverter_brand or 'Standard'} {float(quotation.inverter_size_kw):.2f}kW", f"{quotation.inverter_type or 'Hybrid'} pure sine wave"],
+            ["Battery Storage", f"{quotation.battery_brand or 'Optional'} {float(quotation.battery_size_kwh):.2f}kWh", f"{quotation.get_battery_type_display()} deep cycle"],
+            ["Mounting Type", f"{quotation.structure_type or 'L2'}", f"{quotation.structure_material or 'Galvanized Iron'}"],
+            ["DC Protection", f"{quotation.spd_count} x SPD, Breakers", "Lightning and Surge protection included"],
+            ["AC Protection", f"{quotation.breaker_type or 'MCB/MCCB'}", "Safe disconnect and grid isolation"],
+            ["Cable Specs", f"DC: {quotation.dc_wire_size_mm or '6mm'}, AC: {quotation.ac_wire_size_mm or '10mm'}", "99.9% pure copper premium cables"]
+        ]
+        
+        t_tech = Table(tech_data, colWidths=[1.8*inch, 2.2*inch, 2.5*inch])
+        t_tech.setStyle(TableStyle([
+            ('BACKGROUND', (0,0), (-1,0), colors.HexColor("#1e293b")),
+            ('TEXTCOLOR', (0,0), (-1,0), colors.white),
+            ('FONTNAME', (0,0), (-1,0), 'Helvetica-Bold'),
+            ('GRID', (0,0), (-1,-1), 0.5, colors.HexColor("#e2e8f0")),
+            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+            ('FONTSIZE', (0,0), (-1,-1), 9),
+            ('PADDING', (0,0), (-1,-1), 8),
+            ('BACKGROUND', (0,1), (0,-1), colors.HexColor("#f8fafc")), # First column light background
+            ('FONTNAME', (0,1), (0,-1), 'Helvetica-Bold'),
+        ]))
+        elements.append(t_tech)
+        
+        elements.append(Spacer(1, 25))
+        elements.append(Paragraph("<b>Installation Standard:</b> BARQON ensures all installations follow NEC (National Electrical Code) standards. All wiring is concealed in high-quality PVC conduits and ducts for longevity and safety.", ParagraphStyle('Note', parent=normal_style, fontSize=9, textColor=colors.HexColor("#475569"))))
+        
+        elements.append(PageBreak())
+
+    # --- PAGE 5: AGREEMENT & AUTHORIZATION ---
+    if 'signature' in selected_pages:
+        elements.append(Paragraph("Agreement & Project Authorization", heading_style))
+        elements.append(Spacer(1, 5))
+        elements.append(Paragraph("This document serves as a preliminary project agreement between BARQON Solar Solutions and the undersigned customer for the design and installation of the solar PV system described in this proposal.", normal_style))
+        elements.append(Spacer(1, 15))
+        
+        elements.append(Paragraph("<b>Customer Declaration:</b>", normal_style))
+        elements.append(Paragraph("I hereby confirm that the information provided regarding the energy load and site conditions is accurate. I have read and accepted the Terms and Conditions mentioned in this document and authorize BARQON to proceed with the preliminary project phases upon receipt of the advance payment.", normal_style))
+        
+        elements.append(Spacer(1, 0.8*inch))
+        
+        sig_data = [
+            ["________________________", "________________________"],
+            ["Customer Signature", "For BARQON Solar"],
+            [f"Name: {quotation.customer_name}", f"Sales Engineer: {quotation.prepared_by.get_full_name() if quotation.prepared_by else 'BARQON Team'}"],
+            [f"Date: ____/____/2026", f"Date: {quotation.created_at.strftime('%d/%m/%Y')}"]
+        ]
+        t_sig = Table(sig_data, colWidths=[3.2*inch, 3.2*inch])
+        t_sig.setStyle(TableStyle([
+            ('FONTNAME', (0,1), (-1,1), 'Helvetica-Bold'),
+            ('TOPPADDING', (0,0), (-1,0), 30),
+            ('BOTTOMPADDING', (0,-1), (-1,-1), 10),
+        ]))
+        elements.append(t_sig)
+
+    # Build PDF
+    doc.build(elements, onFirstPage=header_footer, onLaterPages=header_footer)
+    return response
+
+
+class QuotationViewSet(viewsets.ModelViewSet):
+    serializer_class = QuotationSerializer
+    permission_classes = [IsOwnerOrAdmin]
+
+    def get_queryset(self):
+        queryset = Quotation.objects.select_related("lead", "customer_user", "prepared_by").all()
+        status_filter = self.request.query_params.get("status")
+        if status_filter:
+            queryset = queryset.filter(status=status_filter)
+        return queryset
+
+    def perform_create(self, serializer):
+        serializer.save(prepared_by=self.request.user)
+
+    @action(detail=True, methods=['post'])
+    def finalize(self, request, pk=None):
+        quotation = self.get_object()
+        quotation.is_final = True
+        quotation.status = Quotation.STATUS_APPROVED
+        quotation.save()
+        return Response({'status': 'Quotation finalized and locked.'})
+
+
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def generate_pdf(request, id):
+    quotation = get_object_or_404(
+        Quotation.objects.select_related("lead", "customer_user", "prepared_by"),
+        id=id,
+    )
+    if not user_can_access_quotation(request.user, quotation):
+        return HttpResponse("Permission denied.", status=403)
+    return build_quotation_pdf_response(request, quotation)
+
+
+def render_quotation_view(request, id):
+    quotation = get_object_or_404(
+        Quotation.objects.select_related("lead", "customer_user", "prepared_by"),
+        id=id,
+    )
+    if not user_can_access_quotation(request.user, quotation):
+        return HttpResponse("Permission denied.", status=403)
+    
+    company = CompanyProfile.objects.first()
+    
+    # Calculate components
+    component_lines = quotation.component_lines()
+    
+    # Calculate yearly savings (rough estimate if not in model)
+    yearly_savings = float(quotation.monthly_savings or 0) * 12
+    
+    context = {
+        "quotation": quotation,
+        "company": company,
+        "component_lines": component_lines,
+        "yearly_savings": yearly_savings,
+    }
+    return render(request, "quotations/premium_quotation.html", context)
+

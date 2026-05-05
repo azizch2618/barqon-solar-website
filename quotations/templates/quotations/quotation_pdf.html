@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        @page { size: A4; margin: 26px; }
+        body { margin: 0; font-family: Arial, sans-serif; color: #0b1c2c; font-size: 11px; line-height: 1.55; }
+        .page { min-height: 1030px; page-break-after: always; position: relative; padding: 34px; border: 1px solid #dfe7f0; }
+        .page:last-child { page-break-after: auto; }
+        .cover { background: #0b1c2c; color: white; border: 0; }
+        .brand-line { height: 8px; width: 160px; background: #ffa500; margin-bottom: 34px; }
+        .logo { max-width: 190px; max-height: 82px; margin-bottom: 30px; }
+        .kicker { color: #ffa500; font-size: 10px; font-weight: 800; letter-spacing: 1.6px; text-transform: uppercase; }
+        .cover-title { margin: 18px 0 22px; font-size: 54px; line-height: 0.95; font-weight: 900; }
+        .cover-grid { position: absolute; left: 34px; right: 34px; bottom: 52px; width: auto; border-collapse: collapse; }
+        .cover-grid td { padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.18); }
+        .cover-grid strong { color: white; }
+        .header { display: table; width: 100%; padding-bottom: 12px; border-bottom: 2px solid #ffa500; margin-bottom: 24px; }
+        .header-left { display: table-cell; vertical-align: middle; width: 60px; }
+        .header-center { display: table-cell; vertical-align: middle; padding-left: 15px; }
+        .header-right { display: table-cell; vertical-align: middle; text-align: right; color: #64748b; font-size: 9px; }
+        .header-logo { width: 50px; height: auto; }
+        .company-name { font-size: 16px; font-weight: 900; color: #0b1c2c; }
+        .company-info { font-size: 9px; color: #64748b; }
+        h1 { margin: 0 0 24px; font-size: 30px; line-height: 1.1; }
+        h2 { margin: 0 0 14px; font-size: 18px; }
+        .grid { width: 100%; border-collapse: separate; border-spacing: 14px; margin: 0 -14px; }
+        .grid td { width: 50%; padding: 18px; border: 1px solid #dfe7f0; border-radius: 8px; background: #fbfdff; vertical-align: top; }
+        .label { color: #64748b; font-size: 9px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; }
+        .value { margin-top: 6px; font-size: 18px; font-weight: 900; }
+        .panel { padding: 18px; border: 1px solid #dfe7f0; border-radius: 8px; background: #fbfdff; }
+        .note { white-space: pre-wrap; color: #334155; }
+        .table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+        .table th, .table td { padding: 12px 10px; border-bottom: 1px solid #dfe7f0; text-align: left; }
+        .table th { color: #64748b; font-size: 9px; letter-spacing: .8px; text-transform: uppercase; }
+        .table td:last-child, .table th:last-child { text-align: right; }
+        .totals { width: 46%; margin: 22px 0 0 auto; border-collapse: collapse; }
+        .totals td { padding: 12px; border: 1px solid #dfe7f0; }
+        .grand td { background: #ffa500; color: #0b1c2c; font-size: 16px; font-weight: 900; }
+        .why-grid { width: 100%; border-collapse: separate; border-spacing: 14px; margin: 0 -14px; }
+        .why-grid td { width: 33.33%; padding: 18px; border-radius: 8px; background: #fff4dc; vertical-align: top; }
+        .footer { position: absolute; left: 34px; right: 34px; bottom: 24px; padding-top: 10px; border-top: 1px solid #dfe7f0; color: #64748b; font-size: 10px; }
+        .badge { display: inline-block; padding: 7px 10px; border-radius: 8px; background: #fff4dc; color: #b56a00; font-weight: 900; }
+    </style>
+</head>
+<body>
+    <section class="page cover">
+        <div class="brand-line"></div>
+        <img src="static/images/logo.png" alt="BARQON" class="logo">
+        <div class="kicker">{% if company %}{{ company.company_name }}{% else %}BARQON Solar Solutions{% endif %}</div>
+        <div class="cover-title">Solar Proposal</div>
+        <p style="max-width:520px; color:rgba(255,255,255,.72); font-size:15px;">A premium system recommendation with customer requirements, pricing, and delivery notes.</p>
+        <table class="cover-grid">
+            <tr><td><strong>Customer Name</strong></td><td>{{ quotation.customer_name }}</td></tr>
+            <tr><td><strong>Date</strong></td><td>{{ quotation.created_at|date:"d M Y" }}</td></tr>
+            <tr><td><strong>Quotation</strong></td><td>{{ quotation.quotation_number }}</td></tr>
+            <tr><td><strong>Valid Until</strong></td><td>{{ quotation.valid_until|date:"d M Y" }}</td></tr>
+        </table>
+    </section>
+
+    {% macro page_header(title, page_num) %}
+    <div class="header">
+        <div class="header-left">
+            <img src="static/images/logo.png" class="header-logo">
+        </div>
+        <div class="header-center">
+            <div class="company-name">BARQON Solar Energy Solutions</div>
+            <div class="company-info">
+                {% if company.phone %}{{ company.phone }}{% endif %} | 
+                {% if company.email %}{{ company.email }}{% endif %} | 
+                {% if company.address %}{{ company.address }}{% endif %}
+            </div>
+        </div>
+        <div class="header-right">
+            <strong>{{ quotation.quotation_number }}</strong><br>
+            {{ title }} | Page {{ page_num }}
+        </div>
+    </div>
+    {% endmacro %}
+
+    <section class="page">
+        <div class="header">
+            <div class="header-left"><img src="static/images/logo.png" class="header-logo"></div>
+            <div class="header-center">
+                <div class="company-name">BARQON Solar Energy Solutions</div>
+                <div class="company-info">{{ company.phone|default:"+92 000 0000000" }} | {{ company.email|default:"info@barqon.pk" }}</div>
+            </div>
+            <div class="header-right">
+                <strong>{{ quotation.quotation_number }}</strong><br>
+                Customer Details | Page 2
+            </div>
+        </div>
+        <h1>Customer information</h1>
+        <table class="grid">
+            <tr>
+                <td><div class="label">Name</div><div class="value">{{ quotation.customer_name }}</div></td>
+                <td><div class="label">Phone</div><div class="value">{{ quotation.customer_phone|default:"-" }}</div></td>
+            </tr>
+            <tr>
+                <td><div class="label">Email</div><div class="value">{{ quotation.customer_email|default:"-" }}</div></td>
+                <td><div class="label">City</div><div class="value">{% if quotation.lead %}{{ quotation.lead.city_area|default:"-" }}{% else %}-{% endif %}</div></td>
+            </tr>
+            <tr>
+                <td colspan="2"><div class="label">Installation address</div><div class="note">{{ quotation.address|linebreaksbr }}</div></td>
+            </tr>
+        </table>
+        <div class="footer">Customer details are used for proposal planning, communication, and installation coordination.</div>
+    </section>
+
+    <section class="page">
+        <div class="header">
+            <div class="header-left"><img src="static/images/logo.png" class="header-logo"></div>
+            <div class="header-center">
+                <div class="company-name">BARQON Solar Energy Solutions</div>
+                <div class="company-info">{{ company.phone|default:"+92 000 0000000" }} | {{ company.email|default:"info@barqon.pk" }}</div>
+            </div>
+            <div class="header-right">
+                <strong>{{ quotation.quotation_number }}</strong><br>
+                System Details | Page 3
+            </div>
+        </div>
+        <h1>Recommended solar system</h1>
+        <table class="grid">
+            <tr>
+                <td><div class="label">Size</div><div class="value">{{ quotation.system_size }} kW</div></td>
+                <td><div class="label">Panels</div><div class="value">{{ quotation.panel_count }} x {{ quotation.panel_wattage }}W</div><div>{{ quotation.panel_brand|default:"Brand to be finalized" }}</div></td>
+            </tr>
+            <tr>
+                <td><div class="label">Inverter</div><div class="value">{{ quotation.inverter_size_kw }} kW</div><div>{{ quotation.inverter }} {{ quotation.inverter_brand }}</div></td>
+                <td><div class="label">Battery</div><div class="value">{{ quotation.battery_size_kwh }} kWh</div><div>{{ quotation.battery }} {{ quotation.battery_brand }}</div></td>
+            </tr>
+            <tr>
+                <td><div class="label">Protection</div><div class="value">{{ quotation.breaker_count }} breakers</div><div>{{ quotation.spd_count }} SPDs</div></td>
+                <td><div class="label">Wiring</div><div class="value">Site Variable</div><div>DC {{ quotation.dc_wire_size_mm }} · AC {{ quotation.ac_wire_size_mm }}</div><div style="font-size:8px; color:#64748b;">*Length confirmed after survey</div></td>
+            </tr>
+        </table>
+        <div class="panel" style="margin-top:24px;">
+            <div class="label">Engineering note</div>
+            <div class="note">{{ quotation.notes|default:"Site survey, mounting layout, protection ratings, and cable route will be confirmed before installation." }}</div>
+        </div>
+        <div class="footer">System sizing can be refined after final load review and site survey.</div>
+    </section>
+
+    <section class="page">
+        <div class="header">
+            <div class="header-left"><img src="static/images/logo.png" class="header-logo"></div>
+            <div class="header-center">
+                <div class="company-name">BARQON Solar Energy Solutions</div>
+                <div class="company-info">{{ company.phone|default:"+92 000 0000000" }} | {{ company.email|default:"info@barqon.pk" }}</div>
+            </div>
+            <div class="header-right">
+                <strong>{{ quotation.quotation_number }}</strong><br>
+                Pricing Breakdown | Page 4
+            </div>
+        </div>
+        <h1>Clean pricing table</h1>
+        <table class="table">
+            <thead><tr><th>Item</th><th>Qty</th><th>Unit Price</th><th>Total</th></tr></thead>
+            <tbody>
+                {% for line in component_lines %}
+                    <tr><td>{{ line.label }}</td><td>{{ line.quantity }}</td><td>PKR {{ line.unit }}</td><td>PKR {{ line.total }}</td></tr>
+                {% empty %}
+                    <tr><td colspan="4">Itemized pricing was not entered. Please review the totals below.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <table class="totals">
+            <tr><td>Subtotal</td><td>PKR {{ quotation.subtotal }}</td></tr>
+            <tr><td>Discount</td><td>PKR {{ quotation.discount }}</td></tr>
+            <tr><td>Tax</td><td>PKR {{ quotation.tax_amount }}</td></tr>
+            <tr class="grand"><td>GRAND TOTAL</td><td>PKR {{ quotation.total_cost }}</td></tr>
+        </table>
+        <div class="footer">Prices may change with stock availability, brand selection, and final site scope.</div>
+    </section>
+
+    <section class="page">
+        <div class="header">
+            <div class="header-left"><img src="static/images/logo.png" class="header-logo"></div>
+            <div class="header-center">
+                <div class="company-name">BARQON Solar Energy Solutions</div>
+                <div class="company-info">{{ company.phone|default:"+92 000 0000000" }} | {{ company.email|default:"info@barqon.pk" }}</div>
+            </div>
+            <div class="header-right">
+                <strong>{{ quotation.quotation_number }}</strong><br>
+                Client Needs | Page 5
+            </div>
+        </div>
+        <h1>Customer requirements</h1>
+        <table class="grid">
+            <tr>
+                <td><div class="label">Monthly bill</div><div class="value">{% if quotation.lead and quotation.lead.monthly_bill %}PKR {{ quotation.lead.monthly_bill }}{% else %}-{% endif %}</div></td>
+                <td><div class="label">Backup need</div><div class="value">{{ quotation.battery_backup_hours }} hours</div></td>
+            </tr>
+            <tr>
+                <td><div class="label">Property type</div><div class="value">{% if quotation.lead %}{{ quotation.lead.get_property_type_display }}{% else %}-{% endif %}</div></td>
+                <td><div class="label">Preferred contact</div><div class="value">{% if quotation.lead %}{{ quotation.lead.get_preferred_contact_method_display }}{% else %}-{% endif %}</div></td>
+            </tr>
+        </table>
+        <div class="panel" style="margin-top:24px;">
+            <div class="label">Notes</div>
+            <div class="note">{{ quotation.client_request_summary|default:"Customer requirements will be finalized during consultation." }}</div>
+        </div>
+        <div class="footer">These requirements help BARQON match system size, backup plan, and budget expectations.</div>
+    </section>
+
+    <section class="page">
+        <div class="header">
+            <div class="header-left"><img src="static/images/logo.png" class="header-logo"></div>
+            <div class="header-center">
+                <div class="company-name">BARQON Solar Energy Solutions</div>
+                <div class="company-info">{{ company.phone|default:"+92 000 0000000" }} | {{ company.email|default:"info@barqon.pk" }}</div>
+            </div>
+            <div class="header-right">
+                <span class="badge">Premium Solar Consultancy</span>
+            </div>
+        </div>
+        <h1>Why choose BARQON</h1>
+        <table class="why-grid">
+            <tr>
+                <td><h2>Clear advice</h2><div>Every proposal explains the system, not just the price.</div></td>
+                <td><h2>Practical design</h2><div>Recommendations consider load, backup, wiring, and protection.</div></td>
+                <td><h2>Professional handover</h2><div>Customers receive branded documentation they can review easily.</div></td>
+            </tr>
+        </table>
+        <div class="panel" style="margin-top:28px;">
+            <div class="label">Contact info</div>
+            <div class="note">
+{% if company and company.phone %}Phone: {{ company.phone }}
+{% endif %}{% if company and company.whatsapp %}WhatsApp: {{ company.whatsapp }}
+{% endif %}{% if company and company.email %}Email: {{ company.email }}
+{% endif %}{% if company and company.website %}Website: {{ company.website }}
+{% endif %}{% if company and company.address %}{{ company.address }}{% endif %}
+            </div>
+        </div>
+        <div class="panel" style="margin-top:24px;">
+            <div class="label">Terms</div>
+            <div class="note">Payment: {{ quotation.payment_terms|default:"To be finalized before order confirmation." }}
+
+Warranty: {{ quotation.warranty_terms|default:"Manufacturer warranties apply to selected equipment." }}
+
+Timeline: {{ quotation.delivery_timeline|default:"Timeline will be confirmed after approval." }}</div>
+        </div>
+        <div class="footer">{% if company and company.footer_note %}{{ company.footer_note }}{% else %}Thank you for considering BARQON Solar Solutions.{% endif %}</div>
+    </section>
+</body>
+</html>

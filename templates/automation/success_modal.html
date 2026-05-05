@@ -1,0 +1,56 @@
+<!-- BQ Ultra-Clean Success Modal -->
+<div id="success-modal" class="bq-modal-overlay">
+    <div class="bq-modal-card">
+        <!-- Close button top-right inside -->
+        <button onclick="closeSuccessModal()" class="bq-modal-close" aria-label="Close">
+            <i data-lucide="x"></i>
+        </button>
+
+        <!-- Centered Success Icon -->
+        <div class="bq-modal-icon">
+            <i data-lucide="check-circle-2"></i>
+        </div>
+
+        <h2 class="bq-modal-title">Thank You!</h2>
+        <p class="bq-modal-desc">
+            Our team will contact you shortly with your solar proposal.
+        </p>
+
+        <!-- Focused Actions -->
+        <div class="bq-modal-actions">
+            <!-- WhatsApp Chat (Primary CTA) -->
+            <a href="https://wa.me/{{ company.whatsapp|cut:' '|cut:'-'|cut:'+' }}" target="_blank" class="bq-btn-premium-gradient bq-btn-full">
+                <i data-lucide="message-circle"></i>
+                WhatsApp Chat
+            </a>
+
+            <!-- Close (Secondary) -->
+            <button onclick="closeSuccessModal()" class="bq-btn-premium-outline bq-btn-full">
+                Close
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showSuccessModal() {
+        const modal = document.getElementById('success-modal');
+        modal.classList.add('active');
+        if (window.lucide) lucide.createIcons();
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeSuccessModal() {
+        const modal = document.getElementById('success-modal');
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    // Close on ESC or Outside Click
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeSuccessModal();
+    });
+    document.getElementById('success-modal')?.addEventListener('click', (e) => {
+        if (e.target === e.currentTarget) closeSuccessModal();
+    });
+</script>

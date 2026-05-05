@@ -1,0 +1,906 @@
+
+{% extends "layouts/site_base.html" %}
+{% load static %}
+
+{% block title %}Solar Company in Pakistan | BARQON — Save 70% on Electricity{% endblock %}
+{% block meta_description %}BARQON Solar designs and installs residential, commercial, and industrial solar systems
+across Pakistan. Free site survey, Tier-1 equipment, net metering support.{% endblock %}
+
+{% block content %}
+
+<!-- ════════════════════════════════════════════════════════
+     HERO SECTION
+════════════════════════════════════════════════════════ -->
+<section class="bq-hero" id="top">
+    <!-- Animated background glow -->
+    <div class="bq-hero-glow" aria-hidden="true"></div>
+    <div class="bq-hero-grid-lines" aria-hidden="true"></div>
+
+    <div class="bq-wrap bq-hero-inner">
+        <!-- LEFT: Copy -->
+        <div class="bq-hero-copy">
+            <div class="bq-badge">
+                <span class="bq-badge-dot"></span>
+                Pakistan Solar Engineering Platform
+            </div>
+
+            <h1 class="bq-hero-h1">
+                Reduce Your<br>
+                Electricity Bill<br>
+                <span class="bq-gradient-text">by 70%</span>
+            </h1>
+
+            <p class="bq-hero-sub">
+                Professional solar design, installation, and net metering support for homes, businesses, and industrial
+                facilities across Pakistan.
+            </p>
+
+            <div class="bq-hero-actions">
+                <a href="{% url 'home' %}#quote" class="bq-btn bq-btn-primary bq-btn-lg">
+                    <i data-lucide="zap"></i>
+                    Get Free Quote
+                </a>
+                <a href="#services" class="bq-btn bq-btn-ghost bq-btn-lg">
+                    View Solutions
+                    <i data-lucide="chevron-right"></i>
+                </a>
+            </div>
+
+            <div class="bq-hero-trust">
+                <div class="bq-trust-pill"><i data-lucide="check-circle"></i> Tier-1 Equipment</div>
+                <div class="bq-trust-pill"><i data-lucide="check-circle"></i> Free Site Survey</div>
+                <div class="bq-trust-pill"><i data-lucide="check-circle"></i> Net Metering Help</div>
+            </div>
+        </div>
+
+        <!-- RIGHT: Image -->
+        <div class="bq-hero-visual">
+            <div class="bq-hero-img-wrap">
+                <img src="https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=1000&q=85"
+                    alt="Premium solar panels installed on a modern home" class="bq-hero-img" loading="eager">
+                <!-- Floating stat chip -->
+                <div class="bq-stat-chip bq-stat-chip--tl">
+                    <div class="bq-stat-chip-value" data-count="70%"> 70% </div>
+                    <div class="bq-stat-chip-label"> Bill Savings</div>
+                </div>
+                <div class="bq-stat-chip bq-stat-chip--br">
+                    <div class="bq-stat-chip-value">Tier-1</div>
+                    <div class="bq-stat-chip-label">Premium Panels</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════
+     STATS BAR
+════════════════════════════════════════════════════════ -->
+<section class="bq-stats-bar">
+    <div class="bq-wrap">
+        <div class="bq-stats-inner">
+            <div class="bq-stat">
+                <div style="display:flex;align-items:baseline;gap:2px;justify-content:center">
+                    <span class="bq-stat-n">100+</span>
+                </div>
+                <span class="bq-stat-l">Installations</span>
+            </div>
+            <div class="bq-stat-divider"></div>
+            <div class="bq-stat">
+                <div style="display:flex;align-items:baseline;gap:2px;justify-content:center">
+                    <span class="bq-stat-n">500+</span><span class="bq-stat-n"
+                        style="font-size:1.4rem; margin-left:4px">KW</span>
+                </div>
+                <span class="bq-stat-l">Capacity Installed</span>
+            </div>
+            <div class="bq-stat-divider"></div>
+            <div class="bq-stat">
+                <span class="bq-stat-n">4.9 ★</span>
+                <span class="bq-stat-l">Customer Rating</span>
+            </div>
+            <div class="bq-stat-divider"></div>
+            <div class="bq-stat">
+                <div style="display:flex;align-items:baseline;gap:2px;justify-content:center">
+                    <span class="bq-stat-n">5+</span><span class="bq-stat-n"
+                        style="font-size:1.4rem; margin-left:4px">yr</span>
+                </div>
+                <span class="bq-stat-l">Experience</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════
+     SERVICES SECTION
+════════════════════════════════════════════════════════ -->
+<section class="bq-section bq-section--light" id="services">
+    <div class="bq-wrap">
+        <div class="bq-section-head">
+            <div class="bq-eyebrow">Our Solutions</div>
+            <h2 class="bq-section-h2">Solar energy engineered<br>for every need</h2>
+            <p class="bq-section-sub">From rooftop homes to industrial plants — we build systems that pay for
+                themselves.</p>
+        </div>
+
+        <div class="bq-cards-grid">
+            <div class="bq-card bq-card--hover">
+                <div class="bq-card-icon">
+                    <i data-lucide="home"></i>
+                </div>
+                <h3 class="bq-card-title">Residential Solar</h3>
+                <p class="bq-card-desc">Cut household electricity bills with a precision-engineered home solar system,
+                    including net metering setup and full installation.</p>
+                <a href="#quote" class="bq-card-link">Get estimate <i data-lucide="arrow-right"></i></a>
+            </div>
+
+            <div class="bq-card bq-card--hover">
+                <div class="bq-card-icon">
+                    <i data-lucide="building-2"></i>
+                </div>
+                <h3 class="bq-card-title">Commercial Solar</h3>
+                <p class="bq-card-desc">Reduce operating costs for offices, factories, and commercial spaces with
+                    scalable grid-tied or hybrid solar solutions.</p>
+                <a href="#quote" class="bq-card-link">Consult now <i data-lucide="arrow-right"></i></a>
+            </div>
+
+            <div class="bq-card bq-card--hover">
+                <div class="bq-card-icon">
+                    <i data-lucide="factory"></i>
+                </div>
+                <h3 class="bq-card-title">Industrial Solar</h3>
+                <p class="bq-card-desc">High-capacity systems for manufacturing plants and warehouses. Custom
+                    engineering to meet your exact load requirements.</p>
+                <a href="#quote" class="bq-card-link">Request review <i data-lucide="arrow-right"></i></a>
+            </div>
+
+            <div class="bq-card bq-card--hover">
+                <div class="bq-card-icon">
+                    <i data-lucide="battery-charging"></i>
+                </div>
+                <h3 class="bq-card-title">Battery Systems</h3>
+                <p class="bq-card-desc">Achieve energy independence with intelligent battery storage. Power your home or
+                    business through load-shedding and outages.</p>
+                <a href="#quote" class="bq-card-link">Learn more <i data-lucide="arrow-right"></i></a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════
+     WHY CHOOSE US
+════════════════════════════════════════════════════════ -->
+<section class="bq-section bq-section--dark" id="why">
+    <div class="bq-wrap bq-why-inner">
+        <div class="bq-why-visual">
+            <img src="https://images.unsplash.com/photo-1613665813446-82a78c468a1d?auto=format&fit=crop&w=900&q=85"
+                alt="Solar engineers at work" class="bq-why-img" loading="lazy">
+        </div>
+
+        <div class="bq-why-copy">
+            <div class="bq-eyebrow bq-eyebrow--light">Why BARQON?</div>
+            <h2 class="bq-section-h2 bq-text-white">Engineering precision.<br>Transparent pricing.</h2>
+
+            <div class="bq-check-list">
+                <div class="bq-check-item">
+                    <div class="bq-check-icon"><i data-lucide="shield-check"></i></div>
+                    <div>
+                        <strong>Tier-1 Components Only</strong>
+                        <p>We exclusively use LONGi, JA Solar, Growatt, and Solis. No compromise on quality.</p>
+                    </div>
+                </div>
+                <div class="bq-check-item">
+                    <div class="bq-check-icon"><i data-lucide="file-text"></i></div>
+                    <div>
+                        <strong>Net Metering Handled</strong>
+                        <p>We handle all WAPDA/LESCO/FESCO documentation and coordinate the full net metering process.
+                        </p>
+                    </div>
+                </div>
+                <div class="bq-check-item">
+                    <div class="bq-check-icon"><i data-lucide="trending-down"></i></div>
+                    <div>
+                        <strong>Proven 70% Bill Reduction</strong>
+                        <p>Our engineering-first approach consistently delivers on savings projections for 100+ clients.
+                        </p>
+                    </div>
+                </div>
+                <div class="bq-check-item">
+                    <div class="bq-check-icon"><i data-lucide="headset"></i></div>
+                    <div>
+                        <strong>5-Year After-Sales Support</strong>
+                        <p>Dedicated support team for monitoring, maintenance, and any system issues after installation.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════
+     PROCESS STEPS
+════════════════════════════════════════════════════════ -->
+<section class="bq-section bq-section--light" id="process">
+    <div class="bq-wrap">
+        <div class="bq-section-head">
+            <div class="bq-eyebrow">How It Works</div>
+            <h2 class="bq-section-h2">From inquiry to installation<br>in 4 simple steps</h2>
+        </div>
+
+        <div class="bq-steps">
+            <div class="bq-step">
+                <div class="bq-step-num">01</div>
+                <h3 class="bq-step-title">Free Consultation</h3>
+                <p class="bq-step-desc">Share your electricity bill. We analyze your load and design the right system
+                    size.</p>
+            </div>
+            <div class="bq-step-arrow"><i data-lucide="chevron-right"></i></div>
+            <div class="bq-step">
+                <div class="bq-step-num">02</div>
+                <h3 class="bq-step-title">Site Survey</h3>
+                <p class="bq-step-desc">Our engineers visit your property for a detailed structural and electrical
+                    assessment.</p>
+            </div>
+            <div class="bq-step-arrow"><i data-lucide="chevron-right"></i></div>
+            <div class="bq-step">
+                <div class="bq-step-num">03</div>
+                <h3 class="bq-step-title">Installation</h3>
+                <p class="bq-step-desc">Professional mounting and commissioning with Tier-1 panels and certified
+                    inverters.</p>
+            </div>
+            <div class="bq-step-arrow"><i data-lucide="chevron-right"></i></div>
+            <div class="bq-step">
+                <div class="bq-step-num">04</div>
+                <h3 class="bq-step-title">Net Metering</h3>
+                <p class="bq-step-desc">We handle all utility paperwork and get your net metering approved and active.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════
+     BRANDS / PARTNERS MARQUEE
+════════════════════════════════════════════════════════ -->
+<div class="bq-marquee-wrap">
+    <div class="bq-marquee">
+        <div class="bq-marquee-track">
+            <span>LONGi Solar</span>
+            <span>JA Solar</span>
+            <span>Canadian Solar</span>
+            <span>Growatt</span>
+            <span>Solis</span>
+            <span>Inverex</span>
+            <span>SolarEdge</span>
+            <span>Huawei Solar</span>
+            <!-- duplicate for seamless loop -->
+            <span>LONGi Solar</span>
+            <span>JA Solar</span>
+            <span>Canadian Solar</span>
+            <span>Growatt</span>
+            <span>Solis</span>
+            <span>Inverex</span>
+            <span>SolarEdge</span>
+            <span>Huawei Solar</span>
+        </div>
+    </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     QUOTE CTA BANNER
+════════════════════════════════════════════════════════ -->
+<section class="bq-cta-banner">
+    <div class="bq-cta-glow" aria-hidden="true"></div>
+    <div class="bq-wrap bq-cta-inner">
+        <div class="bq-cta-copy">
+            <h2 class="bq-cta-h2">Get Your Solar Estimate —<br>Fast &amp; Free</h2>
+            <p>Upload your electricity bill and receive a custom solar design, accurate pricing, and full ROI projection
+                within 24 hours.</p>
+        </div>
+        <div class="bq-cta-actions">
+            <a href="#quote" class="bq-btn bq-btn-primary bq-btn-lg">
+                <i data-lucide="upload"></i>
+                Upload Your Bill
+            </a>
+            <a href="#quote" class="bq-btn bq-btn-outline-white bq-btn-lg">
+                Get a Quote
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════
+     TESTIMONIALS
+════════════════════════════════════════════════════════ -->
+<section class="bq-section bq-section--light" id="reviews">
+    <div class="bq-wrap">
+        <div class="bq-section-head">
+            <div class="bq-eyebrow">Testimonials</div>
+            <h2 class="bq-section-h2">Trusted by homeowners<br>and businesses across Pakistan</h2>
+        </div>
+
+        <div class="bq-testimonials">
+            {% for review in site_reviews %}
+            <div class="bq-testimonial">
+                <div class="bq-testimonial-stars">
+                    {% for i in "12345"|make_list %}
+                        {% if forloop.counter <= review.rating %}★{% else %}☆{% endif %}
+                    {% endfor %}
+                </div>
+                <p class="bq-testimonial-text">"{{ review.review_text }}"</p>
+                {% if review.photos.all %}
+                <div class="bq-testimonial-photos" style="display:flex; gap:8px; margin-bottom:12px; overflow-x:auto;">
+                    {% for p in review.photos.all %}
+                        <img src="{{ p.photo.url }}" style="width:60px; height:60px; object-fit:cover; border-radius:8px; cursor:pointer;" onclick="window.open(this.src)">
+                    {% endfor %}
+                </div>
+                {% endif %}
+                <div class="bq-testimonial-author">
+                    <div class="bq-testimonial-avatar {% cycle 'avatar-blue' 'avatar-emerald' 'avatar-amber' %}">{{ review.customer_name|first }}</div>
+                    <div>
+                        <strong>{{ review.customer_name }}</strong>
+                        <span>{{ review.customer_location }} — {{ review.system_size }} System</span>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="bq-testimonial" style="grid-column: 1 / -1; text-align:center;">
+                <p class="bq-testimonial-text">No reviews yet. Be the first to share your experience!</p>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="bq-flex-responsive" style="margin-top:40px;">
+            <a href="{% url 'reviews-gallery' %}" class="bq-btn bq-btn-primary" style="padding: 12px 30px; border-radius: 50px; background: #10b981; color: #fff;">
+                See All Reviews <i data-lucide="arrow-right" style="margin-left:8px;"></i>
+            </a>
+            <button class="bq-btn bq-btn-ghost" onclick="openReviewModal()" style="color:#10b981; border: 2px solid #10b981; background:rgba(16,185,129,0.1); padding: 12px 30px; border-radius: 50px; font-weight:bold;">
+                <i data-lucide="message-square" style="margin-right:8px;"></i> Share Your Experience
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════
+     INSTALLATION GALLERY
+════════════════════════════════════════════════════════ -->
+<section class="bq-section bq-section--dark" id="projects">
+    <div class="bq-wrap">
+        <div class="bq-section-head">
+            <div class="bq-eyebrow bq-eyebrow--light">Our Work</div>
+            <h2 class="bq-section-h2 bq-text-white">Recent installations across Pakistan</h2>
+            <p class="bq-section-sub" style="color: #94a3b8">Engineering excellence in action. Real sites, real savings.</p>
+        </div>
+
+        <div class="bq-cards-grid">
+            {% for project in installation_projects %}
+            <div class="bq-card bq-project-card" style="padding:0; overflow:hidden; background: #111827; cursor:pointer;" data-index="{{ forloop.counter0 }}">
+                <div class="bq-project-img-wrap" style="position:relative; height:240px;">
+                    {% with project.photos.first as first_photo %}
+                    <img src="{% if first_photo %}{{ first_photo.photo.url }}{% else %}https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=600&q=80{% endif %}" alt="{{ project.title }}" style="width:100%; height:100%; object-fit:cover;">
+                    {% endwith %}
+                    <div style="position:absolute; bottom:12px; right:12px; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); padding:4px 10px; border-radius:4px; color:#fff; font-size:10px; font-weight:bold;">
+                        {{ project.system_size }}
+                    </div>
+                </div>
+                <div style="padding:24px;">
+                    <h3 class="bq-card-title bq-text-white" style="margin-bottom:8px;">{{ project.title }}</h3>
+                    <p class="bq-card-desc" style="color:#94a3b8; font-size:13px; line-height:1.6; margin-bottom:16px;">{{ project.description|truncatewords:15 }}</p>
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span style="color:#64748b; font-size:11px;"><i data-lucide="map-pin" style="display:inline-block; width:12px; margin-right:4px;"></i>{{ project.location }}</span>
+                        <a href="https://wa.me/{{ company.cleaned_whatsapp }}" class="bq-card-link" style="font-size:12px; color:#10b981;">Inquire similar <i data-lucide="arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div style="text-align:center; margin-top:40px;">
+            <a href="{% url 'projects-gallery' %}" class="bq-btn bq-btn-ghost">
+                View All Projects <i data-lucide="arrow-right" style="margin-left:8px;"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Project Detail Modal -->
+<div id="project-modal" class="bq-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); backdrop-filter:blur(15px); z-index:9999; align-items:center; justify-content:center; padding:20px;">
+    <div class="bq-modal-content bq-modal-content-animated" style="background:#0b1c2c; border:1px solid rgba(255,255,255,0.1); border-radius:24px; width:100%; max-width:550px; max-height:90vh; overflow-y:auto; padding:30px; position:relative; box-shadow:0 25px 50px -12px rgba(0,0,0,0.5);">
+        <button onclick="closeProjectModal()" style="position:absolute; top:20px; right:20px; background:rgba(0,0,0,0.5); border:none; color:#fff; width:40px; height:40px; border-radius:50%; cursor:pointer; z-index:10; display:flex; align-items:center; justify-content:center;"><i data-lucide="x"></i></button>
+        
+        <div id="project-modal-body">
+            <!-- Content will be injected here -->
+        </div>
+    </div>
+</div>
+
+<!-- Project Data JSON -->
+<script id="project-data-json" type="application/json">
+[
+    {% for project in installation_projects %}
+    {
+        "title": "{{ project.title|escapejs }}",
+        "location": "{{ project.location|escapejs }}",
+        "size": "{{ project.system_size|escapejs }}",
+        "description": "{{ project.description|escapejs }}",
+        "photos": [
+            {% for p in project.photos.all %}
+            "{{ p.photo.url|escapejs }}"{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ]
+    }{% if not forloop.last %},{% endif %}
+    {% endfor %}
+]
+</script>
+
+<script>
+function initProjectCards() {
+    document.querySelectorAll('.bq-project-card').forEach(card => {
+        card.addEventListener('click', () => {
+            openProjectModal(parseInt(card.dataset.index));
+        });
+    });
+}
+
+function openProjectModal(index) {
+    const rawData = document.getElementById('project-data-json').textContent;
+    const projectData = JSON.parse(rawData);
+    const p = projectData[index];
+    const body = document.getElementById('project-modal-body');
+    
+    let photosHtml = '';
+    p.photos.forEach(url => {
+        photosHtml += `<img src="${url}" style="width:100%; border-radius:12px; margin-bottom:12px; object-fit:cover;">`;
+    });
+
+    body.innerHTML = `
+        <div class="bq-project-modal-grid">
+            <div style="padding:20px; background:#07121d; max-height:90vh; overflow-y:auto;">
+                ${photosHtml}
+            </div>
+            <div style="padding:40px; display:flex; flex-direction:column;">
+                <div class="bq-eyebrow" style="margin-bottom:12px;">${p.size} System</div>
+                <h2 style="color:#fff; font-size:32px; font-weight:900; line-height:1.1; margin-bottom:16px;">${p.title}</h2>
+                <div style="display:flex; align-items:center; gap:8px; color:#94a3b8; font-size:14px; margin-bottom:24px;">
+                    <i data-lucide="map-pin" style="width:16px;"></i> ${p.location}
+                </div>
+                <div style="color:#cbd5e1; font-size:16px; line-height:1.7; white-space: pre-wrap; margin-bottom:32px;">
+                    ${p.description}
+                </div>
+                <div style="margin-top:auto;">
+                    <a href="https://wa.me/{{ company.cleaned_whatsapp }}" target="_blank" class="bq-btn bq-btn-primary" style="width:100%; justify-content:center;">
+                        <i data-lucide="message-circle"></i> Inquire About Similar Project
+                    </a>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.getElementById('project-modal').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    if (window.lucide) lucide.createIcons();
+}
+
+function closeProjectModal() {
+    document.getElementById('project-modal').style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+// Initialize on load
+window.addEventListener('DOMContentLoaded', initProjectCards);
+</script>
+
+<!-- ════════════════════════════════════════════════════════
+     CONTACT / LEAD FORM
+════════════════════════════════════════════════════════ -->
+<section class="bq-section bq-section--dark" id="quote">
+    <div class="bq-wrap bq-form-inner">
+        <div class="bq-form-copy">
+            <div class="bq-eyebrow bq-eyebrow--light">Get Started</div>
+            <h2 class="bq-section-h2 bq-text-white">Start saving today.<br>Get your free solar plan.</h2>
+            <ul class="bq-form-bullets">
+                <li><i data-lucide="check"></i> No-obligation assessment</li>
+                <li><i data-lucide="check"></i> Accurate load analysis</li>
+                <li><i data-lucide="check"></i> Full ROI projection</li>
+                <li><i data-lucide="check"></i> Net metering guidance</li>
+                <li><i data-lucide="check"></i> Response within 24 hours</li>
+            </ul>
+        </div>
+
+        <div class="bq-form-card">
+            <div class="bq-tab-nav">
+                <button type="button" class="bq-tab-btn active" onclick="switchFormTab('quick', this)">Quick
+                    Quote</button>
+                <button type="button" class="bq-tab-btn" onclick="switchFormTab('detailed', this)">Detailed
+                    Calculator</button>
+            </div>
+
+            <!-- QUICK QUOTE TAB -->
+            <div id="tab-quick" class="bq-tab-pane active">
+                <h3 class="bq-form-card-title">Get a Quick Estimate</h3>
+                <form class="bq-form" id="quick-quote-form">
+                    {% csrf_token %}
+                    <div class="bq-field">
+                        <label>Full Name</label>
+                        <input type="text" name="name" placeholder="Enter your name" required>
+                    </div>
+                    <div class="bq-field">
+                        <label>Phone Number</label>
+                        <input type="tel" name="phone" placeholder="0315-6132042" required>
+                    </div>
+                    <div class="bq-field">
+                        <label>City / Area</label>
+                        <input type="text" name="city_area" placeholder="E.g., DHA Lahore">
+                    </div>
+                    <button type="button" class="bq-btn bq-btn-primary bq-btn-lg bq-btn-full" style="margin-top:10px"
+                        onclick="submitForm('quick')">
+                        <i data-lucide="zap"></i> Get Quick Estimate
+                    </button>
+                </form>
+            </div>
+
+            <!-- DETAILED QUOTE TAB -->
+            <div id="tab-detailed" class="bq-tab-pane">
+                <h3 class="bq-form-card-title">Detailed Engineering Plan</h3>
+                <form class="bq-form" id="detailed-quote-form">
+                    {% csrf_token %}
+                    <!-- Basic Info -->
+                    <div class="bq-form-group-title"><i data-lucide="user"></i> Basic Details</div>
+                    <div class="bq-form-grid">
+                        <div class="bq-field"><label>Full Name</label><input type="text" name="name"
+                                placeholder="Your full name" required></div>
+                        <div class="bq-field"><label>Phone Number</label><input type="tel" name="phone"
+                                placeholder="0315-6132042" required></div>
+                        <div class="bq-field"><label>City / Area</label><input type="text" name="city_area"
+                                placeholder="E.g., Gulberg, Lahore"></div>
+                        <div class="bq-field"><label>Property Type</label>
+                            <select name="property_type">
+                                <option value="home">Home</option>
+                                <option value="office">Commercial/Office</option>
+                                <option value="factory">Industrial/Factory</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Energy Usage -->
+                    <div class="bq-form-group-title"><i data-lucide="bar-chart-3"></i> Energy Usage</div>
+                    <div class="bq-form-grid">
+                        <div class="bq-field"><label>Avg. Monthly Bill (PKR)</label><input type="number"
+                                name="monthly_bill" placeholder="E.g., 45000"></div>
+                        <div class="bq-field"><label>Connection Phase</label>
+                            <select name="connection_phase">
+                                <option value="1">Single Phase</option>
+                                <option value="3">Three Phase</option>
+                            </select>
+                        </div>
+                        <div class="bq-field full"><label>Upload Bill (Optional)</label><input type="file"
+                                name="wapda_bill" style="background:#fff; padding:10px"></div>
+                    </div>
+
+                    <!-- Load Details -->
+                    <div class="bq-form-group-title"><i data-lucide="plug"></i> Appliance Load Details</div>
+                    <div class="bq-form-grid">
+                        <div class="bq-field"><label>No. of Air Conditioners</label><input type="number" name="ac"
+                                id="ac-count" placeholder="Total ACs" min="0" oninput="handleACChange(this.value)">
+                        </div>
+                        <div class="bq-field"><label>Water Pump / Motor</label>
+                            <select name="motors">
+                                <option value="0">No</option>
+                                <option value="1">Yes (1 HP)</option>
+                                <option value="2">Yes (2 HP+)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic AC Container -->
+                    <div id="dynamic-ac-container" class="bq-form-grid full"
+                        style="display:none; margin-top:10px; padding:15px; background:rgba(245,166,35,0.05); border-radius:12px; border:1px dashed rgba(245,166,35,0.4); grid-column: 1 / -1;">
+                        <!-- AC fields injected via JS -->
+                    </div>
+
+                    <div class="bq-form-grid" style="margin-top:15px">
+                        <div class="bq-field"><label>No. of Fans</label><input type="number" name="fans" placeholder="0"
+                                min="0"></div>
+                        <div class="bq-field"><label>No. of Lights</label><input type="number" name="lights"
+                                placeholder="0" min="0"></div>
+                        <div class="bq-field"><label>Fridge (Inverter)</label><input type="number" name="fridge_inv"
+                                placeholder="0" min="0"></div>
+                        <div class="bq-field"><label>Fridge (Non-Inverter)</label><input type="number" name="fridge_non"
+                                placeholder="0" min="0"></div>
+                        <div class="bq-field"><label>Deep Freezer</label><input type="number" name="deep_freezer"
+                                placeholder="0" min="0"></div>
+                        <div class="bq-field"><label>Iron</label><input type="number" name="iron" placeholder="0"
+                                min="0"></div>
+                        <div class="bq-field"><label>Laptop / PC</label><input type="number" name="computers"
+                                placeholder="0" min="0"></div>
+                        <div class="bq-field"><label>Washing Machine</label><input type="number" name="washing_machine"
+                                placeholder="0" min="0"></div>
+                        <div class="bq-field full"><label>Other Custom Load (Watts)</label><input type="text"
+                                name="other_load_watts" placeholder="E.g., Microwave (1000W), Servers (500W)"></div>
+                    </div>
+
+                    <!-- System Preferences -->
+                    <div class="bq-form-group-title"><i data-lucide="settings"></i> System Preferences</div>
+                    <div class="bq-form-grid">
+                        <div class="bq-field"><label>Inverter Type</label>
+                            <select name="system_type_preference">
+                                <option value="hybrid">Hybrid (With Battery)</option>
+                                <option value="on_grid">On-Grid (No Battery)</option>
+                                <option value="off_grid">Off-Grid</option>
+                                <option value="not_sure">Not Sure</option>
+                            </select>
+                        </div>
+                        <div class="bq-field"><label>Backup Required?</label>
+                            <select name="desired_backup_hours">
+                                <option value="2">Yes (2-4 hours)</option>
+                                <option value="6">Yes (4-8+ hours)</option>
+                                <option value="0">No Backup</option>
+                            </select>
+                        </div>
+                        <div class="bq-field full"><label>Roof Type</label>
+                            <select name="roof_type">
+                                <option>Concrete (Flat)</option>
+                                <option>Metal / Shed</option>
+                                <option>Ground Mount</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="bq-form-grid bq-mt-10">
+                        <label class="bq-checkbox-wrap">
+                            <input type="checkbox" name="net_metering" checked> <span>Include Net Metering</span>
+                        </label>
+                        <label class="bq-checkbox-wrap">
+                            <input type="checkbox" name="earthing" checked> <span>Include Earthing</span>
+                        </label>
+                    </div>
+
+                    <button type="button" class="bq-btn bq-btn-primary bq-btn-lg bq-btn-full" style="margin-top:20px"
+                        onclick="submitForm('detailed')">
+                        <i data-lucide="file-text"></i> Generate Detailed Solar Plan
+                    </button>
+                </form>
+            </div>
+
+            <p class="bq-form-note" style="margin-top:24px">🔒 Your information is kept strictly confidential.</p>
+        </div>
+
+    </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════
+     BLOG / GUIDES PREVIEW
+════════════════════════════════════════════════════════ -->
+<!-- ════════════════════════════════════════════════════════
+     BLOG / INSIGHTS SECTION
+════════════════════════════════════════════════════════ -->
+<section class="bq-section bq-section--light" id="blog">
+    <div class="bq-wrap">
+        <div class="bq-section-head bq-section-head--row">
+            <div>
+                <div class="bq-eyebrow">Solar Insights</div>
+                <h2 class="bq-section-h2" style="margin-bottom:0">Latest from our engineers</h2>
+            </div>
+            <a href="{% url 'blog-page' %}" class="bq-btn bq-btn-outline">View All Guides <i
+                    data-lucide="arrow-right"></i></a>
+        </div>
+
+        <div class="bq-cards-grid">
+            {% for post in featured_posts %}
+            <div class="bq-card bq-card--hover">
+                <div class="bq-card-img-wrap">
+                    {% if post.image_url %}
+                        <img src="{{ post.image_url }}" alt="{{ post.title }}" loading="lazy">
+                    {% elif post.image %}
+                        <img src="{{ post.image.url }}" alt="{{ post.title }}" loading="lazy">
+                    {% else %}
+                        <img src="https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?auto=format&fit=crop&w=600&q=80" alt="{{ post.title }}">
+                    {% endif %}
+                </div>
+                <div class="bq-card-body">
+                    <h3 class="bq-card-title" style="font-size:1.1rem; margin-left:0; margin-right:0">{{ post.title }}</h3>
+                    <p class="bq-card-desc" style="margin-left:0; margin-right:0">{{ post.excerpt|default:post.content|striptags|truncatechars:100 }}</p>
+                    <a href="{% url 'blog-detail-page' post.slug %}" class="bq-card-link" style="margin-left:0; margin-bottom:0">Read guide <i data-lucide="arrow-right"></i></a>
+                </div>
+            </div>
+            {% empty %}
+            <!-- Fallback Placeholders with fixed images and links -->
+            <div class="bq-card bq-card--hover">
+                <div class="bq-card-img-wrap">
+                    <img src="https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=600&q=80"
+                        alt="Net Metering Guide" loading="lazy">
+                </div>
+                <div class="bq-card-body">
+                    <h3 class="bq-card-title" style="font-size:1.1rem; margin-left:0; margin-right:0">How Net Metering
+                        Works in Pakistan (2026 Guide)</h3>
+                    <p class="bq-card-desc" style="margin-left:0; margin-right:0">Understand the complete process of
+                        exporting excess solar energy back to LESCO/WAPDA and maximizing your ROI.</p>
+                    <a href="/insights/how-net-metering-works-in-pakistan-2026-guide/" class="bq-card-link" style="margin-left:0; margin-bottom:0">Read guide <i
+                            data-lucide="arrow-right"></i></a>
+                </div>
+            </div>
+
+            <div class="bq-card bq-card--hover">
+                <div class="bq-card-img-wrap">
+                    <img src="https://images.unsplash.com/photo-1620714223084-8fcacc6dfd8d?auto=format&fit=crop&w=600&q=80"
+                        alt="Solar Batteries" loading="lazy">
+                </div>
+                <div class="bq-card-body">
+                    <h3 class="bq-card-title" style="font-size:1.1rem; margin-left:0; margin-right:0">Lithium vs Tubular
+                        Batteries: Which is Better?</h3>
+                    <p class="bq-card-desc" style="margin-left:0; margin-right:0">A deep engineering dive into the
+                        lifespan, depth of discharge, and cost-efficiency of modern solar storage options.</p>
+                    <a href="/insights/lithium-vs-tubular-batteries-which-is-better/" class="bq-card-link" style="margin-left:0; margin-bottom:0">Read guide <i
+                            data-lucide="arrow-right"></i></a>
+                </div>
+            </div>
+
+            <div class="bq-card bq-card--hover">
+                <div class="bq-card-img-wrap">
+                    <img src="https://images.unsplash.com/photo-1613665813446-82a78c468a1d?auto=format&fit=crop&w=600&q=80"
+                        alt="Industrial Solar" loading="lazy">
+                </div>
+                <div class="bq-card-body">
+                    <h3 class="bq-card-title" style="font-size:1.1rem; margin-left:0; margin-right:0">Is Your Factory
+                        Roof Ready for Solar?</h3>
+                    <p class="bq-card-desc" style="margin-left:0; margin-right:0">Key structural and electrical
+                        requirements to consider before installing a 100kW+ industrial solar system.</p>
+                    <a href="/insights/is-your-factory-roof-ready-for-solar/" class="bq-card-link" style="margin-left:0; margin-bottom:0">Read guide <i
+                            data-lucide="arrow-right"></i></a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+
+
+
+<script>
+    function switchFormTab(tabId, btnElement) {
+        const buttons = document.querySelectorAll('.bq-tab-btn');
+        buttons.forEach(btn => btn.classList.remove('active'));
+        btnElement.classList.add('active');
+
+        const panes = document.querySelectorAll('.bq-tab-pane');
+        panes.forEach(pane => {
+            pane.classList.remove('active');
+            pane.style.animation = 'none';
+            pane.offsetHeight;
+            pane.style.animation = null;
+        });
+
+        const activePane = document.getElementById('tab-' + tabId);
+        if (activePane) {
+            activePane.classList.add('active');
+        }
+    }
+
+    function handleACChange(val) {
+        const count = parseInt(val) || 0;
+        const container = document.getElementById('dynamic-ac-container');
+
+        if (count > 0) {
+            container.style.display = 'grid';
+            container.innerHTML = '<div class="bq-form-group-title full" style="grid-column: 1/-1; margin:0 0 10px; border-bottom:none; font-size:0.9rem">Specify AC Details:</div>';
+
+            for (let i = 1; i <= count; i++) {
+                container.innerHTML += `
+                <div class="bq-field">
+                    <label>AC #${i} Ton</label>
+                    <select name="ac_ton_${i}">
+                        <option value="1">1 Ton</option>
+                        <option value="1.5">1.5 Ton</option>
+                        <option value="2">2 Ton</option>
+                        <option value="4">4 Ton</option>
+                    </select>
+                </div>
+                <div class="bq-field">
+                    <label>AC #${i} Type</label>
+                    <select name="ac_type_${i}">
+                        <option value="inverter">Inverter</option>
+                        <option value="non_inverter">Non-Inverter</option>
+                    </select>
+                </div>
+            `;
+            }
+        } else {
+            container.style.display = 'none';
+            container.innerHTML = '';
+        }
+    }
+
+    async function submitForm(type) {
+        const formId = type === 'quick' ? 'quick-quote-form' : 'detailed-quote-form';
+        const form = document.getElementById(formId);
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            return;
+        }
+
+        const formData = new FormData(form);
+        const data = {};
+        const appliance_data = { acs: [] };
+
+        formData.forEach((value, key) => {
+            if (key.startsWith('ac_ton_')) {
+                const index = key.split('_')[2];
+                const typeKey = `ac_type_${index}`;
+                appliance_data.acs.push({
+                    ton: parseFloat(value),
+                    type: formData.get(typeKey)
+                });
+            } else if (key.startsWith('ac_type_')) {
+                // handled above
+            } else if (['fridge_inv', 'fridge_non', 'deep_freezer', 'washing_machine', 'net_metering', 'earthing', 'connection_phase', 'roof_type'].includes(key)) {
+                appliance_data[key] = value;
+            } else if (['ac', 'fans', 'lights', 'iron', 'computers', 'motors', 'other_load_watts'].includes(key)) {
+                data[key] = parseInt(value) || 0;
+            } else if (key === 'monthly_bill' || key === 'desired_backup_hours') {
+                data[key] = parseFloat(value) || 0;
+            } else if (key !== 'csrfmiddlewaretoken' && key !== 'wapda_bill') {
+                data[key] = value;
+            }
+        });
+
+        // Special handling for checkboxes and derived fields
+        if (type === 'detailed') {
+            data['wants_earth_bore'] = formData.has('earthing');
+            const fridgeCount = (parseInt(formData.get('fridge_inv')) || 0) + (parseInt(formData.get('fridge_non')) || 0) + (parseInt(formData.get('deep_freezer')) || 0);
+            data['fridge'] = fridgeCount;
+        } else {
+            // Ensure defaults for quick quote
+            ['ac', 'fans', 'lights', 'iron', 'computers', 'motors', 'fridge'].forEach(f => {
+                if (!(f in data)) data[f] = 0;
+            });
+        }
+
+        data['appliance_data'] = appliance_data;
+        data['message'] = type === 'quick' ? 'Quick Quote Request' : `Detailed Plan Request. Phase: ${formData.get('connection_phase')}. Roof: ${formData.get('roof_type')}`;
+
+        // Prepare final multipart payload
+        const payload = new FormData();
+        Object.keys(data).forEach(key => {
+            if (typeof data[key] === 'object') {
+                payload.append(key, JSON.stringify(data[key]));
+            } else {
+                payload.append(key, data[key]);
+            }
+        });
+
+        // Add the file if it exists
+        const billFile = form.querySelector('input[name="wapda_bill"]');
+        if (billFile && billFile.files[0]) {
+            payload.append('wapda_bill', billFile.files[0]);
+        }
+
+        try {
+            // Step 3: CONNECT FORM -> CALCULATOR
+            const response = await fetch('/automation/submit-lead/', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+                },
+                body: payload
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                // Trigger Premium Success Modal
+                if (typeof showBqSuccessModal === 'function') {
+                    showBqSuccessModal('Thank You!', 'Our team has received your inquiry and will contact you shortly with your solar proposal.', true);
+                } else {
+                    alert('Thank you! Your inquiry has been received.');
+                }
+                form.reset();
+            } else {
+                console.error('Validation errors:', result);
+                alert('Error submitting form. Please check your inputs: ' + (result.error || JSON.stringify(result)));
+            }
+        } catch (error) {
+            console.error('Submission error:', error);
+            alert('There was an error connecting to the server. Please try again later.');
+        }
+    }
+</script>
+
+{% endblock %}

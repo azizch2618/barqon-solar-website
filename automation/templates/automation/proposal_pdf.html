@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        @page {
+            size: A4;
+            margin: 0;
+        }
+        body {
+            font-family: 'Helvetica', 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #05070a;
+            color: #ffffff;
+            line-height: 1.4;
+        }
+        .page {
+            width: 210mm;
+            height: 297mm;
+            padding: 40px;
+            box-sizing: border-box;
+            position: relative;
+            overflow: hidden;
+            page-break-after: always;
+        }
+        .accent-bg {
+            background: radial-gradient(circle at top right, rgba(245, 166, 35, 0.1), transparent);
+        }
+        
+        /* Typography */
+        h1 { font-size: 42pt; font-weight: 900; line-height: 1.1; margin-bottom: 20pt; letter-spacing: -1pt; }
+        h2 { font-size: 24pt; font-weight: 800; margin-bottom: 15pt; color: #F5A623; }
+        h3 { font-size: 14pt; font-weight: 700; text-transform: uppercase; letter-spacing: 2pt; color: rgba(255,255,255,0.5); margin-bottom: 10pt; }
+        .text-gold { color: #F5A623; }
+        .text-dim { color: rgba(255,255,255,0.6); }
+
+        /* Components */
+        .logo { font-size: 18pt; font-weight: 900; letter-spacing: 2pt; margin-bottom: 60pt; }
+        .hero-title { margin-top: 100pt; }
+        
+        .metric-grid { margin-top: 60pt; width: 100%; }
+        .metric-card { 
+            background: rgba(255,255,255,0.05); 
+            border: 1px solid rgba(255,255,255,0.1); 
+            padding: 25pt; 
+            border-radius: 15pt; 
+            text-align: center;
+        }
+        .metric-value { font-size: 28pt; font-weight: 800; color: #ffffff; margin-bottom: 5pt; }
+        .metric-label { font-size: 9pt; font-weight: 700; text-transform: uppercase; letter-spacing: 1pt; color: #F5A623; }
+
+        /* Tables */
+        table { width: 100%; border-collapse: collapse; margin-top: 20pt; }
+        th { text-align: left; padding: 12pt; background: rgba(255,255,255,0.05); font-size: 9pt; text-transform: uppercase; letter-spacing: 1pt; color: #F5A623; }
+        td { padding: 12pt; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 10pt; }
+        tr.alt { background: rgba(255,255,255,0.02); }
+
+        /* Groups */
+        .summary-group { margin-bottom: 30pt; padding: 20pt; background: rgba(255,255,255,0.03); border-radius: 10pt; }
+        .summary-row { display: table; width: 100%; margin-bottom: 10pt; }
+        .summary-label { display: table-cell; font-weight: 600; color: rgba(255,255,255,0.7); }
+        .summary-value { display: table-cell; text-align: right; font-weight: 700; }
+        
+        .total-box { 
+            background: #F5A623; 
+            color: #05070a; 
+            padding: 30pt; 
+            border-radius: 15pt; 
+            margin-top: 20pt;
+            text-align: right;
+        }
+        .total-label { font-size: 12pt; font-weight: 800; text-transform: uppercase; }
+        .total-price { font-size: 32pt; font-weight: 900; }
+
+        .tech-block { margin-bottom: 25pt; padding-left: 20pt; border-left: 3px solid #F5A623; }
+        .tech-title { font-weight: 800; font-size: 14pt; margin-bottom: 5pt; }
+        .tech-desc { font-size: 10pt; color: rgba(255,255,255,0.6); }
+
+        .signature-line { border-top: 2px solid rgba(255,255,255,0.2); margin-top: 50pt; padding-top: 10pt; width: 200pt; display: inline-block; }
+    </style>
+</head>
+<body>
+
+    <!-- PAGE 1: HERO -->
+    <div class="page accent-bg">
+        <div class="logo">BARQON.</div>
+        <h3>Solar Energy Proposal</h3>
+        
+        <div class="hero-title">
+            <h1>Power Your Home<br>with Clean Energy.</h1>
+            <p style="font-size: 18pt; margin-top: 20pt;">
+                Prepared for <span class="text-gold">{{ lead.name }}</span><br>
+                <span class="text-dim">{{ lead.city }}</span>
+            </p>
+        </div>
+
+        <table class="metric-grid">
+            <tr>
+                <td style="padding: 10pt; border:0;">
+                    <div class="metric-card">
+                        <div class="metric-value">{{ calculation.system_size_kw }}<small style="font-size:12pt">kW</small></div>
+                        <div class="metric-label">System Size</div>
+                    </div>
+                </td>
+                <td style="padding: 10pt; border:0;">
+                    <div class="metric-card">
+                        <div class="metric-value">{{ calculation.monthly_savings|floatformat:0 }}</div>
+                        <div class="metric-label">Monthly Savings</div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 10pt; border:0;">
+                    <div class="metric-card">
+                        <div class="metric-value">{{ calculation.payback_years }}<small style="font-size:12pt">Yrs</small></div>
+                        <div class="metric-label">Payback</div>
+                    </div>
+                </td>
+                <td style="padding: 10pt; border:0;">
+                    <div class="metric-card">
+                        <div class="metric-value">95<small style="font-size:12pt">%</small></div>
+                        <div class="metric-label">Bill Offset</div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+        
+        <div style="position: absolute; bottom: 40px; left: 40px;" class="text-dim">
+            Proposal ID: BQ-2026-{{ lead.id|stringformat:"04d" }} | {{ today|date:"M d, Y" }}
+        </div>
+    </div>
+
+    <!-- PAGE 2: INVESTMENT BREAKDOWN -->
+    <div class="page">
+        <h3>01 — Investment</h3>
+        <h2>Financial Summary</h2>
+        
+        <div class="summary-group">
+            <div class="summary-row">
+                <div class="summary-label">Equipment Cost (Panels + Inverter)</div>
+                <div class="summary-value">PKR {{ equipment_cost|floatformat:0 }}</div>
+            </div>
+            <div class="summary-row">
+                <div class="summary-label">Structure & Engineering</div>
+                <div class="summary-value">PKR {{ structure_cost|floatformat:0 }}</div>
+            </div>
+            <div class="summary-row">
+                <div class="summary-label">Installation & Net Metering</div>
+                <div class="summary-value">PKR {{ installation_cost|floatformat:0 }}</div>
+            </div>
+        </div>
+
+        <div class="total-box">
+            <div class="total-label">Total Investment</div>
+            <div class="total-price">Rs {{ calculation.total_cost|floatformat:0 }}</div>
+        </div>
+
+        <h3 style="margin-top: 40pt;">Itemized Breakdown</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Specifications</th>
+                    <th>Qty</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr class="{% cycle '' 'alt' %}">
+                    <td>{{ item.label }}</td>
+                    <td class="text-dim">{{ item.specs }}</td>
+                    <td>{{ item.qty }}</td>
+                    <td style="font-weight: 700;">{{ item.total|floatformat:0 }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- PAGE 3: TECHNICAL DESIGN -->
+    <div class="page">
+        <h3>02 — Engineering</h3>
+        <h2>System Components</h2>
+
+        <div class="tech-block">
+            <div class="tech-title">Solar PV Modules</div>
+            <div class="tech-desc">Tier-1 N-Type Bifacial Mono-PERC. Designed for maximum light absorption even in low-light conditions. 25-year performance warranty.</div>
+        </div>
+
+        <div class="tech-block">
+            <div class="tech-title">Smart Hybrid Inverter</div>
+            <div class="tech-desc">Cloud-connected power management with 98.4% efficiency. Pure sine wave output with real-time mobile monitoring.</div>
+        </div>
+
+        <div class="tech-block">
+            <div class="tech-title">Storage Solution</div>
+            <div class="tech-desc">High-density lithium or deep-cycle tubular backup system, optimized for maximum cycle life and reliable load support.</div>
+        </div>
+
+        <div class="tech-block">
+            <div class="tech-title">Safety & Protection</div>
+            <div class="tech-desc">IP65 rated distribution board with Class-II SPDs and high-voltage DC breakers to protect your property and equipment.</div>
+        </div>
+        
+        <div style="margin-top: 40pt; background: rgba(245, 166, 35, 0.05); padding: 20pt; border-radius: 10pt;">
+            <p class="text-gold" style="font-weight: 700; margin-bottom: 5pt;">Engineered for Pakistan</p>
+            <p class="text-dim" style="font-size: 9pt;">Our systems are specifically designed to withstand the local environmental conditions, including high ambient temperatures and dusty conditions.</p>
+        </div>
+    </div>
+
+    <!-- PAGE 4: TERMS & TRUST -->
+    <div class="page">
+        <h3>03 — Trust</h3>
+        <h2>Terms & Commitment</h2>
+        
+        <div style="margin-top: 30pt;">
+            <div class="tech-block" style="border-left-color: rgba(255,255,255,0.2);">
+                <div class="tech-title" style="font-size: 11pt;">Payment Milestone</div>
+                <div class="tech-desc">70% Advance with Purchase Order | 20% on Hardware Delivery | 10% on Commissioning.</div>
+            </div>
+            <div class="tech-block" style="border-left-color: rgba(255,255,255,0.2);">
+                <div class="tech-title" style="font-size: 11pt;">Delivery & Execution</div>
+                <div class="tech-desc">Standard installation takes 10-15 working days from advance payment. Net metering processing time varies by DISCO (typically 4-8 weeks).</div>
+            </div>
+            <div class="tech-block" style="border-left-color: rgba(255,255,255,0.2);">
+                <div class="tech-title" style="font-size: 11pt;">Validity</div>
+                <div class="tech-desc">This quotation is valid for 7 days due to the current volatility in solar hardware import pricing.</div>
+            </div>
+        </div>
+
+        <h3 style="margin-top: 60pt;">Authorization</h3>
+        <div style="margin-top: 40pt;">
+            <div style="display: table; width: 100%;">
+                <div style="display: table-cell; width: 50%;">
+                    <div class="signature-line">Client Signature</div>
+                    <p class="text-dim" style="font-size: 9pt; margin-top: 10pt;">{{ lead.name }}</p>
+                </div>
+                <div style="display: table-cell; width: 50%;">
+                    <div class="signature-line">Authorized Signatory</div>
+                    <p class="text-dim" style="font-size: 9pt; margin-top: 10pt;">BARQON Solar Solutions</p>
+                </div>
+            </div>
+        </div>
+        
+        <div style="position: absolute; bottom: 40px; width: 100%; text-align: center;">
+            <p class="text-dim" style="font-size: 8pt;">BARQON SOLAR ENGINEERING — INNOVATING ENERGY FOR PAKISTAN</p>
+        </div>
+    </div>
+
+</body>
+</html>

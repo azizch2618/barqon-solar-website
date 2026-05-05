@@ -1,0 +1,107 @@
+{% extends "layouts/site_base.html" %}
+{% load static %}
+
+{% block title %}Careers | Join BARQON Solar Solutions{% endblock %}
+
+{% block content %}
+<section class="bq-section bq-section--dark" style="padding: 120px 0 80px; position: relative; overflow: hidden;">
+    <div class="bq-hero-glow" style="top: -20%; left: -10%; opacity: 0.1; background: #10b981;"></div>
+    <div class="bq-wrap">
+        <div style="max-width: 800px; margin: 0 auto; text-align: center;">
+            <div class="bq-eyebrow bq-eyebrow--light">Careers</div>
+            <h1 class="bq-section-h2 bq-text-white" style="font-size: clamp(2.5rem, 8vw, 4rem); line-height: 1.1;">Help Us Power the <span class="bq-gradient-text">Future</span></h1>
+            <p class="bq-section-sub" style="color: #94a3b8; font-size: 1.2rem;">Join a team of passionate engineers, innovators, and problem solvers dedicated to making solar energy accessible to everyone in Pakistan.</p>
+        </div>
+    </div>
+</section>
+
+<section class="bq-section bq-section--light">
+    <div class="bq-wrap">
+        <div class="bq-section-head">
+            <h2 class="bq-section-h2">Open Positions</h2>
+            <p class="bq-section-sub">Explore our current opportunities and find your next challenge.</p>
+        </div>
+
+        <div style="display: grid; gap: 24px; margin-top: 40px;">
+            {% for pos in positions %}
+            <div class="bq-card" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; padding: 32px; background: #fff; border: 1px solid #e2e8f0; border-radius: 20px; transition: transform 0.3s ease, box-shadow 0.3s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 20px 40px rgba(0,0,0,0.05)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+                <div style="flex: 1; min-width: 300px;">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                        <span style="padding: 4px 12px; background: rgba(16, 185, 129, 0.1); color: #10b981; border-radius: 50px; font-size: 12px; font-weight: 700; text-transform: uppercase;">{{ pos.get_job_type_display }}</span>
+                        <span style="color: #64748b; font-size: 14px; display: flex; align-items: center; gap: 4px;"><i data-lucide="map-pin" size="14"></i> {{ pos.location }}</span>
+                    </div>
+                    <h3 style="color: #1e293b; font-size: 1.5rem; font-weight: 800; margin-bottom: 12px;">{{ pos.title }}</h3>
+                    <p style="color: #64748b; font-size: 15px; max-width: 600px; line-height: 1.6;">{{ pos.description|truncatewords:30 }}</p>
+                </div>
+                <div style="margin-top: 20px;">
+                    <a href="{% url 'job-apply' pos.id %}" class="bq-btn bq-btn-primary" style="padding: 14px 32px; border-radius: 12px;">
+                        Apply Now <i data-lucide="arrow-right" style="margin-left: 8px;"></i>
+                    </a>
+                </div>
+            </div>
+            {% empty %}
+            <div style="text-align: center; padding: 80px 40px; background: rgba(0,0,0,0.02); border: 2px dashed #cbd5e1; border-radius: 24px;">
+                <div style="width: 80px; height: 80px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; color: #cbd5e1;">
+                    <i data-lucide="briefcase" size="40"></i>
+                </div>
+                <h3 style="color: #64748b; font-size: 1.2rem;">No open positions at the moment.</h3>
+                <p style="color: #94a3b8; margin-top: 8px;">Check back later or follow us on LinkedIn for updates.</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div style="margin-top: 60px; padding: 40px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 24px; text-align: center;">
+            <h3 style="color: #1e293b; font-size: 1.5rem; font-weight: 800; margin-bottom: 12px;">Don't see a role that fits?</h3>
+            <p style="color: #64748b; margin-bottom: 24px; max-width: 600px; margin-left: auto; margin-right: auto;">We are always looking for passionate engineers and solar professionals to join our Multan-based team. Send us your resume for future opportunities.</p>
+            <a href="{% url 'general-apply' %}" class="bq-btn bq-btn-outline" style="border-color: #10b981; color: #10b981;">
+                Submit General Application <i data-lucide="send" style="margin-left: 8px;"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="bq-section bq-section--dark">
+    <div class="bq-wrap">
+        <div class="bq-section-head">
+            <div class="bq-eyebrow bq-eyebrow--light">Perks & Benefits</div>
+            <h2 class="bq-section-h2 bq-text-white">Why work at BARQON?</h2>
+        </div>
+        <div class="bq-cards-grid">
+            <div class="bq-card" style="background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.1); padding: 32px;">
+                <div style="color: #3b82f6; margin-bottom: 16px;"><i data-lucide="trending-up" size="32"></i></div>
+                <h4 style="color: #fff; margin-bottom: 12px; font-weight: 700;">Growth Opportunities</h4>
+                <p style="color: #94a3b8; font-size: 14px; line-height: 1.6;">We invest in our people. Regular training, workshops, and clear paths for career advancement.</p>
+            </div>
+            <div class="bq-card" style="background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.1); padding: 32px;">
+                <div style="color: #10b981; margin-bottom: 16px;"><i data-lucide="zap" size="32"></i></div>
+                <h4 style="color: #fff; margin-bottom: 12px; font-weight: 700;">Innovative Culture</h4>
+                <p style="color: #94a3b8; font-size: 14px; line-height: 1.6;">Work with the latest solar technology and engineering tools in a fast-paced, exciting environment.</p>
+            </div>
+            <div class="bq-card" style="background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.1); padding: 32px;">
+                <div style="color: #f59e0b; margin-bottom: 16px;"><i data-lucide="heart" size="32"></i></div>
+                <h4 style="color: #fff; margin-bottom: 12px; font-weight: 700;">Health & Wellness</h4>
+                <p style="color: #94a3b8; font-size: 14px; line-height: 1.6;">Competitive salaries, health benefits, and a supportive environment that values work-life balance.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="bq-cta-banner">
+    <div class="bq-cta-glow" aria-hidden="true"></div>
+    <div class="bq-wrap bq-cta-inner">
+        <div class="bq-cta-copy">
+            <h2 class="bq-cta-h2">Join the Solar Revolution</h2>
+            <p>Ready to see how much you can save? Let our engineers design your perfect solar system in Multan or anywhere in Pakistan.</p>
+        </div>
+        <div class="bq-cta-actions" style="display: flex; gap: 20px;">
+            <a href="{% url 'home' %}#quote" class="bq-btn bq-btn-primary bq-btn-lg" style="box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);">
+                Get a Free Quote
+            </a>
+            <a href="https://wa.me/{{ company.cleaned_whatsapp }}" class="bq-btn bq-btn-outline-white bq-btn-lg">
+                <i data-lucide="message-circle" style="margin-right: 8px;"></i> WhatsApp Us
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

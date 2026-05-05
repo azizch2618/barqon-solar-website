@@ -1,0 +1,59 @@
+{% extends 'layouts/site_base.html' %}
+{% load static %}
+
+{% block title %}Client Reviews - BARQON Solar{% endblock %}
+
+{% block extra_css %}
+<style>
+    .gallery-hero {
+        padding: 120px 0 60px;
+        background: radial-gradient(circle at top right, rgba(16, 185, 129, 0.05), transparent 40%),
+                    radial-gradient(circle at bottom left, rgba(59, 130, 246, 0.05), transparent 40%),
+                    #0b0f19;
+        text-align: center;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="gallery-hero">
+    <div class="bq-wrap">
+        <div class="bq-eyebrow bq-eyebrow--light">Testimonials</div>
+        <h1 class="bq-section-h2 bq-text-white" style="font-size: 48px;">What our clients say</h1>
+        <p class="bq-section-sub" style="color: #94a3b8; max-width: 700px; margin: 20px auto 0;">Real stories from real customers who have switched to clean, affordable solar energy with BARQON.</p>
+    </div>
+</section>
+
+<section class="bq-section bq-section--dark">
+    <div class="bq-wrap">
+        <div class="bq-testimonials-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 32px;">
+            {% for review in reviews %}
+            <div class="bq-testimonial">
+                <div class="bq-testimonial-stars">
+                    {% for i in "12345" %}
+                        <i data-lucide="star" class="{% if forloop.counter <= review.rating %}filled{% endif %}"></i>
+                    {% endfor %}
+                </div>
+                <p class="bq-testimonial-text">"{{ review.review_text }}"</p>
+                
+                {% if review.photos.exists %}
+                <div class="bq-testimonial-photos" style="display:flex; gap:8px; margin-bottom:12px; overflow-x:auto;">
+                    {% for p in review.photos.all %}
+                        <img src="{{ p.photo.url }}" style="width:60px; height:60px; object-fit:cover; border-radius:8px; cursor:pointer;" onclick="window.open(this.src)">
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <div class="bq-testimonial-author">
+                    <div class="bq-testimonial-avatar {% cycle 'avatar-blue' 'avatar-emerald' 'avatar-amber' %}">{{ review.customer_name|first }}</div>
+                    <div>
+                        <strong>{{ review.customer_name }}</strong>
+                        <span>{{ review.customer_location }} — {{ review.system_size }} System</span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

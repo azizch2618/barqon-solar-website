@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Proposal - {{ quotation.quotation_number }}</title>
+    
+    <!-- Google Fonts: Outfit & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS (Play CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'Inter', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        dark: {
+                            950: '#05070a',
+                            900: '#0B0F19',
+                            800: '#111827',
+                            700: '#1F2937',
+                        },
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#10b981',
+                            600: '#059669',
+                            700: '#047857',
+                        },
+                        accent: {
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        body {
+            background-color: #0B0F19;
+            color: #f8fafc;
+            background-image: 
+                radial-gradient(circle at 0% 0%, rgba(16, 185, 129, 0.05), transparent 40%),
+                radial-gradient(circle at 100% 100%, rgba(59, 130, 246, 0.05), transparent 40%);
+            background-attachment: fixed;
+        }
+
+        .glass-panel {
+            background: rgba(17, 24, 39, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 1.5rem;
+        }
+
+        .premium-gradient-text {
+            background: linear-gradient(135deg, #f8fafc 0%, #94a3b8 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-gradient {
+            background: linear-gradient(180deg, rgba(11, 15, 25, 0) 0%, rgba(5, 7, 10, 0.8) 100%);
+        }
+
+        .step-line {
+            position: relative;
+        }
+        .step-line::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(to right, #10b981, transparent);
+            z-index: -1;
+        }
+
+        @media print {
+            .no-print { display: none; }
+            body { background: white; color: black; background-image: none; }
+            .glass-panel { background: white; border: 1px solid #e2e8f0; backdrop-filter: none; }
+            .premium-gradient-text { -webkit-text-fill-color: black; }
+        }
+    </style>
+</head>
+<body class="font-sans antialiased">
+
+    <!-- Top Navigation / Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 no-print">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center bg-dark-900/50 backdrop-blur-md border-b border-white/5">
+            <div class="flex items-center gap-3">
+                <img src="/static/images/logo.png" class="h-10 w-auto" alt="BARQON">
+                <span class="text-xl font-bold tracking-tight">BARQON<span class="text-brand-500">.</span></span>
+            </div>
+            <div class="flex items-center gap-4">
+                <button onclick="window.print()" class="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-sm font-semibold transition-all border border-white/10 flex items-center gap-2">
+                    <i data-lucide="printer" class="w-4 h-4"></i> Download PDF
+                </button>
+                <a href="https://wa.me/{{ company.whatsapp|default:'920000000000'|cut:' '|cut:'-'|cut:'+' }}" target="_blank" class="px-4 py-2 bg-brand-500 hover:bg-brand-600 text-white rounded-lg text-sm font-semibold transition-all flex items-center gap-2">
+                    <i data-lucide="message-circle" class="w-4 h-4"></i> Support
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="pt-28 pb-20 px-6 max-w-7xl mx-auto space-y-12">
+
+        <!-- 1. EXECUTIVE SUMMARY (HERO) -->
+        <section class="relative rounded-[2.5rem] overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-brand-600/20 to-accent-600/20 opacity-30"></div>
+            <div class="relative glass-panel p-8 md:p-16 border-white/10 shadow-2xl">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-8">
+                    <div class="space-y-4">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-400 text-xs font-bold tracking-widest uppercase">
+                            Official Proposal
+                        </div>
+                        <h1 class="text-4xl md:text-6xl font-bold leading-tight">
+                            Energy <br> <span class="premium-gradient-text">Independence</span>
+                        </h1>
+                        <p class="text-slate-400 max-w-md text-lg">
+                            Custom solar engineering for <strong>{{ quotation.customer_name }}</strong>. Eliminating constraints, maximizing returns.
+                        </p>
+                    </div>
+                    
+                    <div class="flex flex-col items-end text-right">
+                        <div class="text-sm text-slate-500 uppercase tracking-widest font-semibold mb-1">Proposal ID</div>
+                        <div class="text-xl font-bold text-white">{{ quotation.quotation_number }}</div>
+                        <div class="text-sm text-slate-500 mt-2 italic">Valid until {{ quotation.valid_until|date:"M d, Y" }}</div>
+                    </div>
+                </div>
+
+                <!-- Metric Cards -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12">
+                    <div class="bg-white/5 rounded-2xl p-6 border border-white/5 hover:bg-white/10 transition-all">
+                        <div class="text-brand-500 mb-4"><i data-lucide="zap" class="w-8 h-8"></i></div>
+                        <div class="text-3xl font-bold text-white">{{ quotation.system_size }} <span class="text-sm font-normal text-slate-500">kW</span></div>
+                        <div class="text-xs text-slate-400 uppercase font-semibold mt-1">System Size</div>
+                    </div>
+                    <div class="bg-white/5 rounded-2xl p-6 border border-white/5 hover:bg-white/10 transition-all">
+                        <div class="text-accent-500 mb-4"><i data-lucide="sun" class="w-8 h-8"></i></div>
+                        <div class="text-3xl font-bold text-white">{{ quotation.panel_count }}</div>
+                        <div class="text-xs text-slate-400 uppercase font-semibold mt-1">Total Panels</div>
+                    </div>
+                    <div class="bg-white/5 rounded-2xl p-6 border border-white/5 hover:bg-white/10 transition-all">
+                        <div class="text-brand-500 mb-4"><i data-lucide="trending-up" class="w-8 h-8"></i></div>
+                        <div class="text-3xl font-bold text-white">PKR {{ quotation.monthly_savings|floatformat:0 }}</div>
+                        <div class="text-xs text-slate-400 uppercase font-semibold mt-1">Est. Monthly Savings</div>
+                    </div>
+                    <div class="bg-white/5 rounded-2xl p-6 border border-white/5 hover:bg-white/10 transition-all">
+                        <div class="text-orange-500 mb-4"><i data-lucide="history" class="w-8 h-8"></i></div>
+                        <div class="text-3xl font-bold text-white">{{ quotation.roi_years|default:"3.2" }} <span class="text-sm font-normal text-slate-500">Yrs</span></div>
+                        <div class="text-xs text-slate-400 uppercase font-semibold mt-1">Payback Period</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. ROI & SAVINGS SECTION -->
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+            <div class="space-y-6">
+                <h2 class="text-3xl font-bold">Financial <span class="text-brand-500">Breakthrough</span></h2>
+                <p class="text-slate-400 leading-relaxed">
+                    Solar isn't an expense—it's a high-yield financial instrument. By switching to BARQON engineering, you transform a liability (electricity bills) into a growing asset.
+                </p>
+                <div class="space-y-4">
+                    <div class="flex items-center gap-4 text-brand-400">
+                        <div class="w-8 h-8 rounded-full bg-brand-500/10 flex items-center justify-center"><i data-lucide="check" class="w-4 h-4"></i></div>
+                        <span class="text-sm font-medium">95% Electricity Bill Reduction</span>
+                    </div>
+                    <div class="flex items-center gap-4 text-brand-400">
+                        <div class="w-8 h-8 rounded-full bg-brand-500/10 flex items-center justify-center"><i data-lucide="check" class="w-4 h-4"></i></div>
+                        <span class="text-sm font-medium">Protection against tariff hikes</span>
+                    </div>
+                    <div class="flex items-center gap-4 text-brand-400">
+                        <div class="w-8 h-8 rounded-full bg-brand-500/10 flex items-center justify-center"><i data-lucide="check" class="w-4 h-4"></i></div>
+                        <span class="text-sm font-medium">25-Year Asset Longevity</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-panel p-8 space-y-8">
+                <div class="grid grid-cols-2 gap-6">
+                    <div class="p-6 rounded-2xl bg-slate-950 border border-white/5 relative overflow-hidden group">
+                        <div class="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity"><i data-lucide="frown" class="w-12 h-12"></i></div>
+                        <div class="text-slate-500 text-xs font-bold uppercase mb-2">Current Bill</div>
+                        <div class="text-2xl font-bold text-slate-300">PKR {{ quotation.current_monthly_bill|default:"45,000" }}</div>
+                        <div class="mt-2 h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
+                            <div class="h-full bg-red-500 w-[90%]"></div>
+                        </div>
+                    </div>
+                    <div class="p-6 rounded-2xl bg-brand-500/5 border border-brand-500/20 relative overflow-hidden group">
+                        <div class="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity"><i data-lucide="smile" class="w-12 h-12"></i></div>
+                        <div class="text-brand-500 text-xs font-bold uppercase mb-2">After Solar</div>
+                        <div class="text-2xl font-bold text-white">PKR {{ quotation.after_solar_bill|default:"1,500" }}</div>
+                        <div class="mt-2 h-1.5 w-full bg-brand-900 rounded-full overflow-hidden">
+                            <div class="h-full bg-brand-500 w-[10%]"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-gradient-to-r from-brand-600 to-brand-500 rounded-2xl p-8 text-center relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-from)_0%,_transparent_70%)] opacity-30"></div>
+                    <div class="relative z-10">
+                        <div class="text-brand-100 text-sm font-bold uppercase tracking-widest mb-2">Total Annual Savings</div>
+                        <div class="text-4xl md:text-5xl font-black text-white">PKR {{ yearly_savings|floatformat:0 }}</div>
+                        <div class="mt-4 text-brand-100/80 text-sm italic font-medium">Equates to PKR {{ quotation.lifetime_savings|default:"12.5M" }} over 25 years</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. WHY CHOOSE BARQON SECTION -->
+        <section class="space-y-10">
+            <div class="text-center space-y-4">
+                <h2 class="text-4xl font-bold">The <span class="text-brand-500">BARQON</span> Standard</h2>
+                <p class="text-slate-400 max-w-2xl mx-auto">We don't just install panels; we engineer energy ecosystems built for Pakistan's specific climate and grid conditions.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="glass-panel p-8 space-y-4 hover:border-brand-500/30 transition-all">
+                    <div class="w-14 h-14 rounded-2xl bg-brand-500/10 flex items-center justify-center text-brand-500"><i data-lucide="shield-check" class="w-8 h-8"></i></div>
+                    <h3 class="text-xl font-bold">Safety-First Design</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">Multi-level DC/AC protection (SPDs, Breakers) ensuring your home and equipment are safe from surges and lightning.</p>
+                </div>
+                <div class="glass-panel p-8 space-y-4 hover:border-accent-500/30 transition-all">
+                    <div class="w-14 h-14 rounded-2xl bg-accent-500/10 flex items-center justify-center text-accent-500"><i data-lucide="cpu" class="w-8 h-8"></i></div>
+                    <h3 class="text-xl font-bold">Tier-1 Hardware</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">Exclusively using global Tier-1 brands (Longi, JA Solar, Huawei, Inverex) with direct manufacturer warranties.</p>
+                </div>
+                <div class="glass-panel p-8 space-y-4 hover:border-brand-500/30 transition-all">
+                    <div class="w-14 h-14 rounded-2xl bg-brand-500/10 flex items-center justify-center text-brand-500"><i data-lucide="settings" class="w-8 h-8"></i></div>
+                    <h3 class="text-xl font-bold">Smart Net-Metering</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">Full end-to-end handling of your Net-Metering license, turning your home into a mini power plant that earns credits.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. SYSTEM FLOW VISUAL -->
+        <section class="glass-panel p-8 md:p-12 overflow-hidden relative">
+            <div class="absolute -right-20 -top-20 w-64 h-64 bg-brand-500/10 blur-[100px] rounded-full"></div>
+            <div class="relative z-10 space-y-12">
+                <div class="text-center">
+                    <h2 class="text-2xl font-bold mb-2">Energy Journey</h2>
+                    <p class="text-slate-500 text-sm">How your system powers your world</p>
+                </div>
+
+                <div class="flex flex-col md:flex-row justify-between items-center gap-12 relative">
+                    <!-- Flow Line (Desktop) -->
+                    <div class="hidden md:block absolute top-10 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-brand-500/30 to-transparent -z-10"></div>
+                    
+                    <div class="flex flex-col items-center gap-4 group">
+                        <div class="w-20 h-20 rounded-full bg-slate-900 border-4 border-brand-500/20 flex items-center justify-center text-brand-500 group-hover:scale-110 transition-transform">
+                            <i data-lucide="layout-grid" class="w-10 h-10"></i>
+                        </div>
+                        <div class="text-center">
+                            <div class="font-bold text-white">Solar PV</div>
+                            <div class="text-[10px] uppercase text-slate-500 font-bold tracking-tighter">Harvesting Sun</div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col items-center gap-4 group">
+                        <div class="w-20 h-20 rounded-full bg-slate-900 border-4 border-accent-500/20 flex items-center justify-center text-accent-500 group-hover:scale-110 transition-transform">
+                            <i data-lucide="battery-charging" class="w-10 h-10"></i>
+                        </div>
+                        <div class="text-center">
+                            <div class="font-bold text-white">Storage</div>
+                            <div class="text-[10px] uppercase text-slate-500 font-bold tracking-tighter">Backup Power</div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col items-center gap-4 group">
+                        <div class="w-20 h-20 rounded-full bg-slate-900 border-4 border-brand-500/20 flex items-center justify-center text-brand-500 group-hover:scale-110 transition-transform">
+                            <i data-lucide="refresh-cw" class="w-10 h-10"></i>
+                        </div>
+                        <div class="text-center">
+                            <div class="font-bold text-white">Inverter</div>
+                            <div class="text-[10px] uppercase text-slate-500 font-bold tracking-tighter">Smart Conversion</div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col items-center gap-4 group">
+                        <div class="w-20 h-20 rounded-full bg-slate-900 border-4 border-orange-500/20 flex items-center justify-center text-orange-500 group-hover:scale-110 transition-transform">
+                            <i data-lucide="home" class="w-10 h-10"></i>
+                        </div>
+                        <div class="text-center">
+                            <div class="font-bold text-white">Your Home</div>
+                            <div class="text-[10px] uppercase text-slate-500 font-bold tracking-tighter">Clean Energy</div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col items-center gap-4 group">
+                        <div class="w-20 h-20 rounded-full bg-slate-900 border-4 border-brand-500/20 flex items-center justify-center text-brand-500 group-hover:scale-110 transition-transform">
+                            <i data-lucide="radio" class="w-10 h-10"></i>
+                        </div>
+                        <div class="text-center">
+                            <div class="font-bold text-white">The Grid</div>
+                            <div class="text-[10px] uppercase text-slate-500 font-bold tracking-tighter">Net Metering</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. COST BREAKDOWN SECTION -->
+        <section class="space-y-8">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <h2 class="text-3xl font-bold">Investment <span class="text-brand-500">Structure</span></h2>
+                <div class="px-4 py-2 bg-white/5 rounded-full border border-white/10 text-xs font-bold text-slate-400">All prices in PKR</div>
+            </div>
+
+            <div class="glass-panel overflow-hidden">
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="bg-white/5 border-b border-white/5">
+                            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest">Hardware Component</th>
+                            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest text-center">Qty</th>
+                            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest text-right">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-white/5">
+                        {% for line in component_lines %}
+                        <tr class="hover:bg-white/5 transition-colors group">
+                            <td class="px-6 py-5">
+                                <div class="font-bold text-white group-hover:text-brand-400 transition-colors">{{ line.label }}</div>
+                                <div class="text-xs text-slate-500 mt-1">{{ line.specs|default:"Premium Grade Component" }}</div>
+                            </td>
+                            <td class="px-6 py-5 text-center text-slate-300 font-medium">{{ line.quantity|floatformat:0 }}</td>
+                            <td class="px-6 py-5 text-right font-bold text-white">{{ line.total|floatformat:0 }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                
+                <div class="p-8 bg-slate-950 border-t border-white/10">
+                    <div class="max-w-md ml-auto space-y-4">
+                        <div class="flex justify-between text-slate-400 text-sm">
+                            <span>Subtotal (Hardware & Engineering)</span>
+                            <span class="font-bold">Rs {{ quotation.subtotal|floatformat:0 }}</span>
+                        </div>
+                        <div class="flex justify-between text-brand-400 text-sm">
+                            <span>Promotional Discount</span>
+                            <span class="font-bold">- Rs {{ quotation.discount|floatformat:0 }}</span>
+                        </div>
+                        {% if quotation.tax_amount > 0 %}
+                        <div class="flex justify-between text-slate-400 text-sm">
+                            <span>Applicable Taxes</span>
+                            <span class="font-bold">Rs {{ quotation.tax_amount|floatformat:0 }}</span>
+                        </div>
+                        {% endif %}
+                        <div class="pt-4 border-t border-white/10 flex justify-between items-center">
+                            <div class="text-lg font-bold text-white uppercase tracking-tighter">Total Net Investment</div>
+                            <div class="text-4xl font-black text-brand-500">PKR {{ quotation.total_cost|floatformat:0 }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. NEXT STEPS SECTION -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center bg-brand-500/5 rounded-[2.5rem] p-8 md:p-16 border border-brand-500/10">
+            <div class="space-y-6">
+                <h2 class="text-3xl font-bold">Ready to Go <span class="text-brand-500">Solar?</span></h2>
+                <p class="text-slate-400 leading-relaxed">
+                    Our team is ready to begin the engineering phase of your project. Follow these simple steps to lock in your inventory and pricing.
+                </p>
+                <div class="space-y-4">
+                    <div class="flex items-start gap-4">
+                        <div class="w-6 h-6 rounded-full bg-brand-500 text-dark-900 flex items-center justify-center text-xs font-black mt-1 shrink-0">1</div>
+                        <div>
+                            <div class="font-bold text-white">Confirm Proposal</div>
+                            <div class="text-xs text-slate-500">Review and approve this engineering document.</div>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <div class="w-6 h-6 rounded-full bg-brand-500 text-dark-900 flex items-center justify-center text-xs font-black mt-1 shrink-0">2</div>
+                        <div>
+                            <div class="font-bold text-white">Advance Payment</div>
+                            <div class="text-xs text-slate-500">Deposit initial milestone to secure hardware inventory.</div>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <div class="w-6 h-6 rounded-full bg-brand-500 text-dark-900 flex items-center justify-center text-xs font-black mt-1 shrink-0">3</div>
+                        <div>
+                            <div class="font-bold text-white">Physical Survey</div>
+                            <div class="text-xs text-slate-500">Our engineers perform a final site structural verification.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-panel p-10 text-center space-y-8 border-brand-500/20 shadow-brand-500/5 shadow-2xl">
+                <div class="space-y-2">
+                    <h3 class="text-2xl font-bold">Finalize Your Decision</h3>
+                    <p class="text-slate-500 text-sm">Start your journey to zero bills today.</p>
+                </div>
+                
+                <div class="space-y-4">
+                    <button class="w-full py-4 bg-brand-500 hover:bg-brand-600 text-dark-950 font-black rounded-2xl transition-all shadow-xl shadow-brand-500/20 transform hover:-translate-y-1">
+                        CONFIRM PROPOSAL
+                    </button>
+                    <a href="https://wa.me/{{ company.whatsapp|default:'920000000000'|cut:' '|cut:'-'|cut:'+' }}?text=I want to confirm proposal {{ quotation.quotation_number }}" target="_blank" class="w-full py-4 bg-emerald-600/10 hover:bg-emerald-600/20 text-emerald-500 border border-emerald-600/20 font-bold rounded-2xl transition-all flex items-center justify-center gap-3">
+                        <i data-lucide="message-circle" class="w-5 h-5"></i> CHAT ON WHATSAPP
+                    </a>
+                </div>
+                
+                <p class="text-[10px] text-slate-500 uppercase tracking-widest leading-relaxed">
+                    By confirming, you agree to the standard terms and conditions. Prices are subject to stock availability.
+                </p>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="py-12 border-t border-white/5 bg-slate-950/50">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8 text-slate-500 text-xs">
+            <div class="flex items-center gap-4">
+                <img src="/static/images/logo.png" class="h-8 w-auto grayscale opacity-50" alt="BARQON">
+                <p>&copy; 2026 BARQON Solar Solutions. All rights reserved.</p>
+            </div>
+            <div class="flex gap-8">
+                <a href="#" class="hover:text-white transition-colors">Warranties</a>
+                <a href="#" class="hover:text-white transition-colors">Terms of Service</a>
+                <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+    </script>
+</body>
+</html>

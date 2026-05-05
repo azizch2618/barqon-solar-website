@@ -1,0 +1,48 @@
+{% extends "layouts/site_base.html" %}
+{% load static %}
+
+{% block title %}Solar Result | BARQON{% endblock %}
+
+{% block content %}
+<section class="bq-section bq-section--dark" style="min-height: 85vh; display: flex; align-items: center; background: #05070a;">
+    <div class="bq-wrap">
+        <div class="max-w-2xl mx-auto text-center">
+            
+            <div class="mb-16">
+                <h1 class="text-5xl md:text-6xl font-bold bq-text-white mb-4">
+                    Your Savings <br>
+                    <span class="text-brand-500">PKR {{ calculation.monthly_savings|floatformat:0 }}</span> / mo
+                </h1>
+                <p class="text-slate-400 text-lg">Custom engineered solution for {{ lead.name }}.</p>
+            </div>
+
+            <!-- Core Metrics Only -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+                <div class="py-8 border-r border-white/10 last:border-0">
+                    <div class="text-4xl font-bold text-white mb-1">{{ calculation.system_size_kw }} <span class="text-sm font-normal text-slate-500">kW</span></div>
+                    <div class="text-xs text-slate-500 uppercase tracking-widest font-bold">System Capacity</div>
+                </div>
+                
+                <div class="py-8 border-r border-white/10 last:border-0">
+                    <div class="text-4xl font-bold text-white mb-1">{{ calculation.payback_years }} <span class="text-sm font-normal text-slate-500">Yrs</span></div>
+                    <div class="text-xs text-slate-500 uppercase tracking-widest font-bold">Payback Period</div>
+                </div>
+
+                <div class="py-8">
+                    <div class="text-4xl font-bold text-white mb-1">95%</div>
+                    <div class="text-xs text-slate-500 uppercase tracking-widest font-bold">Bill Reduction</div>
+                </div>
+            </div>
+
+            <!-- CTA -->
+            <div class="max-w-md mx-auto">
+                <a href="/automation/generate-proposal/{{ lead.id }}/" class="bq-btn bq-btn-primary bq-btn-lg bq-btn-full" style="padding: 1.8rem; font-size: 1.2rem; border-radius: 1rem; box-shadow: 0 20px 40px -10px rgba(16, 185, 129, 0.3);">
+                    Get Detailed Quotation (PDF)
+                </a>
+                <p class="mt-6 text-slate-500 text-sm">Download your itemized breakdown and technical specs.</p>
+            </div>
+
+        </div>
+    </div>
+</section>
+{% endblock %}
