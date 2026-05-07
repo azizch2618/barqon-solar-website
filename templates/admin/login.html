@@ -1,6 +1,8 @@
+{% load static %}
 {% load i18n static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,28 +12,36 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
 
     <style>
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
-        :root {
-            --navy:       #0b1c2c;
-            --navy-mid:   #0f2540;
-            --navy-light: #152d4a;
-            --gold:       #F5A623;
-            --gold-light: #FFD06B;
-            --gold-dim:   rgba(245,166,35,0.15);
-            --white:      #ffffff;
-            --text-muted: rgba(255,255,255,0.5);
-            --text-sub:   rgba(255,255,255,0.7);
-            --border:     rgba(255,255,255,0.08);
-            --glass-bg:   rgba(15, 37, 64, 0.75);
-            --radius:     20px;
-            --shadow:     0 32px 80px rgba(0,0,0,0.6);
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        html, body {
+        :root {
+            --navy: #0b1c2c;
+            --navy-mid: #0f2540;
+            --navy-light: #152d4a;
+            --gold: #F5A623;
+            --gold-light: #FFD06B;
+            --gold-dim: rgba(245, 166, 35, 0.15);
+            --white: #ffffff;
+            --text-muted: rgba(255, 255, 255, 0.5);
+            --text-sub: rgba(255, 255, 255, 0.7);
+            --border: rgba(255, 255, 255, 0.08);
+            --glass-bg: rgba(15, 37, 64, 0.75);
+            --radius: 20px;
+            --shadow: 0 32px 80px rgba(0, 0, 0, 0.6);
+        }
+
+        html,
+        body {
             height: 100%;
             font-family: 'Inter', sans-serif;
             background: var(--navy);
@@ -41,7 +51,9 @@
 
         /* ─── Animated Background ─── */
         .bq-bg {
-            position: fixed; inset: 0; z-index: 0;
+            position: fixed;
+            inset: 0;
+            z-index: 0;
             background: linear-gradient(135deg, #060e18 0%, #0b1c2c 40%, #0f2540 70%, #091422 100%);
             overflow: hidden;
         }
@@ -54,57 +66,94 @@
             opacity: 0.35;
             animation: float 8s ease-in-out infinite;
         }
+
         .orb-1 {
-            width: 500px; height: 500px;
-            background: radial-gradient(circle, rgba(245,166,35,0.5), transparent 70%);
-            top: -120px; left: -100px;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(245, 166, 35, 0.5), transparent 70%);
+            top: -120px;
+            left: -100px;
             animation-delay: 0s;
         }
+
         .orb-2 {
-            width: 400px; height: 400px;
-            background: radial-gradient(circle, rgba(15,37,64,0.9), rgba(5,20,50,0.5) 60%, transparent 80%);
-            bottom: -80px; right: -80px;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(15, 37, 64, 0.9), rgba(5, 20, 50, 0.5) 60%, transparent 80%);
+            bottom: -80px;
+            right: -80px;
             animation-delay: -3s;
         }
+
         .orb-3 {
-            width: 300px; height: 300px;
-            background: radial-gradient(circle, rgba(245,166,35,0.3), transparent 70%);
-            bottom: 20%; left: 10%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(245, 166, 35, 0.3), transparent 70%);
+            bottom: 20%;
+            left: 10%;
             animation-delay: -5s;
         }
+
         @keyframes float {
-            0%, 100% { transform: translateY(0) scale(1); }
-            50%       { transform: translateY(-30px) scale(1.05); }
+
+            0%,
+            100% {
+                transform: translateY(0) scale(1);
+            }
+
+            50% {
+                transform: translateY(-30px) scale(1.05);
+            }
         }
 
         /* Solar panel grid overlay */
         .grid-overlay {
-            position: absolute; inset: 0;
+            position: absolute;
+            inset: 0;
             background-image:
-                linear-gradient(rgba(245,166,35,0.04) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(245,166,35,0.04) 1px, transparent 1px);
+                linear-gradient(rgba(245, 166, 35, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(245, 166, 35, 0.04) 1px, transparent 1px);
             background-size: 60px 60px;
         }
 
         /* Particle dots */
-        .particles { position: absolute; inset: 0; overflow: hidden; }
+        .particles {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+        }
+
         .particle {
             position: absolute;
-            width: 3px; height: 3px;
+            width: 3px;
+            height: 3px;
             border-radius: 50%;
             background: var(--gold);
             opacity: 0;
             animation: sparkle 4s ease-in-out infinite;
         }
+
         @keyframes sparkle {
-            0%   { opacity: 0; transform: scale(0); }
-            50%  { opacity: 0.6; transform: scale(1); }
-            100% { opacity: 0; transform: scale(0); }
+            0% {
+                opacity: 0;
+                transform: scale(0);
+            }
+
+            50% {
+                opacity: 0.6;
+                transform: scale(1);
+            }
+
+            100% {
+                opacity: 0;
+                transform: scale(0);
+            }
         }
 
         /* ─── Layout ─── */
         .bq-layout {
-            position: relative; z-index: 10;
+            position: relative;
+            z-index: 10;
             display: grid;
             grid-template-columns: 1fr 1fr;
             min-height: 100vh;
@@ -123,12 +172,18 @@
         .bq-brand-logo {
             width: 220px;
             margin-bottom: 60px;
-            filter: drop-shadow(0 8px 32px rgba(245,166,35,0.4));
+            filter: drop-shadow(0 8px 32px rgba(245, 166, 35, 0.4));
             animation: logoGlow 3s ease-in-out infinite alternate;
         }
+
         @keyframes logoGlow {
-            from { filter: drop-shadow(0 8px 24px rgba(245,166,35,0.3)); }
-            to   { filter: drop-shadow(0 12px 48px rgba(245,166,35,0.7)); }
+            from {
+                filter: drop-shadow(0 8px 24px rgba(245, 166, 35, 0.3));
+            }
+
+            to {
+                filter: drop-shadow(0 12px 48px rgba(245, 166, 35, 0.7));
+            }
         }
 
         .bq-left-headline {
@@ -138,7 +193,10 @@
             margin-bottom: 20px;
             letter-spacing: -0.02em;
         }
-        .bq-left-headline .gold { color: var(--gold); }
+
+        .bq-left-headline .gold {
+            color: var(--gold);
+        }
 
         .bq-left-sub {
             font-size: 1rem;
@@ -152,17 +210,20 @@
             display: flex;
             gap: 40px;
         }
+
         .bq-stat {
             display: flex;
             flex-direction: column;
             gap: 4px;
         }
+
         .bq-stat-num {
             font-size: 1.8rem;
             font-weight: 800;
             color: var(--gold);
             letter-spacing: -0.02em;
         }
+
         .bq-stat-label {
             font-size: 0.75rem;
             color: var(--text-muted);
@@ -173,9 +234,10 @@
 
         .bq-divider {
             width: 1px;
-            background: linear-gradient(to bottom, transparent, rgba(245,166,35,0.4) 30%, rgba(245,166,35,0.4) 70%, transparent);
+            background: linear-gradient(to bottom, transparent, rgba(245, 166, 35, 0.4) 30%, rgba(245, 166, 35, 0.4) 70%, transparent);
             position: absolute;
-            top: 0; bottom: 0;
+            top: 0;
+            bottom: 0;
             right: 0;
         }
 
@@ -195,15 +257,23 @@
             background: var(--glass-bg);
             backdrop-filter: blur(24px);
             -webkit-backdrop-filter: blur(24px);
-            border: 1px solid rgba(245,166,35,0.15);
+            border: 1px solid rgba(245, 166, 35, 0.15);
             border-radius: var(--radius);
             padding: 48px 44px;
-            box-shadow: var(--shadow), 0 0 0 1px rgba(255,255,255,0.03) inset;
-            animation: cardIn 0.7s cubic-bezier(0.16,1,0.3,1) forwards;
+            box-shadow: var(--shadow), 0 0 0 1px rgba(255, 255, 255, 0.03) inset;
+            animation: cardIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
+
         @keyframes cardIn {
-            from { opacity: 0; transform: translateY(30px) scale(0.96); }
-            to   { opacity: 1; transform: translateY(0) scale(1); }
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.96);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
 
         .bq-card-header {
@@ -216,7 +286,7 @@
             align-items: center;
             gap: 8px;
             background: var(--gold-dim);
-            border: 1px solid rgba(245,166,35,0.3);
+            border: 1px solid rgba(245, 166, 35, 0.3);
             color: var(--gold);
             font-size: 0.7rem;
             font-weight: 800;
@@ -226,17 +296,29 @@
             border-radius: 100px;
             margin-bottom: 16px;
         }
+
         .bq-admin-badge::before {
             content: '';
-            width: 6px; height: 6px;
+            width: 6px;
+            height: 6px;
             border-radius: 50%;
             background: var(--gold);
             box-shadow: 0 0 8px var(--gold);
             animation: pulse-dot 2s ease-in-out infinite;
         }
+
         @keyframes pulse-dot {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50%       { opacity: 0.5; transform: scale(0.7); }
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.5;
+                transform: scale(0.7);
+            }
         }
 
         .bq-card-title {
@@ -245,6 +327,7 @@
             letter-spacing: -0.02em;
             margin-bottom: 8px;
         }
+
         .bq-card-subtitle {
             font-size: 0.88rem;
             color: var(--text-muted);
@@ -252,8 +335,8 @@
 
         /* ─── Error block ─── */
         .bq-error {
-            background: rgba(239,68,68,0.08);
-            border: 1px solid rgba(239,68,68,0.3);
+            background: rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.3);
             color: #ff7070;
             padding: 12px 16px;
             border-radius: 12px;
@@ -263,6 +346,7 @@
             align-items: flex-start;
             gap: 10px;
         }
+
         .bq-error-icon {
             font-size: 1rem;
             line-height: 1.4;
@@ -273,6 +357,7 @@
         .bq-field {
             margin-bottom: 20px;
         }
+
         .bq-label {
             display: block;
             font-size: 0.78rem;
@@ -282,22 +367,26 @@
             color: var(--text-sub);
             margin-bottom: 8px;
         }
+
         .bq-input-wrap {
             position: relative;
         }
+
         .bq-input-icon {
             position: absolute;
-            left: 16px; top: 50%;
+            left: 16px;
+            top: 50%;
             transform: translateY(-50%);
             font-size: 1rem;
             pointer-events: none;
             color: var(--text-muted);
             transition: color 0.2s;
         }
+
         .bq-input {
             width: 100%;
             padding: 14px 16px 14px 46px;
-            background: rgba(255,255,255,0.04);
+            background: rgba(255, 255, 255, 0.04);
             border: 1px solid var(--border);
             border-radius: 12px;
             color: var(--white);
@@ -306,21 +395,30 @@
             outline: none;
             transition: all 0.25s;
         }
-        .bq-input::placeholder { color: var(--text-muted); }
-        .bq-input:focus {
-            border-color: rgba(245,166,35,0.5);
-            background: rgba(245,166,35,0.05);
-            box-shadow: 0 0 0 3px rgba(245,166,35,0.12);
+
+        .bq-input::placeholder {
+            color: var(--text-muted);
         }
-        .bq-input:focus + .bq-input-icon,
-        .bq-input-wrap:focus-within .bq-input-icon { color: var(--gold); }
+
+        .bq-input:focus {
+            border-color: rgba(245, 166, 35, 0.5);
+            background: rgba(245, 166, 35, 0.05);
+            box-shadow: 0 0 0 3px rgba(245, 166, 35, 0.12);
+        }
+
+        .bq-input:focus+.bq-input-icon,
+        .bq-input-wrap:focus-within .bq-input-icon {
+            color: var(--gold);
+        }
 
         /* Toggle password */
         .bq-pw-toggle {
             position: absolute;
-            right: 14px; top: 50%;
+            right: 14px;
+            top: 50%;
             transform: translateY(-50%);
-            background: none; border: none;
+            background: none;
+            border: none;
             cursor: pointer;
             color: var(--text-muted);
             font-size: 0.9rem;
@@ -328,7 +426,10 @@
             border-radius: 6px;
             transition: color 0.2s;
         }
-        .bq-pw-toggle:hover { color: var(--gold); }
+
+        .bq-pw-toggle:hover {
+            color: var(--gold);
+        }
 
         /* Submit */
         .bq-submit {
@@ -347,21 +448,30 @@
             position: relative;
             overflow: hidden;
             transition: all 0.3s;
-            box-shadow: 0 8px 32px rgba(245,166,35,0.35);
+            box-shadow: 0 8px 32px rgba(245, 166, 35, 0.35);
         }
+
         .bq-submit::before {
             content: '';
-            position: absolute; inset: 0;
-            background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), transparent);
             opacity: 0;
             transition: opacity 0.3s;
         }
+
         .bq-submit:hover {
             transform: translateY(-2px);
-            box-shadow: 0 12px 48px rgba(245,166,35,0.5);
+            box-shadow: 0 12px 48px rgba(245, 166, 35, 0.5);
         }
-        .bq-submit:hover::before { opacity: 1; }
-        .bq-submit:active { transform: translateY(0); }
+
+        .bq-submit:hover::before {
+            opacity: 1;
+        }
+
+        .bq-submit:active {
+            transform: translateY(0);
+        }
 
         /* Security badge */
         .bq-security {
@@ -373,7 +483,10 @@
             font-size: 0.75rem;
             color: var(--text-muted);
         }
-        .bq-security-icon { font-size: 0.8rem; }
+
+        .bq-security-icon {
+            font-size: 0.8rem;
+        }
 
         /* Footer copyright */
         .bq-footer {
@@ -385,189 +498,187 @@
 
         /* ─── Responsive ─── */
         @media (max-width: 900px) {
-            .bq-layout { grid-template-columns: 1fr; }
-            .bq-left { display: none; }
-            .bq-right { padding: 40px 24px; }
-            html, body { overflow: auto; }
+            .bq-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .bq-left {
+                display: none;
+            }
+
+            .bq-right {
+                padding: 40px 24px;
+            }
+
+            html,
+            body {
+                overflow: auto;
+            }
         }
     </style>
 </head>
+
 <body>
 
-<!-- Animated Background -->
-<div class="bq-bg">
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-    <div class="orb orb-3"></div>
-    <div class="grid-overlay"></div>
-    <div class="particles" id="particles"></div>
-</div>
-
-<!-- Main Layout -->
-<div class="bq-layout">
-
-    <!-- LEFT: Branding Panel -->
-    <div class="bq-left">
-        <img src="{% static 'images/logo_premium.png' %}"
-             alt="BARQON Solar"
-             class="bq-brand-logo">
-
-        <h1 class="bq-left-headline">
-            Powering Pakistan's<br>
-            <span class="gold">Solar Future</span>
-        </h1>
-        <p class="bq-left-sub">
-            The BARQON Admin Portal gives your team real-time control over projects, quotations, leads, and financials — all in one secure place.
-        </p>
-
-        <div class="bq-stats">
-            <div class="bq-stat">
-                <span class="bq-stat-num">500+</span>
-                <span class="bq-stat-label">Projects Delivered</span>
-            </div>
-            <div class="bq-stat">
-                <span class="bq-stat-num">2 MW</span>
-                <span class="bq-stat-label">Solar Installed</span>
-            </div>
-            <div class="bq-stat">
-                <span class="bq-stat-num">99.9%</span>
-                <span class="bq-stat-label">Uptime</span>
-            </div>
-        </div>
-
-        <div class="bq-divider"></div>
+    <!-- Animated Background -->
+    <div class="bq-bg">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+        <div class="grid-overlay"></div>
+        <div class="particles" id="particles"></div>
     </div>
 
-    <!-- RIGHT: Login Card -->
-    <div class="bq-right">
-        <div class="bq-card">
-            <div class="bq-card-header">
-                <div class="bq-admin-badge">Secure Admin Access</div>
-                <h2 class="bq-card-title">{% trans "Sign In" %}</h2>
-                <p class="bq-card-subtitle">Welcome back. Enter your credentials to continue.</p>
+    <!-- Main Layout -->
+    <div class="bq-layout">
+
+        <!-- LEFT: Branding Panel -->
+        <div class="bq-left">
+            <img src="{% static 'images/logo_premium.png' %}" alt="BARQON Solar" class="bq-brand-logo">
+
+            <h1 class="bq-left-headline">
+                Powering Pakistan's<br>
+                <span class="gold">Solar Future</span>
+            </h1>
+            <p class="bq-left-sub">
+                The BARQON Admin Portal gives your team real-time control over projects, quotations, leads, and
+                financials — all in one secure place.
+            </p>
+
+            <div class="bq-stats">
+                <div class="bq-stat">
+                    <span class="bq-stat-num">500+</span>
+                    <span class="bq-stat-label">Projects Delivered</span>
+                </div>
+                <div class="bq-stat">
+                    <span class="bq-stat-num">2 MW</span>
+                    <span class="bq-stat-label">Solar Installed</span>
+                </div>
+                <div class="bq-stat">
+                    <span class="bq-stat-num">99.9%</span>
+                    <span class="bq-stat-label">Uptime</span>
+                </div>
             </div>
 
-            {% if form.errors %}
-            <div class="bq-error">
-                <span class="bq-error-icon">⚠</span>
-                <div>
-                    {% if form.non_field_errors %}
+            <div class="bq-divider"></div>
+        </div>
+
+        <!-- RIGHT: Login Card -->
+        <div class="bq-right">
+            <div class="bq-card">
+                <div class="bq-card-header">
+                    <div class="bq-admin-badge">Secure Admin Access</div>
+                    <h2 class="bq-card-title">{% trans "Sign In" %}</h2>
+                    <p class="bq-card-subtitle">Welcome back. Enter your credentials to continue.</p>
+                </div>
+
+                {% if form.errors %}
+                <div class="bq-error">
+                    <span class="bq-error-icon">⚠</span>
+                    <div>
+                        {% if form.non_field_errors %}
                         {% for err in form.non_field_errors %}{{ err }}{% endfor %}
-                    {% else %}
+                        {% else %}
                         {% trans "Please correct the errors below." %}
-                    {% endif %}
-                </div>
-            </div>
-            {% endif %}
-
-            {% if form.username.errors %}
-            <div class="bq-error">
-                <span class="bq-error-icon">⚠</span>
-                <div>{{ form.username.errors|join:", " }}</div>
-            </div>
-            {% endif %}
-
-            <form method="post" id="login-form" autocomplete="off">
-                {% csrf_token %}
-                <input type="hidden" name="next" value="{{ next }}">
-
-                <!-- Username -->
-                <div class="bq-field">
-                    <label class="bq-label" for="id_username">{% trans "Username" %}</label>
-                    <div class="bq-input-wrap">
-                        <input
-                            id="id_username"
-                            type="text"
-                            name="username"
-                            class="bq-input"
-                            placeholder="Enter your username"
-                            autofocus
-                            autocomplete="username"
-                            required
-                            value="{{ form.username.value|default:'' }}"
-                        >
-                        <span class="bq-input-icon">👤</span>
+                        {% endif %}
                     </div>
                 </div>
+                {% endif %}
 
-                <!-- Password -->
-                <div class="bq-field">
-                    <label class="bq-label" for="id_password">{% trans "Password" %}</label>
-                    <div class="bq-input-wrap">
-                        <input
-                            id="id_password"
-                            type="password"
-                            name="password"
-                            class="bq-input"
-                            placeholder="Enter your password"
-                            autocomplete="current-password"
-                            required
-                        >
-                        <span class="bq-input-icon">🔒</span>
-                        <button type="button" class="bq-pw-toggle" id="pw-toggle"
-                                onclick="togglePw()" title="Show/hide password">
-                            👁
-                        </button>
+                {% if form.username.errors %}
+                <div class="bq-error">
+                    <span class="bq-error-icon">⚠</span>
+                    <div>{{ form.username.errors|join:", " }}</div>
+                </div>
+                {% endif %}
+
+                <form method="post" id="login-form" autocomplete="off">
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="{{ next }}">
+
+                    <!-- Username -->
+                    <div class="bq-field">
+                        <label class="bq-label" for="id_username">{% trans "Username" %}</label>
+                        <div class="bq-input-wrap">
+                            <input id="id_username" type="text" name="username" class="bq-input"
+                                placeholder="Enter your username" autofocus autocomplete="username" required
+                                value="{{ form.username.value|default:'' }}">
+                            <span class="bq-input-icon">👤</span>
+                        </div>
                     </div>
+
+                    <!-- Password -->
+                    <div class="bq-field">
+                        <label class="bq-label" for="id_password">{% trans "Password" %}</label>
+                        <div class="bq-input-wrap">
+                            <input id="id_password" type="password" name="password" class="bq-input"
+                                placeholder="Enter your password" autocomplete="current-password" required>
+                            <span class="bq-input-icon">🔒</span>
+                            <button type="button" class="bq-pw-toggle" id="pw-toggle" onclick="togglePw()"
+                                title="Show/hide password">
+                                👁
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="bq-submit" id="login-btn">
+                        ⚡ &nbsp;{% trans "Access Admin Portal" %}
+                    </button>
+                </form>
+
+                <div class="bq-security">
+                    <span class="bq-security-icon">🔐</span>
+                    <span>256-bit encrypted · Session protected</span>
                 </div>
 
-                <button type="submit" class="bq-submit" id="login-btn">
-                    ⚡ &nbsp;{% trans "Access Admin Portal" %}
-                </button>
-            </form>
-
-            <div class="bq-security">
-                <span class="bq-security-icon">🔐</span>
-                <span>256-bit encrypted · Session protected</span>
-            </div>
-
-            <div class="bq-footer">
-                © {% now "Y" %} BARQON Solar Energy Solutions. All rights reserved.
+                <div class="bq-footer">
+                    © {% now "Y" %} BARQON Solar Energy Solutions. All rights reserved.
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<script>
-    // Password toggle
-    function togglePw() {
-        const input = document.getElementById('id_password');
-        const btn   = document.getElementById('pw-toggle');
-        if (input.type === 'password') {
-            input.type = 'text';
-            btn.textContent = '🙈';
-        } else {
-            input.type = 'password';
-            btn.textContent = '👁';
+    <script>
+        // Password toggle
+        function togglePw() {
+            const input = document.getElementById('id_password');
+            const btn = document.getElementById('pw-toggle');
+            if (input.type === 'password') {
+                input.type = 'text';
+                btn.textContent = '🙈';
+            } else {
+                input.type = 'password';
+                btn.textContent = '👁';
+            }
         }
-    }
 
-    // Submit button loading state
-    document.getElementById('login-form').addEventListener('submit', function() {
-        const btn = document.getElementById('login-btn');
-        btn.textContent = '⏳  Authenticating…';
-        btn.disabled = true;
-        btn.style.opacity = '0.8';
-    });
-
-    // Particle generator
-    (function() {
-        const container = document.getElementById('particles');
-        const positions = [
-            [15,10],[80,25],[35,60],[65,80],[25,45],[90,55],
-            [50,15],[10,75],[70,40],[45,90],[55,5],[85,70],
-        ];
-        positions.forEach(([x, y], i) => {
-            const p = document.createElement('div');
-            p.className = 'particle';
-            p.style.left = x + '%';
-            p.style.top  = y + '%';
-            p.style.animationDelay = (i * 0.5) + 's';
-            p.style.animationDuration = (3 + Math.random() * 3) + 's';
-            container.appendChild(p);
+        // Submit button loading state
+        document.getElementById('login-form').addEventListener('submit', function () {
+            const btn = document.getElementById('login-btn');
+            btn.textContent = '⏳  Authenticating…';
+            btn.disabled = true;
+            btn.style.opacity = '0.8';
         });
-    })();
-</script>
+
+        // Particle generator
+        (function () {
+            const container = document.getElementById('particles');
+            const positions = [
+                [15, 10], [80, 25], [35, 60], [65, 80], [25, 45], [90, 55],
+                [50, 15], [10, 75], [70, 40], [45, 90], [55, 5], [85, 70],
+            ];
+            positions.forEach(([x, y], i) => {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                p.style.left = x + '%';
+                p.style.top = y + '%';
+                p.style.animationDelay = (i * 0.5) + 's';
+                p.style.animationDuration = (3 + Math.random() * 3) + 's';
+                container.appendChild(p);
+            });
+        })();
+    </script>
 
 </body>
+
 </html>

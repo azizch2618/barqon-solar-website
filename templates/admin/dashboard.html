@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -189,10 +190,10 @@
                 outline: "border border-slate-600 hover:border-slate-500 text-slate-300 hover:text-white"
             };
             return (
-                <button 
+                <button
                     type={type}
                     disabled={loading}
-                    onClick={onClick} 
+                    onClick={onClick}
                     className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 disabled:opacity-50 ${variants[variant]} ${className}`}
                 >
                     {loading ? <Icon name="Loader2" className="animate-spin" size={18} /> : icon && <Icon name={icon} size={18} />}
@@ -216,8 +217,8 @@
                         <div className="flex gap-4 w-full">
                             <button onClick={finalCancel} className="flex-1 px-4 py-3 rounded-xl font-bold text-slate-400 hover:bg-slate-800 transition-colors">Cancel</button>
                             <button onClick={onConfirm} className={`flex-1 px-4 py-3 rounded-xl font-bold text-white transition-all shadow-lg ${finalVariant === 'danger' ? 'bg-red-600 hover:bg-red-500 shadow-red-500/20' : 'bg-blue-600 hover:bg-blue-500 shadow-blue-500/20'}`}>
-                                    {confirmText}
-                                </button>
+                                {confirmText}
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -367,16 +368,16 @@
                 try {
                     const all = await api.get('contact/');
                     const unviewed = all.data.filter(l => !l.is_viewed);
-                    
+
                     // Show popup if new leads arrived (and not the first load)
                     if (!isFirst && unviewed.length > lastCountRef.current) {
                         const newOnes = unviewed.length - lastCountRef.current;
                         toast(`${newOnes} New Lead(s) received!`, 'info');
                     }
-                    
+
                     lastCountRef.current = unviewed.length;
                     setNotifications(unviewed.slice(0, 5));
-                } catch (e) {}
+                } catch (e) { }
             };
 
             useEffect(() => {
@@ -460,17 +461,17 @@
 
         const Layout = ({ children }) => {
             const [sidebarOpen, setSidebarOpen] = useState(false);
-            
+
             return (
                 <div className="flex bg-slate-900 min-h-screen text-slate-300 font-sans">
                     {/* Mobile Overlay */}
                     {sidebarOpen && (
-                        <div 
+                        <div
                             className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden transition-opacity duration-300"
                             onClick={() => setSidebarOpen(false)}
                         ></div>
                     )}
-                    
+
                     <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
                     <div className="flex-1 lg:ml-64 flex flex-col h-screen overflow-hidden w-full">
                         <TopNavbar onMenuClick={() => setSidebarOpen(true)} />
@@ -1052,10 +1053,10 @@
 
             return (
                 <Layout>
-                    <ConfirmModal 
-                        isOpen={!!deleteConfirm} 
-                        {...deleteConfirm} 
-                        onCancel={() => setDeleteConfirm(null)} 
+                    <ConfirmModal
+                        isOpen={!!deleteConfirm}
+                        {...deleteConfirm}
+                        onCancel={() => setDeleteConfirm(null)}
                     />
                     <div className="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
                         <div>
@@ -1677,10 +1678,10 @@
                                                                 try {
                                                                     dataObj = typeof rawData === 'string' ? JSON.parse(rawData) : rawData;
                                                                 } catch (e) { return null; }
-                                                                
+
                                                                 const excludeKeys = ['fans', 'lights', 'ac', 'fridge', 'motors', 'computers', 'iron', 'heater', 'other_load_watts', 'wants_earth_bore', 'desired_backup_hours', 'property_type'];
                                                                 const filteredKeys = Object.keys(dataObj).filter(k => !excludeKeys.includes(k) && dataObj[k] !== "" && dataObj[k] !== null);
-                                                                
+
                                                                 if (filteredKeys.length === 0 && (!dataObj.acs || dataObj.acs.length === 0)) return null;
 
                                                                 return (
@@ -2091,10 +2092,10 @@
             const navigate = useNavigate();
             const [step, setStep] = useState(1);
             const [customerInfo, setCustomerInfo] = useState({ name: "", phone: "", address: "", propertyType: "home" });
-            const [units, setUnits] = useState(""); 
-            const [applianceLoad, setApplianceLoad] = useState({ 
-                fans: 0, lights: 0, fridge: 0, motors: 0, 
-                washing_machine: 0, iron: 0, custom_watts: 0, 
+            const [units, setUnits] = useState("");
+            const [applianceLoad, setApplianceLoad] = useState({
+                fans: 0, lights: 0, fridge: 0, motors: 0,
+                washing_machine: 0, iron: 0, custom_watts: 0,
                 acs: [], custom_loads: []
             });
             const [billFile, setBillFile] = useState(null);
@@ -2161,14 +2162,14 @@
 
             const calculation = useMemo(() => {
                 try {
-                    let totalWatts = (Number(applianceLoad.fans) * 80) + 
-                                   (Number(applianceLoad.lights) * 15) + 
-                                   (Number(applianceLoad.fridge) * 350) + 
-                                   (Number(applianceLoad.motors) * 750) + 
-                                   (Number(applianceLoad.washing_machine) * 500) +
-                                   (Number(applianceLoad.iron) * 1000) +
-                                   (Number(applianceLoad.custom_watts) || 0);
-                    
+                    let totalWatts = (Number(applianceLoad.fans) * 80) +
+                        (Number(applianceLoad.lights) * 15) +
+                        (Number(applianceLoad.fridge) * 350) +
+                        (Number(applianceLoad.motors) * 750) +
+                        (Number(applianceLoad.washing_machine) * 500) +
+                        (Number(applianceLoad.iron) * 1000) +
+                        (Number(applianceLoad.custom_watts) || 0);
+
                     if (Array.isArray(applianceLoad.acs)) {
                         applianceLoad.acs.forEach(ac => {
                             const tonVal = parseFloat(ac.ton);
@@ -2189,13 +2190,13 @@
                     let kwBill = 0;
 
                     if (units && !isNaN(units) && parseFloat(units) > 0) {
-                        const tariff = 50.0; 
+                        const tariff = 50.0;
                         const units_consumed = parseFloat(units) / tariff;
-                        kwBill = (units_consumed / 30) / 5.5; 
+                        kwBill = (units_consumed / 30) / 5.5;
                     }
 
                     let kw = Math.max(kwLoad, kwBill);
-                    if (kw === 0) kw = 0; 
+                    if (kw === 0) kw = 0;
 
                     // Professional Buffers
                     if (kw > 0) {
@@ -2255,33 +2256,33 @@
                         customer_phone: customerInfo.phone || "",
                         address: customerInfo.address || "N/A",
                         system_size: calculation.kw,
-                        
+
                         // Panels
                         panel_brand: "Longi Hi-MO 6 (Tier-1)",
                         panel_wattage: 585,
                         panel_count: calculation.panels,
                         panel_unit_price: Math.round((totalCost * 0.45) / calculation.panels),
-                        
+
                         // Inverter
                         inverter: `${systemPreference.inverterType || 'Hybrid'} Solar Inverter`,
                         inverter_brand: "Inverex / Nitrox Premium",
                         inverter_type: systemPreference.inverterType || 'Hybrid',
                         inverter_size_kw: calculation.kw,
                         inverter_unit_price: Math.round(totalCost * 0.25),
-                        
+
                         // Battery
                         battery: systemPreference.batteryBackup === "Yes" ? "Lithium / Tubular" : "None",
                         battery_type: "lithium",
                         battery_brand: systemPreference.batteryBackup === "Yes" ? "Pylontech / Narada" : "",
                         battery_size_kwh: systemPreference.batteryBackup === "Yes" ? (calculation.kw * 0.5).toFixed(1) : 0,
                         battery_unit_price: systemPreference.batteryBackup === "Yes" ? Math.round(totalCost * 0.15) : 0,
-                        
+
                         // Structure & Services
                         mounting_structure_cost: Math.round(totalCost * 0.08),
                         installation_cost: Math.round(totalCost * 0.05),
                         transport_cost: 5000,
                         miscellaneous_cost: Math.round(totalCost * 0.02),
-                        
+
                         total_cost: totalCost,
                         subtotal: totalCost,
                         monthly_savings: calculation.monthlySavings,
@@ -2314,7 +2315,7 @@
                                 </h2>
                                 <p className="text-slate-400 mt-2">Professional solar assessment for {customerInfo.name}</p>
                             </div>
-                             <div className="flex gap-4">
+                            <div className="flex gap-4">
                                 <Link to="/admin-dashboard/quotations" className="glass-card px-6 py-2.5 text-slate-300 hover:text-white transition-all hover:bg-slate-800 font-medium">View All</Link>
                                 <button onClick={() => navigate(`/admin-dashboard/quotation-builder/${result.lead_id}?edit=${result.quotation_id}`)} className="bg-blue-600/20 text-blue-400 border border-blue-500/30 hover:bg-blue-600 hover:text-white px-6 py-2.5 rounded-lg transition-all transform hover:-translate-y-0.5 font-bold flex items-center gap-2">
                                     <Icon name="Edit" size={18} /> Refine & Edit
@@ -2622,15 +2623,15 @@
                     }
                 });
             };
-            const statusColor = (s) => ({ 
-                pending: 'bg-yellow-500/20 text-yellow-400', 
-                civil_works: 'bg-blue-500/20 text-blue-400', 
-                electrical_works: 'bg-indigo-500/20 text-indigo-400', 
-                panel_installation: 'bg-emerald-500/20 text-emerald-400', 
-                net_metering: 'bg-purple-500/20 text-purple-400', 
-                commissioning: 'bg-orange-500/20 text-orange-400', 
-                completed: 'bg-emerald-600/20 text-emerald-300', 
-                on_hold: 'bg-slate-500/20 text-slate-400' 
+            const statusColor = (s) => ({
+                pending: 'bg-yellow-500/20 text-yellow-400',
+                civil_works: 'bg-blue-500/20 text-blue-400',
+                electrical_works: 'bg-indigo-500/20 text-indigo-400',
+                panel_installation: 'bg-emerald-500/20 text-emerald-400',
+                net_metering: 'bg-purple-500/20 text-purple-400',
+                commissioning: 'bg-orange-500/20 text-orange-400',
+                completed: 'bg-emerald-600/20 text-emerald-300',
+                on_hold: 'bg-slate-500/20 text-slate-400'
             }[s] || 'bg-slate-500/20 text-slate-400');
 
             return (
@@ -2730,7 +2731,7 @@
                                     </div>
                                     <button onClick={() => setShowPaymentModal(false)} className="text-slate-400 hover:text-white transition-colors"><Icon name="X" size={24} /></button>
                                 </div>
-                                
+
                                 <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-4 border-b border-slate-700/50 bg-slate-900/50">
                                     <div className="bg-slate-800/50 p-4 rounded-xl border border-slate-700/50">
                                         <p className="text-[10px] font-bold text-slate-500 uppercase mb-1">Contract Value</p>
@@ -2752,15 +2753,15 @@
                                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                             <div>
                                                 <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Amount (RS)</label>
-                                                <input type="number" required className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white outline-none focus:border-blue-500" value={payForm.amount} onChange={e => setPayForm({...payForm, amount: e.target.value})} />
+                                                <input type="number" required className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white outline-none focus:border-blue-500" value={payForm.amount} onChange={e => setPayForm({ ...payForm, amount: e.target.value })} />
                                             </div>
                                             <div>
                                                 <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Date</label>
-                                                <input type="date" required className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white outline-none focus:border-blue-500" value={payForm.payment_date} onChange={e => setPayForm({...payForm, payment_date: e.target.value})} />
+                                                <input type="date" required className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white outline-none focus:border-blue-500" value={payForm.payment_date} onChange={e => setPayForm({ ...payForm, payment_date: e.target.value })} />
                                             </div>
                                             <div>
                                                 <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Notes / Proof</label>
-                                                <input className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white outline-none focus:border-blue-500" placeholder="e.g. Cash / Bank Transfer" value={payForm.notes} onChange={e => setPayForm({...payForm, notes: e.target.value})} />
+                                                <input className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white outline-none focus:border-blue-500" placeholder="e.g. Cash / Bank Transfer" value={payForm.notes} onChange={e => setPayForm({ ...payForm, notes: e.target.value })} />
                                             </div>
                                         </div>
                                         <button type="submit" className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 rounded-lg shadow-lg shadow-blue-500/20 transition-all uppercase text-xs tracking-widest">Record Payment</button>
@@ -3063,8 +3064,8 @@
                                     <div className="flex items-center gap-4">
                                         <div className="flex items-center gap-2">
                                             <span className="text-[10px] font-bold text-slate-500 uppercase">Filter:</span>
-                                            <input 
-                                                type="month" 
+                                            <input
+                                                type="month"
                                                 className="bg-slate-900 border border-slate-700 rounded-lg px-3 py-1 text-xs text-white outline-none focus:border-blue-500"
                                                 value={filterMonth}
                                                 onChange={e => setFilterMonth(e.target.value)}
@@ -3097,30 +3098,30 @@
                                             {payrollRecords
                                                 .filter(r => !filterMonth || r.month_year.startsWith(filterMonth))
                                                 .map(r => (
-                                                <tr key={r.id} className="hover:bg-slate-800/20 transition-colors group">
-                                                    <td className="p-5">
-                                                        <p className="text-white font-bold">{r.staff_name}</p>
-                                                        <p className="text-slate-500 text-[10px] uppercase">{r.role_display}</p>
-                                                    </td>
-                                                    <td className="p-5">
-                                                        <span className="text-slate-300 font-medium">{r.month_display}</span>
-                                                    </td>
-                                                    <td className="p-5 text-right text-slate-400">PKR {Number(r.base_salary).toLocaleString()}</td>
-                                                    <td className="p-5 text-right text-emerald-400/80">PKR {Number(r.total_commission).toLocaleString()}</td>
-                                                    <td className="p-5 text-right text-white font-black">PKR {Number(r.net_salary).toLocaleString()}</td>
-                                                    <td className="p-5 text-center">
-                                                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${r.status === 'paid' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-yellow-500/20 text-yellow-400'}`}>
-                                                            {r.status}
-                                                        </span>
-                                                    </td>
-                                                    <td className="p-5 text-right">
-                                                        <div className="flex gap-2 justify-end">
-                                                            <button onClick={() => openEditPayroll(r)} className="bg-slate-700 hover:bg-emerald-600 text-white p-2 rounded-lg transition-colors shadow-lg" title="Edit / Mark Paid"><Icon name="Edit" size={14} /></button>
-                                                            <button onClick={() => window.open(`/api/payroll/${r.id}/download_slip/`, '_blank')} className="bg-slate-700 hover:bg-blue-600 text-white p-2 rounded-lg transition-colors shadow-lg" title="Download Slip"><Icon name="Download" size={14} /></button>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            ))}
+                                                    <tr key={r.id} className="hover:bg-slate-800/20 transition-colors group">
+                                                        <td className="p-5">
+                                                            <p className="text-white font-bold">{r.staff_name}</p>
+                                                            <p className="text-slate-500 text-[10px] uppercase">{r.role_display}</p>
+                                                        </td>
+                                                        <td className="p-5">
+                                                            <span className="text-slate-300 font-medium">{r.month_display}</span>
+                                                        </td>
+                                                        <td className="p-5 text-right text-slate-400">PKR {Number(r.base_salary).toLocaleString()}</td>
+                                                        <td className="p-5 text-right text-emerald-400/80">PKR {Number(r.total_commission).toLocaleString()}</td>
+                                                        <td className="p-5 text-right text-white font-black">PKR {Number(r.net_salary).toLocaleString()}</td>
+                                                        <td className="p-5 text-center">
+                                                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${r.status === 'paid' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-yellow-500/20 text-yellow-400'}`}>
+                                                                {r.status}
+                                                            </span>
+                                                        </td>
+                                                        <td className="p-5 text-right">
+                                                            <div className="flex gap-2 justify-end">
+                                                                <button onClick={() => openEditPayroll(r)} className="bg-slate-700 hover:bg-emerald-600 text-white p-2 rounded-lg transition-colors shadow-lg" title="Edit / Mark Paid"><Icon name="Edit" size={14} /></button>
+                                                                <button onClick={() => window.open(`/api/payroll/${r.id}/download_slip/`, '_blank')} className="bg-slate-700 hover:bg-blue-600 text-white p-2 rounded-lg transition-colors shadow-lg" title="Download Slip"><Icon name="Download" size={14} /></button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                ))}
                                             {payrollRecords.length === 0 && (
                                                 <tr><td colSpan="7" className="p-20 text-center text-slate-500 italic">No payroll records generated yet. Use the control panel above to process monthly salaries.</td></tr>
                                             )}
@@ -3302,36 +3303,36 @@
                     </div>
 
                     <div className="space-y-4">
-                        {loading ? <div className="text-white">Loading reviews...</div> : 
-                         reviews.length === 0 ? <div className="text-slate-500">No reviews found.</div> :
-                         reviews.map(r => (
-                            <div key={r.id} className={`glass-card p-6 border ${r.is_approved ? 'border-emerald-500/20' : 'border-yellow-500/20'}`}>
-                                <div className="flex justify-between items-start mb-4">
-                                    <div>
-                                        <div className="flex items-center gap-2 mb-1">
-                                            <span className="text-white font-bold">{r.customer_name}</span>
-                                            <span className="text-slate-500 text-xs">• {r.customer_location}</span>
-                                            <span className="text-slate-500 text-xs">• {r.system_size} System</span>
+                        {loading ? <div className="text-white">Loading reviews...</div> :
+                            reviews.length === 0 ? <div className="text-slate-500">No reviews found.</div> :
+                                reviews.map(r => (
+                                    <div key={r.id} className={`glass-card p-6 border ${r.is_approved ? 'border-emerald-500/20' : 'border-yellow-500/20'}`}>
+                                        <div className="flex justify-between items-start mb-4">
+                                            <div>
+                                                <div className="flex items-center gap-2 mb-1">
+                                                    <span className="text-white font-bold">{r.customer_name}</span>
+                                                    <span className="text-slate-500 text-xs">• {r.customer_location}</span>
+                                                    <span className="text-slate-500 text-xs">• {r.system_size} System</span>
+                                                </div>
+                                                <div className="text-yellow-400 text-xs">{'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}</div>
+                                            </div>
+                                            <div className="flex gap-2">
+                                                {!r.is_approved && (
+                                                    <button onClick={() => handleApprove(r.id)} className="bg-emerald-500/20 text-emerald-400 px-3 py-1 rounded text-xs font-bold hover:bg-emerald-500/30">Approve</button>
+                                                )}
+                                                <button onClick={() => handleDelete(r.id)} className="bg-red-500/20 text-red-400 px-3 py-1 rounded text-xs font-bold hover:bg-red-500/30">Delete</button>
+                                            </div>
                                         </div>
-                                        <div className="text-yellow-400 text-xs">{'★'.repeat(r.rating)}{'☆'.repeat(5-r.rating)}</div>
-                                    </div>
-                                    <div className="flex gap-2">
-                                        {!r.is_approved && (
-                                            <button onClick={() => handleApprove(r.id)} className="bg-emerald-500/20 text-emerald-400 px-3 py-1 rounded text-xs font-bold hover:bg-emerald-500/30">Approve</button>
+                                        <p className="text-slate-300 text-sm italic mb-4">"{r.review_text}"</p>
+                                        {r.photos && r.photos.length > 0 && (
+                                            <div className="flex gap-2 overflow-x-auto pb-2">
+                                                {r.photos.map(p => (
+                                                    <img key={p.id} src={p.photo} className="w-20 h-20 object-cover rounded-lg border border-slate-700" />
+                                                ))}
+                                            </div>
                                         )}
-                                        <button onClick={() => handleDelete(r.id)} className="bg-red-500/20 text-red-400 px-3 py-1 rounded text-xs font-bold hover:bg-red-500/30">Delete</button>
                                     </div>
-                                </div>
-                                <p className="text-slate-300 text-sm italic mb-4">"{r.review_text}"</p>
-                                {r.photos && r.photos.length > 0 && (
-                                    <div className="flex gap-2 overflow-x-auto pb-2">
-                                        {r.photos.map(p => (
-                                            <img key={p.id} src={p.photo} className="w-20 h-20 object-cover rounded-lg border border-slate-700" />
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
-                        ))}
+                                ))}
                     </div>
                 </Layout>
             );
@@ -3486,30 +3487,30 @@
                                 <form onSubmit={handleSubmit} className="space-y-4">
                                     <div>
                                         <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Title</label>
-                                        <input type="text" className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-white focus:border-blue-500 outline-none transition-colors" value={bForm.title} onChange={e => setBForm({...bForm, title: e.target.value})} required />
+                                        <input type="text" className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-white focus:border-blue-500 outline-none transition-colors" value={bForm.title} onChange={e => setBForm({ ...bForm, title: e.target.value })} required />
                                     </div>
                                     <div className="grid grid-cols-2 gap-4">
                                         <div>
                                             <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Category</label>
-                                            <input type="text" className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-white" value={bForm.category} onChange={e => setBForm({...bForm, category: e.target.value})} placeholder="e.g. Solar Solutions" />
+                                            <input type="text" className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-white" value={bForm.category} onChange={e => setBForm({ ...bForm, category: e.target.value })} placeholder="e.g. Solar Solutions" />
                                         </div>
                                         <div>
                                             <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Read Time</label>
-                                            <input type="text" className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-white" value={bForm.read_time} onChange={e => setBForm({...bForm, read_time: e.target.value})} placeholder="e.g. 5 min read" />
+                                            <input type="text" className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-white" value={bForm.read_time} onChange={e => setBForm({ ...bForm, read_time: e.target.value })} placeholder="e.g. 5 min read" />
                                         </div>
                                     </div>
                                     <div>
                                         <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Status</label>
-                                        <select className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-white" value={bForm.status} onChange={e => setBForm({...bForm, status: e.target.value})}>
+                                        <select className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-white" value={bForm.status} onChange={e => setBForm({ ...bForm, status: e.target.value })}>
                                             <option value="draft">Draft</option>
                                             <option value="published">Published</option>
                                         </select>
                                     </div>
                                     <div>
                                         <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Content (Markdown/HTML supported)</label>
-                                        <textarea className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-white font-mono text-sm" rows="10" value={bForm.content} onChange={e => setBForm({...bForm, content: e.target.value})} required></textarea>
+                                        <textarea className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-white font-mono text-sm" rows="10" value={bForm.content} onChange={e => setBForm({ ...bForm, content: e.target.value })} required></textarea>
                                     </div>
-                                    
+
                                     <div>
                                         <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Featured Image</label>
                                         <input type="file" className="w-full text-slate-400 text-sm" onChange={e => setFeaturedImage(e.target.files[0])} />
@@ -3521,7 +3522,7 @@
                                     <div>
                                         <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Upload Gallery Pictures (Multiple)</label>
                                         <input type="file" multiple className="w-full text-slate-400 text-sm" onChange={e => setFiles(e.target.files)} />
-                                        
+
                                         {editingPost && editingPost.photos && editingPost.photos.length > 0 && (
                                             <div className="mt-4 grid grid-cols-4 gap-2">
                                                 {editingPost.photos.map(p => (
@@ -3641,28 +3642,28 @@
                                 <form onSubmit={handleSubmit} className="space-y-4">
                                     <div>
                                         <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Project Title</label>
-                                        <input type="text" className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-white" value={pForm.title} onChange={e => setPForm({...pForm, title: e.target.value})} required />
+                                        <input type="text" className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-white" value={pForm.title} onChange={e => setPForm({ ...pForm, title: e.target.value })} required />
                                     </div>
                                     <div className="grid grid-cols-2 gap-4">
                                         <div>
                                             <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Location</label>
-                                            <input type="text" className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-white" value={pForm.location} onChange={e => setPForm({...pForm, location: e.target.value})} required />
+                                            <input type="text" className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-white" value={pForm.location} onChange={e => setPForm({ ...pForm, location: e.target.value })} required />
                                         </div>
                                         <div>
                                             <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">System Size</label>
-                                            <input type="text" className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-white" value={pForm.system_size} onChange={e => setPForm({...pForm, system_size: e.target.value})} required />
+                                            <input type="text" className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-white" value={pForm.system_size} onChange={e => setPForm({ ...pForm, system_size: e.target.value })} required />
                                         </div>
                                     </div>
                                     <div>
                                         <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Description</label>
-                                        <textarea className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-white" rows="3" value={pForm.description} onChange={e => setPForm({...pForm, description: e.target.value})} required></textarea>
+                                        <textarea className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-white" rows="3" value={pForm.description} onChange={e => setPForm({ ...pForm, description: e.target.value })} required></textarea>
                                     </div>
                                     <div>
                                         <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Photos (Multiple)</label>
                                         <input type="file" multiple className="w-full text-slate-400 text-sm" onChange={e => setFiles(e.target.files)} required />
                                     </div>
                                     <div className="flex items-center gap-2">
-                                        <input type="checkbox" checked={pForm.is_featured} onChange={e => setPForm({...pForm, is_featured: e.target.checked})} />
+                                        <input type="checkbox" checked={pForm.is_featured} onChange={e => setPForm({ ...pForm, is_featured: e.target.checked })} />
                                         <label className="text-slate-400 text-sm">Feature on Homepage</label>
                                     </div>
                                     <div className="flex justify-end gap-4 pt-4">
@@ -3709,9 +3710,9 @@
 
             return (
                 <Layout>
-                    <ConfirmModal 
-                        isOpen={!!deleteId} 
-                        onClose={() => setDeleteId(null)} 
+                    <ConfirmModal
+                        isOpen={!!deleteId}
+                        onClose={() => setDeleteId(null)}
                         onConfirm={handleDelete}
                         title="Delete Report?"
                         message="Are you sure you want to remove this financial record? This action is permanent and cannot be reversed."
@@ -3860,7 +3861,7 @@
                         <Card className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-2">
                                 <label className="text-sm font-bold text-slate-400 uppercase tracking-wider">Link to Project</label>
-                                <select 
+                                <select
                                     className="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white focus:ring-2 focus:ring-blue-500 outline-none"
                                     value={formData.project || ''}
                                     onChange={e => setFormData({ ...formData, project: e.target.value })}
@@ -3873,7 +3874,7 @@
                             </div>
                             <div className="space-y-2">
                                 <label className="text-sm font-bold text-slate-400 uppercase tracking-wider">Owner Name</label>
-                                <input 
+                                <input
                                     type="text" required
                                     className="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white focus:ring-2 focus:ring-blue-500 outline-none"
                                     value={formData.owner_name}
@@ -3883,7 +3884,7 @@
                             </div>
                             <div className="md:col-span-2 space-y-2">
                                 <label className="text-sm font-bold text-slate-400 uppercase tracking-wider">Relevant Details</label>
-                                <textarea 
+                                <textarea
                                     className="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white focus:ring-2 focus:ring-blue-500 outline-none h-24"
                                     value={formData.details}
                                     onChange={e => setFormData({ ...formData, details: e.target.value })}
@@ -3897,7 +3898,7 @@
                                 <h3 className="text-xl font-bold text-white flex items-center gap-2"><Icon name="Package" className="text-blue-400" /> Itemized Breakdown</h3>
                                 <Button type="button" onClick={addItem} variant="outline" icon="Plus" className="text-xs py-1">Add Item</Button>
                             </div>
-                            
+
                             <div className="space-y-4">
                                 {formData.items.map((item, index) => (
                                     <div key={index} className="glass-card p-4 grid grid-cols-1 md:grid-cols-12 gap-4 items-end relative group">
@@ -4084,7 +4085,7 @@
                                             <td className="px-6 py-4 text-slate-300 font-medium">{app.position_title}</td>
                                             <td className="px-6 py-4 text-slate-400">{app.experience_years}y</td>
                                             <td className="px-6 py-4">
-                                                <select 
+                                                <select
                                                     className={`bg-slate-800 border-none rounded px-2 py-1 text-xs font-bold uppercase tracking-wider outline-none ${app.status === 'hired' ? 'text-emerald-400' : app.status === 'rejected' ? 'text-red-400' : 'text-blue-400'}`}
                                                     value={app.status}
                                                     onChange={(e) => handleUpdateAppStatus(app.id, e.target.value)}
@@ -4122,16 +4123,16 @@
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="space-y-1">
                                             <label className="text-xs font-bold text-slate-500 uppercase">Title</label>
-                                            <input type="text" required className="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} />
+                                            <input type="text" required className="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white" value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })} />
                                         </div>
                                         <div className="space-y-1">
                                             <label className="text-xs font-bold text-slate-500 uppercase">Location</label>
-                                            <input type="text" required className="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white" value={formData.location} onChange={e => setFormData({...formData, location: e.target.value})} />
+                                            <input type="text" required className="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white" value={formData.location} onChange={e => setFormData({ ...formData, location: e.target.value })} />
                                         </div>
                                     </div>
                                     <div className="space-y-1">
                                         <label className="text-xs font-bold text-slate-500 uppercase">Job Type</label>
-                                        <select className="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white" value={formData.job_type} onChange={e => setFormData({...formData, job_type: e.target.value})}>
+                                        <select className="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white" value={formData.job_type} onChange={e => setFormData({ ...formData, job_type: e.target.value })}>
                                             <option value="full_time">Full Time</option>
                                             <option value="part_time">Part Time</option>
                                             <option value="contract">Contract</option>
@@ -4140,14 +4141,14 @@
                                     </div>
                                     <div className="space-y-1">
                                         <label className="text-xs font-bold text-slate-500 uppercase">Description</label>
-                                        <textarea required className="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white h-24" value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} />
+                                        <textarea required className="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white h-24" value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} />
                                     </div>
                                     <div className="space-y-1">
                                         <label className="text-xs font-bold text-slate-500 uppercase">Requirements</label>
-                                        <textarea required className="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white h-24" value={formData.requirements} onChange={e => setFormData({...formData, requirements: e.target.value})} />
+                                        <textarea required className="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white h-24" value={formData.requirements} onChange={e => setFormData({ ...formData, requirements: e.target.value })} />
                                     </div>
                                     <label className="flex items-center gap-3 cursor-pointer">
-                                        <input type="checkbox" checked={formData.is_active} onChange={e => setFormData({...formData, is_active: e.target.checked})} />
+                                        <input type="checkbox" checked={formData.is_active} onChange={e => setFormData({ ...formData, is_active: e.target.checked })} />
                                         <span className="text-slate-300">Published (Visible to candidates)</span>
                                     </label>
                                     <div className="pt-4 flex gap-4">
@@ -4179,11 +4180,11 @@
                             <Route path="/admin-dashboard/quotation-builder/:leadId" element={<QuotationBuilderPage />} />
                             <Route path="/admin-dashboard/tools/calculator" element={<EngineeringTools />} />
                             <Route path="/admin-dashboard/staff" element={<StaffPayrollManager />} />
-                            
+
                             <Route path="/admin-dashboard/project-financials" element={<ProjectFinancialsList />} />
                             <Route path="/admin-dashboard/project-financials/new" element={<ProjectFinancialsForm />} />
                             <Route path="/admin-dashboard/project-financials/edit/:id" element={<ProjectFinancialsForm />} />
-                            
+
                             <Route path="/admin-dashboard/reviews" element={<ReviewManagement />} />
                             <Route path="/admin-dashboard/blogs" element={<BlogManagement />} />
                             <Route path="/admin-dashboard/installations" element={<InstallationManagement />} />
