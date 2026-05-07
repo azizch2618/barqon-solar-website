@@ -293,107 +293,6 @@ img{display:block;max-width:100%}
 .bq-checkbox-wrap input[type="checkbox"]{width:auto;margin:0;accent-color:#F5A623;transform:scale(1.2)}
 .bq-checkbox-wrap span{font-size:.9rem;font-weight:600;color:#0b1c2c}
 
-/* ── RESPONSIVE ── */
-@media(max-width:1024px){
-    .bq-nav-menu, .bq-desktop-only { display: none !important; }
-    .bq-nav-toggle { display: flex !important; margin-left: auto; }
-    
-    .bq-cards-grid{grid-template-columns:repeat(2,1fr)}
-    .bq-hero-inner,.bq-why-inner,.bq-form-inner,.bq-cta-inner{grid-template-columns:1fr;gap:48px}
-    .bq-hero{text-align:center;padding:120px 0 60px}
-    .bq-hero-sub{margin:0 auto 40px}
-    .bq-hero-actions,.bq-hero-trust{justify-content:center}
-    .bq-stat-chip--tl{top:12px;left:12px}
-    .bq-stat-chip--br{bottom:12px;right:12px}
-    .bq-stats-inner{flex-wrap:wrap}
-    .bq-stat{min-width:40%}
-    .bq-stat-divider{display:none}
-    .bq-steps{grid-template-columns:1fr;gap:12px}
-    .bq-step-arrow{transform:rotate(90deg)}
-    .bq-testimonials{grid-template-columns:1fr}
-    .bq-footer-grid{grid-template-columns:1fr 1fr;gap:40px}
-    .bq-section-head--row{flex-direction:column;align-items:flex-start;gap:20px}
-    .bq-cta-inner{flex-direction:column;text-align:center}
-    .bq-cta-copy p{margin:0 auto}
-}
-
-@media(max-width:768px){
-    .bq-wrap {
-        width: 100% !important;
-        padding-left: 16px !important;
-        padding-right: 16px !important;
-    }
-    
-    .bq-hero {
-        padding: 100px 0 60px;
-        flex-direction: column;
-    }
-    
-    .bq-hero-inner {
-        display: flex;
-        flex-direction: column;
-        text-align: center;
-        gap: 40px;
-    }
-
-    .bq-hero-copy {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .bq-hero-h1 {
-        font-size: 2.4rem;
-        margin-bottom: 20px;
-    }
-
-    .bq-hero-sub {
-        max-width: 100%;
-        margin-bottom: 32px;
-    }
-
-    .bq-hero-actions, .bq-cta-actions, .bq-hero-trust {
-        flex-direction: column;
-        align-items: center;
-        gap: 12px;
-    }
-
-    .bq-btn {
-        min-height: 52px;
-        font-size: 1rem;
-    }
-
-    .bq-cards-grid {
-        grid-template-columns: 1fr !important;
-        gap: 20px;
-    }
-
-    .bq-hero-visual {
-        width: 100%;
-    }
-}
-
-@media(max-width:640px){
-    .bq-section{padding:60px 0}
-    .bq-stats-inner{flex-direction:column}
-    .bq-stat{padding:32px;border-bottom:1px solid rgba(255,255,255,0.05)}
-    .bq-stat:last-child{border-bottom:none}
-    .bq-footer-grid{grid-template-columns:1fr;gap:32px}
-    .bq-footer-bottom-inner{flex-direction:column;gap:12px;text-align:center}
-    
-    @keyframes bq-slide-in {
-        from { transform: translateX(100%); }
-        to { transform: translateX(0); }
-    }
-    
-    .bq-hero-h1{font-size:2.1rem}
-    .bq-section-h2{font-size:1.8rem}
-    .bq-form-card{padding:24px 16px}
-    .bq-tab-nav{flex-direction:column;gap:4px;padding:4px}
-    .bq-tab-btn{padding:12px;font-size:0.95rem}
-    .bq-form-grid{grid-template-columns:1fr}
-}
-
 /* ── FOOTER ── */
 .bq-footer{background:#060e18;border-top:1px solid rgba(255,255,255,.06);padding:80px 0 0}
 .bq-footer-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:48px;padding-bottom:60px;border-bottom:1px solid rgba(255,255,255,.05)}
@@ -993,3 +892,106 @@ body {
     color: #fff;
     transform: translateY(-2px);
 }
+
+
+/* ── RESPONSIVE ── */
+@media(max-width:1024px){
+    .bq-nav-menu, .bq-desktop-only { display: none !important; }
+    .bq-nav-toggle { display: flex !important; margin-left: auto; }
+    
+    .bq-cards-grid{grid-template-columns:repeat(2,1fr)}
+    .bq-hero-inner,.bq-why-inner,.bq-form-inner,.bq-cta-inner{grid-template-columns:1fr;gap:48px}
+    .bq-hero{text-align:center;padding:120px 0 60px}
+    .bq-hero-sub{margin:0 auto 40px}
+    .bq-hero-actions,.bq-hero-trust{justify-content:center}
+    .bq-stat-chip--tl{top:12px;left:12px}
+    .bq-stat-chip--br{bottom:12px;right:12px}
+    .bq-stats-inner{flex-wrap:wrap}
+    .bq-stat{min-width:40%}
+    .bq-stat-divider{display:none}
+    .bq-steps{grid-template-columns:1fr;gap:12px}
+    .bq-step-arrow{transform:rotate(90deg)}
+    .bq-testimonials{grid-template-columns:1fr}
+    .bq-footer-grid{grid-template-columns:1fr 1fr;gap:40px}
+    .bq-section-head--row{flex-direction:column;align-items:flex-start;gap:20px}
+    .bq-cta-inner{flex-direction:column;text-align:center}
+    .bq-cta-copy p{margin:0 auto}
+}
+
+@media(max-width:768px){
+    .bq-wrap {
+        width: 100% !important;
+        padding-left: 16px !important;
+        padding-right: 16px !important;
+    }
+    
+    .bq-hero {
+        padding: 100px 0 60px;
+        flex-direction: column;
+    }
+    
+    .bq-hero-inner {
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        gap: 40px;
+    }
+
+    .bq-hero-copy {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .bq-hero-h1 {
+        font-size: 2.4rem;
+        margin-bottom: 20px;
+    }
+
+    .bq-hero-sub {
+        max-width: 100%;
+        margin-bottom: 32px;
+    }
+
+    .bq-hero-actions, .bq-cta-actions, .bq-hero-trust {
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .bq-btn {
+        min-height: 52px;
+        font-size: 1rem;
+    }
+
+    .bq-cards-grid {
+        grid-template-columns: 1fr !important;
+        gap: 20px;
+    }
+
+    .bq-hero-visual {
+        width: 100%;
+    }
+}
+
+@media(max-width:640px){
+    .bq-section{padding:60px 0}
+    .bq-stats-inner{flex-direction:column}
+    .bq-stat{padding:32px;border-bottom:1px solid rgba(255,255,255,0.05)}
+    .bq-stat:last-child{border-bottom:none}
+    .bq-footer-grid{grid-template-columns:1fr;gap:32px}
+    .bq-footer-bottom-inner{flex-direction:column;gap:12px;text-align:center}
+    
+    @keyframes bq-slide-in {
+        from { transform: translateX(100%); }
+        to { transform: translateX(0); }
+    }
+    
+    .bq-hero-h1{font-size:2.1rem}
+    .bq-section-h2{font-size:1.8rem}
+    .bq-form-card{padding:24px 16px}
+    .bq-tab-nav{flex-direction:column;gap:4px;padding:4px}
+    .bq-tab-btn{padding:12px;font-size:0.95rem}
+    .bq-form-grid{grid-template-columns:1fr}
+}
+
