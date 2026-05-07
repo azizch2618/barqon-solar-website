@@ -137,6 +137,16 @@
     .blog-card-mini:hover .hover-zoom {
         transform: scale(1.1);
     }
+    
+    /* Fix images in blog prose to be responsive */
+    .bq-prose img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        display: block;
+        margin: 1.5rem auto;
+    }
 </style>
 {% endblock %}
 

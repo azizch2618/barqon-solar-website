@@ -266,12 +266,24 @@
         const navDropdown = document.getElementById('navDropdown');
 
         navToggle?.addEventListener('click', () => {
-            navDropdown?.classList.toggle('active');
+            const isActive = navDropdown?.classList.toggle('active');
+            const icon = navToggle.querySelector('i');
+            if (icon) {
+                icon.setAttribute('data-lucide', isActive ? 'x' : 'menu');
+                if (window.lucide) lucide.createIcons();
+            }
         });
 
         // Close on link click
-        document.querySelectorAll('#navDropdown .bq-nav-item').forEach(link => {
-            link.addEventListener('click', () => navDropdown?.classList.remove('active'));
+        document.querySelectorAll('#navDropdown .bq-nav-item, #navDropdown .bq-mobile-link').forEach(link => {
+            link.addEventListener('click', () => {
+                navDropdown?.classList.remove('active');
+                const icon = navToggle?.querySelector('i');
+                if (icon) {
+                    icon.setAttribute('data-lucide', 'menu');
+                    if (window.lucide) lucide.createIcons();
+                }
+            });
         });
 
         // Review Modal Functions

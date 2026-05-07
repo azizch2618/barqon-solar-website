@@ -48,15 +48,23 @@ img{display:block;max-width:100%}
 .bq-mobile-link { 
     display: block !important; 
     width: 100%; 
-    text-align: center; 
-    background: rgba(255,255,255,0.05) !important; 
-    margin-bottom: 8px; 
-    padding: 16px 0 !important; 
-    color: #fff !important; 
-    font-weight: 700 !important; 
+    text-align: left; 
+    background: transparent !important; 
+    margin-bottom: 0px; 
+    padding: 16px 12px !important; 
+    color: #cbd5e1 !important; 
+    font-weight: 600 !important; 
     text-decoration: none !important; 
-    border-radius: 12px; 
-    font-size: 0.9rem;
+    border-radius: 0; 
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 1.05rem;
+    transition: color 0.2s ease;
+}
+.bq-mobile-link:last-of-type {
+    border-bottom: none;
+}
+.bq-mobile-link:hover {
+    color: #F5A623 !important;
 }
 
 .bq-nav-item {
@@ -111,8 +119,8 @@ img{display:block;max-width:100%}
 .bq-mobile-inner {
     display: flex;
     flex-direction: column;
-    padding: 24px 0;
-    gap: 16px;
+    padding: 16px 24px 24px;
+    gap: 4px;
 }
 @keyframes bq-fade-down {
     from { opacity: 0; transform: translateY(-10px); }
