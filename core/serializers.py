@@ -3,7 +3,7 @@ from rest_framework import serializers
 from .models import (
     CompanyProfile, Contact, Project, StaffProfile, Payroll,
     SiteReview, SiteReviewPhoto, InstallationProject, InstallationPhoto,
-    ProjectFinancials, JobPosition, JobApplication
+    ProjectFinancials, JobPosition, JobApplication, ProjectPayment
 )
 
 
@@ -113,7 +113,7 @@ class ContactSerializer(serializers.ModelSerializer):
             "fans", "lights", "ac", "fridge", "heater", "iron", "computers", "motors",
             "other_load_watts", "total_load_watts", "appliance_data", "load_details",
             "desired_backup_hours", "battery_preference", "wants_earth_bore",
-            "preferred_contact_method", "lead_status", "assigned_to", "is_resolved",
+            "preferred_contact_method", "lead_status", "assigned_to", "is_resolved", "is_viewed",
             "owner_notes", "created_at", "linked_user", "assigned_to_username",
             "lead_status_display", "property_type_display"
         ]
@@ -143,6 +143,8 @@ class ProjectSerializer(serializers.ModelSerializer):
     lead_city = serializers.CharField(source="lead.city_area", read_only=True)
     assigned_engineer_name = serializers.SerializerMethodField()
     status_display = serializers.CharField(source="get_status_display", read_only=True)
+    total_paid = serializers.DecimalField(source="annotated_total_paid", read_only=True, max_digits=12, decimal_places=2)
+    balance_remaining = serializers.DecimalField(source="annotated_balance_remaining", read_only=True, max_digits=12, decimal_places=2)
 
     class Meta:
         model = Project
@@ -152,6 +154,14 @@ class ProjectSerializer(serializers.ModelSerializer):
         if obj.assigned_engineer:
             return obj.assigned_engineer.get_full_name() or obj.assigned_engineer.username
         return ""
+
+
+class ProjectPaymentSerializer(serializers.ModelSerializer):
+    project_title = serializers.CharField(source="project.title", read_only=True)
+
+    class Meta:
+        model = ProjectPayment
+        fields = "__all__"
 
 
 class StaffProfileSerializer(serializers.ModelSerializer):
@@ -171,12 +181,22 @@ class PayrollSerializer(serializers.ModelSerializer):
     staff_role = serializers.CharField(source="staff.get_role_display", read_only=True)
     month_name = serializers.SerializerMethodField()
     status_display = serializers.CharField(source="get_status_display", read_only=True)
+    
+    # Aliases for frontend compatibility
+    base_salary = serializers.DecimalField(source="basic_salary", max_digits=12, decimal_places=2, read_only=True)
+    total_commission = serializers.DecimalField(source="commissions", max_digits=12, decimal_places=2, read_only=True)
+    net_salary = serializers.DecimalField(source="total_amount", max_digits=12, decimal_places=2, read_only=True)
+    month_display = serializers.SerializerMethodField()
+    role_display = serializers.CharField(source="staff.get_role_display", read_only=True)
 
     class Meta:
         model = Payroll
         fields = "__all__"
 
     def get_month_name(self, obj):
+        return obj.month_year.strftime('%B %Y')
+
+    def get_month_display(self, obj):
         return obj.month_year.strftime('%B %Y')
 
 

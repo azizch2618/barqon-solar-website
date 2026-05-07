@@ -12,7 +12,8 @@ from .views import (
     InstallationProjectViewSet,
     ProjectFinancialsViewSet,
     JobPositionViewSet,
-    JobApplicationViewSet
+    JobApplicationViewSet,
+    ProjectPaymentViewSet
 )
 
 router = DefaultRouter()
@@ -26,6 +27,7 @@ router.register(r'installations', InstallationProjectViewSet, basename='installa
 router.register(r'project-financials', ProjectFinancialsViewSet, basename='project-financials')
 router.register(r'job-positions', JobPositionViewSet, basename='job-position')
 router.register(r'job-applications', JobApplicationViewSet, basename='job-application')
+router.register(r'project-payments', ProjectPaymentViewSet, basename='project-payment')
 
 
 urlpatterns = [

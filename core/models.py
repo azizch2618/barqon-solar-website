@@ -166,6 +166,7 @@ class Contact(models.Model):
     )
     owner_notes = models.TextField(blank=True)
     is_resolved = models.BooleanField(default=False)
+    is_viewed = models.BooleanField(default=False)
     linked_user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL,
@@ -190,16 +191,24 @@ class Contact(models.Model):
 
 
 class Project(models.Model):
-    STATUS_PENDING = "pending"
-    STATUS_IN_PROGRESS = "in_progress"
-    STATUS_COMPLETED = "completed"
-    STATUS_ON_HOLD = "on_hold"
+    STAGE_PENDING = "pending"
+    STAGE_CIVIL = "civil_works"
+    STAGE_ELECTRICAL = "electrical_works"
+    STAGE_INSTALLATION = "panel_installation"
+    STAGE_NET_METERING = "net_metering"
+    STAGE_COMMISSIONING = "commissioning"
+    STAGE_COMPLETED = "completed"
+    STAGE_ON_HOLD = "on_hold"
 
-    STATUS_CHOICES = [
-        (STATUS_PENDING, "Pending"),
-        (STATUS_IN_PROGRESS, "In Progress"),
-        (STATUS_COMPLETED, "Completed"),
-        (STATUS_ON_HOLD, "On Hold"),
+    STAGE_CHOICES = [
+        (STAGE_PENDING, "Pending / Survey"),
+        (STAGE_CIVIL, "Civil Works"),
+        (STAGE_ELECTRICAL, "Electrical Works"),
+        (STAGE_INSTALLATION, "Panel Installation"),
+        (STAGE_NET_METERING, "Net Metering"),
+        (STAGE_COMMISSIONING, "Commissioning"),
+        (STAGE_COMPLETED, "Completed"),
+        (STAGE_ON_HOLD, "On Hold"),
     ]
 
     lead = models.ForeignKey(
@@ -211,7 +220,8 @@ class Project(models.Model):
     )
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_PENDING)
+    status = models.CharField(max_length=30, choices=STAGE_CHOICES, default=STAGE_PENDING)
+    contract_value = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     assigned_engineer = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL,
@@ -226,11 +236,37 @@ class Project(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    @property
+    def total_paid(self):
+        return sum(p.amount for p in self.payments.all())
+
+    @property
+    def balance_remaining(self):
+        return self.contract_value - self.total_paid
+
     class Meta:
         ordering = ["-created_at"]
 
     def __str__(self):
         return f"{self.title} – {self.get_status_display()}"
+
+
+class ProjectPayment(models.Model):
+    project = models.ForeignKey(
+        Project,
+        on_delete=models.CASCADE,
+        related_name="payments"
+    )
+    amount = models.DecimalField(max_digits=12, decimal_places=2)
+    payment_date = models.DateField(default=timezone.now)
+    notes = models.TextField(blank=True, help_text="Payment proof or details")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-payment_date", "-created_at"]
+
+    def __str__(self):
+        return f"Payment: {self.amount} for {self.project.title}"
 
 
 class StaffProfile(models.Model):

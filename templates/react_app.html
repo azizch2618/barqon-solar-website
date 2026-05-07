@@ -359,19 +359,39 @@
             const [notifications, setNotifications] = useState([]);
             const [showDropdown, setShowDropdown] = useState(false);
             const navigate = useNavigate();
+            const toast = useToast();
+            const lastCountRef = useRef(0);
+
+            const fetchNotifications = async (isFirst = false) => {
+                try {
+                    const all = await api.get('contact/');
+                    const unviewed = all.data.filter(l => !l.is_viewed);
+                    
+                    if (!isFirst && unviewed.length > lastCountRef.current) {
+                        const newOnes = unviewed.length - lastCountRef.current;
+                        toast(`${newOnes} New Lead(s) received!`, 'info');
+                    }
+                    
+                    lastCountRef.current = unviewed.length;
+                    setNotifications(unviewed.slice(0, 5));
+                } catch (e) {}
+            };
 
             useEffect(() => {
-                const fetchNotifications = async () => {
-                    try {
-                        const all = await api.get('contact/');
-                        const newLeads = all.data.filter(l => l.lead_status === 'new').slice(0, 5);
-                        setNotifications(newLeads);
-                    } catch (e) {}
-                };
-                fetchNotifications();
-                const interval = setInterval(fetchNotifications, 60000);
+                fetchNotifications(true);
+                const interval = setInterval(() => fetchNotifications(false), 30000);
                 return () => clearInterval(interval);
             }, []);
+
+            const handleToggleDropdown = () => {
+                setShowDropdown(!showDropdown);
+            };
+
+            const handleMarkViewed = (id) => {
+                api.post(`contact/${id}/mark_as_viewed/`).then(() => {
+                    fetchNotifications(true);
+                });
+            };
 
             return (
                 <div className="h-16 glass-card border-b border-slate-700/50 flex justify-between items-center px-4 md:px-8 sticky top-0 z-40 relative">
@@ -383,7 +403,7 @@
                     </div>
                     <div className="flex items-center gap-3 md:gap-6 text-slate-400">
                         <div className="relative">
-                            <button onClick={() => setShowDropdown(!showDropdown)} className={`hover:text-white transition-colors relative ${showDropdown ? 'text-white' : ''}`}>
+                            <button onClick={handleToggleDropdown} className={`hover:text-white transition-colors relative ${showDropdown ? 'text-white' : ''}`}>
                                 <Icon name="Bell" size={20} />
                                 {notifications.length > 0 && (
                                     <>
@@ -393,20 +413,26 @@
                                 )}
                             </button>
                             {showDropdown && (
-                                <div className="absolute right-0 mt-4 w-72 bg-slate-800 border border-slate-700 rounded-xl shadow-2xl overflow-hidden z-50">
+                                <div className="absolute right-0 mt-4 w-80 bg-slate-800 border border-slate-700 rounded-xl shadow-2xl overflow-hidden z-50">
                                     <div className="p-3 bg-slate-900 border-b border-slate-700 flex justify-between items-center">
-                                        <h4 className="text-sm font-bold text-white">Notifications</h4>
-                                        <span className="text-xs bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded-full">{notifications.length} New</span>
+                                        <h4 className="text-sm font-bold text-white uppercase tracking-tighter">New Inquiries</h4>
+                                        <button onClick={() => api.post('contact/mark_all_viewed/').then(() => fetchNotifications(true))} className="text-[10px] text-blue-400 hover:text-white uppercase font-bold">Mark all read</button>
                                     </div>
                                     <div className="max-h-80 overflow-y-auto">
                                         {notifications.length === 0 ? (
-                                            <div className="p-4 text-center text-slate-500 text-sm">No new notifications</div>
+                                            <div className="p-8 text-center text-slate-500 text-sm flex flex-col items-center gap-2">
+                                                <Icon name="CheckCircle2" size={32} className="opacity-20" />
+                                                All caught up!
+                                            </div>
                                         ) : (
                                             notifications.map(n => (
-                                                <div key={n.id} onClick={() => { setShowDropdown(false); navigate('/admin-dashboard/leads'); }} className="p-3 border-b border-slate-700/50 hover:bg-slate-700/50 cursor-pointer transition-colors">
-                                                    <p className="text-sm font-semibold text-white">New Lead: {n.name}</p>
-                                                    <p className="text-xs text-slate-400 mt-1">{n.city_area || 'Unknown City'}</p>
-                                                    <p className="text-[10px] text-blue-400 mt-2 font-bold uppercase tracking-wider">{new Date(n.created_at).toLocaleString()}</p>
+                                                <div key={n.id} onClick={() => { handleMarkViewed(n.id); setShowDropdown(false); navigate('/admin-dashboard/leads'); }} className="p-4 border-b border-slate-700/50 hover:bg-slate-700/50 cursor-pointer transition-colors group relative">
+                                                    <div className="flex justify-between items-start mb-1">
+                                                        <p className="text-sm font-bold text-white group-hover:text-blue-400 transition-colors">New Lead: {n.name}</p>
+                                                        <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                                                    </div>
+                                                    <p className="text-xs text-slate-400 flex items-center gap-1"><Icon name="MapPin" size={10} /> {n.city_area || 'Unknown City'}</p>
+                                                    <p className="text-[10px] text-slate-500 mt-2 font-medium">{new Date(n.created_at).toLocaleString()}</p>
                                                 </div>
                                             ))
                                         )}
@@ -1508,6 +1534,7 @@
                     lead: lead.id,
                     status: 'pending',
                     location: lead.city_area,
+                    system_size_kw: (lead.total_load_watts / 1000).toFixed(2),
                     notes: `Converted from lead. Phone: ${lead.phone}`
                 };
                 api.post('projects/', projectData)
@@ -2525,8 +2552,12 @@
             const [leads, setLeads] = useState([]);
             const [deleteConfirm, setDeleteConfirm] = useState(null);
             const toast = useToast();
-            const emptyForm = { title: '', lead: '', status: 'pending', installation_date: '', system_size_kw: '', location: '', notes: '' };
+            const emptyForm = { title: '', lead: '', status: 'pending', installation_date: '', system_size_kw: '', location: '', notes: '', contract_value: 0 };
             const [form, setForm] = useState(emptyForm);
+            const [showPaymentModal, setShowPaymentModal] = useState(false);
+            const [selectedProject, setSelectedProject] = useState(null);
+            const [payments, setPayments] = useState([]);
+            const [payForm, setPayForm] = useState({ amount: 0, payment_date: new Date().toISOString().split('T')[0], notes: '' });
 
             const fetchAll = () => {
                 setLoading(true);
@@ -2537,7 +2568,35 @@
             useEffect(() => { fetchAll(); }, []);
 
             const openCreate = () => { setForm(emptyForm); setEditProject(null); setShowModal(true); };
-            const openEdit = (p) => { setForm({ title: p.title, lead: p.lead || '', status: p.status, installation_date: p.installation_date || '', system_size_kw: p.system_size_kw || '', location: p.location || '', notes: p.notes || '' }); setEditProject(p); setShowModal(true); };
+            const openEdit = (p) => { setForm({ title: p.title, lead: p.lead || '', status: p.status, installation_date: p.installation_date || '', system_size_kw: p.system_size_kw || '', location: p.location || '', notes: p.notes || '', contract_value: p.contract_value || 0 }); setEditProject(p); setShowModal(true); };
+
+            const openPayments = (p) => {
+                setSelectedProject(p);
+                setShowPaymentModal(true);
+                fetchPayments(p.id);
+            };
+
+            const fetchPayments = (projectId) => {
+                api.get(`project-payments/?project=${projectId}`).then(res => setPayments(res.data));
+            };
+
+            const handleAddPayment = (e) => {
+                e.preventDefault();
+                api.post('project-payments/', { ...payForm, project: selectedProject.id }).then(() => {
+                    fetchPayments(selectedProject.id);
+                    setPayForm({ amount: 0, payment_date: new Date().toISOString().split('T')[0], notes: '' });
+                    fetchAll(); // Refresh project list for totals
+                    toast('Payment recorded!');
+                });
+            };
+
+            const handleDeletePayment = (id) => {
+                api.delete(`project-payments/${id}/`).then(() => {
+                    fetchPayments(selectedProject.id);
+                    fetchAll();
+                    toast('Payment removed');
+                });
+            };
 
             const handleSubmit = (e) => {
                 e.preventDefault();
@@ -2554,7 +2613,16 @@
                     }
                 });
             };
-            const statusColor = (s) => ({ pending: 'bg-yellow-500/20 text-yellow-400', in_progress: 'bg-blue-500/20 text-blue-400', completed: 'bg-emerald-500/20 text-emerald-400', on_hold: 'bg-slate-500/20 text-slate-400' }[s] || 'bg-slate-500/20 text-slate-400');
+            const statusColor = (s) => ({ 
+                pending: 'bg-yellow-500/20 text-yellow-400', 
+                civil_works: 'bg-blue-500/20 text-blue-400', 
+                electrical_works: 'bg-indigo-500/20 text-indigo-400', 
+                panel_installation: 'bg-emerald-500/20 text-emerald-400', 
+                net_metering: 'bg-purple-500/20 text-purple-400', 
+                commissioning: 'bg-orange-500/20 text-orange-400', 
+                completed: 'bg-emerald-600/20 text-emerald-300', 
+                on_hold: 'bg-slate-500/20 text-slate-400' 
+            }[s] || 'bg-slate-500/20 text-slate-400');
 
             return (
                 <Layout>
@@ -2570,20 +2638,33 @@
                             <div className="glass-card overflow-hidden">
                                 <div className="overflow-x-auto">
                                     <table className="w-full text-left min-w-[800px]">
-                                        <thead><tr className="border-b border-slate-700 bg-slate-800/50 text-slate-400 text-sm uppercase">
-                                            <th className="p-4">Project</th><th className="p-4">Lead</th><th className="p-4">Status</th><th className="p-4">Location</th><th className="p-4">Install Date</th><th className="p-4">kW</th><th className="p-4 text-right">Actions</th>
+                                        <thead><tr className="border-b border-slate-700 bg-slate-800/50 text-slate-400 text-xs uppercase">
+                                            <th className="p-4">Project / Lead</th><th className="p-4">Stage</th><th className="p-4">Financials</th><th className="p-4">Location</th><th className="p-4">Install Date</th><th className="p-4 text-right">Actions</th>
                                         </tr></thead>
                                         <tbody>{projects.map(p => (
                                             <tr key={p.id} className="border-b border-slate-700/50 hover:bg-slate-800/30 transition-colors">
-                                                <td className="p-4 text-white font-medium">{p.title}</td>
-                                                <td className="p-4 text-slate-300">{p.lead_name || '—'}</td>
-                                                <td className="p-4"><span className={`px-2 py-1 rounded-full text-xs font-medium ${statusColor(p.status)}`}>{p.status_display}</span></td>
-                                                <td className="p-4 text-slate-300">{p.location || '—'}</td>
-                                                <td className="p-4 text-slate-300">{p.installation_date || '—'}</td>
-                                                <td className="p-4 text-slate-300">{p.system_size_kw || '—'}</td>
-                                                <td className="p-4 text-right flex gap-2 justify-end">
-                                                    <button onClick={() => openEdit(p)} className="bg-blue-500/20 text-blue-400 border border-blue-500/30 px-3 py-1 rounded-lg text-sm hover:bg-blue-500/30"><Icon name="Pencil" size={14} /></button>
-                                                    <button onClick={() => handleDelete(p.id)} className="bg-red-500/20 text-red-400 border border-red-500/30 px-3 py-1 rounded-lg text-sm hover:bg-red-500/30"><Icon name="Trash2" size={14} /></button>
+                                                <td className="p-4">
+                                                    <p className="text-white font-bold">{p.title}</p>
+                                                    <p className="text-slate-500 text-[10px] uppercase font-bold tracking-wider">{p.lead_name || 'Manual Project'} • {p.system_size_kw} kW</p>
+                                                </td>
+                                                <td className="p-4"><span className={`px-2 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter ${statusColor(p.status)}`}>{p.status_display}</span></td>
+                                                <td className="p-4">
+                                                    <div className="flex flex-col">
+                                                        <span className="text-white font-bold text-xs">RS {Number(p.total_paid).toLocaleString()} / {Number(p.contract_value).toLocaleString()}</span>
+                                                        <div className="w-24 h-1 bg-slate-800 rounded-full mt-1 overflow-hidden">
+                                                            <div className="h-full bg-emerald-500" style={{ width: `${Math.min(100, (p.total_paid / p.contract_value) * 100) || 0}%` }}></div>
+                                                        </div>
+                                                        <span className="text-[10px] text-slate-500 mt-1">Bal: RS {Number(p.balance_remaining).toLocaleString()}</span>
+                                                    </div>
+                                                </td>
+                                                <td className="p-4 text-slate-300 text-sm">{p.location || '—'}</td>
+                                                <td className="p-4 text-slate-300 text-sm">{p.installation_date || '—'}</td>
+                                                <td className="p-4 text-right">
+                                                    <div className="flex gap-2 justify-end">
+                                                        <button onClick={() => openPayments(p)} className="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 hover:bg-emerald-500/30 transition-colors"><Icon name="Wallet" size={14} /> Payments</button>
+                                                        <button onClick={() => openEdit(p)} className="bg-blue-500/20 text-blue-400 border border-blue-500/30 p-2 rounded-lg hover:bg-blue-500/30 transition-colors"><Icon name="Pencil" size={14} /></button>
+                                                        <button onClick={() => handleDelete(p.id)} className="bg-red-500/20 text-red-400 border border-red-500/30 p-2 rounded-lg hover:bg-red-500/30 transition-colors"><Icon name="Trash2" size={14} /></button>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         ))}</tbody>
@@ -2603,19 +2684,112 @@
                                     <div><label className="block text-sm text-slate-400 mb-1">Title *</label><input required className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white outline-none focus:border-emerald-500" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} /></div>
                                     <div><label className="block text-sm text-slate-400 mb-1">Link to Lead</label><select className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white outline-none" value={form.lead} onChange={e => setForm({ ...form, lead: e.target.value })}><option value="">— None —</option>{leads.map(l => <option key={l.id} value={l.id}>{l.name} – {l.phone}</option>)}</select></div>
                                     <div className="grid grid-cols-2 gap-4">
-                                        <div><label className="block text-sm text-slate-400 mb-1">Status</label><select className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white outline-none" value={form.status} onChange={e => setForm({ ...form, status: e.target.value })}><option value="pending">Pending</option><option value="in_progress">In Progress</option><option value="completed">Completed</option><option value="on_hold">On Hold</option></select></div>
-                                        <div><label className="block text-sm text-slate-400 mb-1">System Size (kW)</label><input type="number" step="0.1" className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white outline-none focus:border-emerald-500" value={form.system_size_kw} onChange={e => setForm({ ...form, system_size_kw: e.target.value })} /></div>
+                                        <div><label className="block text-sm text-slate-400 mb-1">Status / Stage</label><select className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white outline-none" value={form.status} onChange={e => setForm({ ...form, status: e.target.value })}>
+                                            <option value="pending">Pending / Survey</option>
+                                            <option value="civil_works">Civil Works</option>
+                                            <option value="electrical_works">Electrical Works</option>
+                                            <option value="panel_installation">Panel Installation</option>
+                                            <option value="net_metering">Net Metering</option>
+                                            <option value="commissioning">Commissioning</option>
+                                            <option value="completed">Completed</option>
+                                            <option value="on_hold">On Hold</option>
+                                        </select></div>
+                                        <div><label className="block text-sm text-slate-400 mb-1">System Size (kW)</label><input type="number" step="0.01" className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white outline-none focus:border-emerald-500 font-bold" value={form.system_size_kw} onChange={e => setForm({ ...form, system_size_kw: e.target.value })} /></div>
                                     </div>
                                     <div className="grid grid-cols-2 gap-4">
+                                        <div><label className="block text-sm text-slate-400 mb-1">Contract Value (RS)</label><input type="number" className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white outline-none focus:border-emerald-500 font-bold" value={form.contract_value} onChange={e => setForm({ ...form, contract_value: e.target.value })} /></div>
                                         <div><label className="block text-sm text-slate-400 mb-1">Installation Date</label><input type="date" className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white outline-none focus:border-emerald-500" value={form.installation_date} onChange={e => setForm({ ...form, installation_date: e.target.value })} /></div>
-                                        <div><label className="block text-sm text-slate-400 mb-1">Location</label><input className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white outline-none focus:border-emerald-500" value={form.location} onChange={e => setForm({ ...form, location: e.target.value })} /></div>
                                     </div>
+                                    <div><label className="block text-sm text-slate-400 mb-1">Location</label><input className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white outline-none focus:border-emerald-500" value={form.location} onChange={e => setForm({ ...form, location: e.target.value })} /></div>
                                     <div><label className="block text-sm text-slate-400 mb-1">Notes</label><textarea rows={2} className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white outline-none focus:border-emerald-500" value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} /></div>
                                     <div className="flex justify-end gap-3 pt-2 border-t border-slate-700/50">
                                         <button type="button" onClick={() => setShowModal(false)} className="px-4 py-2 rounded-lg text-slate-300 hover:bg-slate-800">Cancel</button>
                                         <button type="submit" className="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-2 rounded-lg font-medium">{editProject ? 'Save Changes' : 'Create Project'}</button>
                                     </div>
                                 </form>
+                            </div>
+                        </div>
+                    )}
+
+                    {showPaymentModal && selectedProject && (
+                        <div className="fixed inset-0 bg-slate-900/90 backdrop-blur-md flex justify-center items-center z-[100] p-4">
+                            <div className="glass-card w-full max-w-2xl border border-slate-700/50 shadow-2xl flex flex-col max-h-[90vh]">
+                                <div className="flex justify-between items-center p-6 border-b border-slate-700/50 bg-slate-800/30">
+                                    <div>
+                                        <h3 className="text-xl font-bold text-white tracking-tight">Financial Tracker: {selectedProject.title}</h3>
+                                        <p className="text-slate-400 text-xs mt-1 uppercase font-bold tracking-widest">Manage installment breakups and payment proofs</p>
+                                    </div>
+                                    <button onClick={() => setShowPaymentModal(false)} className="text-slate-400 hover:text-white transition-colors"><Icon name="X" size={24} /></button>
+                                </div>
+                                
+                                <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-4 border-b border-slate-700/50 bg-slate-900/50">
+                                    <div className="bg-slate-800/50 p-4 rounded-xl border border-slate-700/50">
+                                        <p className="text-[10px] font-bold text-slate-500 uppercase mb-1">Contract Value</p>
+                                        <p className="text-lg font-black text-white">RS {Number(selectedProject.contract_value).toLocaleString()}</p>
+                                    </div>
+                                    <div className="bg-emerald-500/10 p-4 rounded-xl border border-emerald-500/20">
+                                        <p className="text-[10px] font-bold text-emerald-500/60 uppercase mb-1">Total Received</p>
+                                        <p className="text-lg font-black text-emerald-400">RS {Number(selectedProject.total_paid).toLocaleString()}</p>
+                                    </div>
+                                    <div className="bg-red-500/10 p-4 rounded-xl border border-red-500/20">
+                                        <p className="text-[10px] font-bold text-red-500/60 uppercase mb-1">Remaining Balance</p>
+                                        <p className="text-lg font-black text-red-400">RS {Number(selectedProject.balance_remaining).toLocaleString()}</p>
+                                    </div>
+                                </div>
+
+                                <div className="flex-1 overflow-y-auto p-6 space-y-6">
+                                    <form onSubmit={handleAddPayment} className="glass-card p-6 border-blue-500/20 bg-blue-500/5 space-y-4">
+                                        <h4 className="text-white font-bold text-sm uppercase flex items-center gap-2"><Icon name="PlusCircle" size={16} className="text-blue-400" /> Add New Installment</h4>
+                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                            <div>
+                                                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Amount (RS)</label>
+                                                <input type="number" required className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white outline-none focus:border-blue-500" value={payForm.amount} onChange={e => setPayForm({...payForm, amount: e.target.value})} />
+                                            </div>
+                                            <div>
+                                                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Date</label>
+                                                <input type="date" required className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white outline-none focus:border-blue-500" value={payForm.payment_date} onChange={e => setPayForm({...payForm, payment_date: e.target.value})} />
+                                            </div>
+                                            <div>
+                                                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Notes / Proof</label>
+                                                <input className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white outline-none focus:border-blue-500" placeholder="e.g. Cash / Bank Transfer" value={payForm.notes} onChange={e => setPayForm({...payForm, notes: e.target.value})} />
+                                            </div>
+                                        </div>
+                                        <button type="submit" className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 rounded-lg shadow-lg shadow-blue-500/20 transition-all uppercase text-xs tracking-widest">Record Payment</button>
+                                    </form>
+
+                                    <div className="space-y-3">
+                                        <h4 className="text-white font-bold text-sm uppercase flex items-center gap-2"><Icon name="History" size={16} className="text-slate-400" /> Payment History</h4>
+                                        <div className="overflow-hidden rounded-xl border border-slate-700/50">
+                                            <table className="w-full text-left">
+                                                <thead className="bg-slate-800/50 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                                                    <tr>
+                                                        <th className="px-4 py-3">Date</th>
+                                                        <th className="px-4 py-3">Amount</th>
+                                                        <th className="px-4 py-3">Details</th>
+                                                        <th className="px-4 py-3 text-right">Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody className="divide-y divide-slate-700/30">
+                                                    {payments.length === 0 ? (
+                                                        <tr><td colSpan="4" className="px-4 py-8 text-center text-slate-600 text-xs italic">No payments recorded for this project yet.</td></tr>
+                                                    ) : payments.map(p => (
+                                                        <tr key={p.id} className="hover:bg-slate-800/20 transition-colors">
+                                                            <td className="px-4 py-3 text-slate-300 text-xs">{p.payment_date}</td>
+                                                            <td className="px-4 py-3 text-emerald-400 font-bold text-xs">RS {Number(p.amount).toLocaleString()}</td>
+                                                            <td className="px-4 py-3 text-slate-500 text-xs">{p.notes || '—'}</td>
+                                                            <td className="px-4 py-3 text-right">
+                                                                <button onClick={() => handleDeletePayment(p.id)} className="text-red-500/50 hover:text-red-500 transition-colors"><Icon name="Trash2" size={14} /></button>
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="p-4 border-t border-slate-700/50 bg-slate-800/30 flex justify-end">
+                                    <button onClick={() => setShowPaymentModal(false)} className="bg-slate-700 hover:bg-slate-600 text-white px-6 py-2 rounded-lg font-bold text-xs uppercase tracking-widest transition-colors">Close Tracker</button>
+                                </div>
                             </div>
                         </div>
                     )}
@@ -2629,6 +2803,7 @@
             const [payrollRecords, setPayrollRecords] = useState([]);
             const [loading, setLoading] = useState(true);
             const [tab, setTab] = useState('staff');
+            const [filterMonth, setFilterMonth] = useState(""); // Monthly filter state
             const [showModal, setShowModal] = useState(false);
             const [editMember, setEditMember] = useState(null);
             const [processingMonth, setProcessingMonth] = useState(new Date().toISOString().split('T')[0].substring(0, 7) + "-01");
@@ -2876,7 +3051,25 @@
                             <div className="glass-card overflow-hidden border border-slate-700/50">
                                 <div className="p-6 border-b border-slate-700/50 flex justify-between items-center bg-slate-800/20">
                                     <h3 className="text-white font-bold tracking-tight uppercase text-sm">Payroll Transaction History</h3>
-                                    <div className="text-slate-400 text-xs font-bold bg-slate-900 px-3 py-1 rounded-full border border-slate-700">{payrollRecords.length} Records Found</div>
+                                    <div className="flex items-center gap-4">
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-[10px] font-bold text-slate-500 uppercase">Filter:</span>
+                                            <input 
+                                                type="month" 
+                                                className="bg-slate-900 border border-slate-700 rounded-lg px-3 py-1 text-xs text-white outline-none focus:border-blue-500"
+                                                value={filterMonth}
+                                                onChange={e => setFilterMonth(e.target.value)}
+                                            />
+                                            {filterMonth && (
+                                                <button onClick={() => setFilterMonth("")} className="text-slate-500 hover:text-white transition-colors">
+                                                    <Icon name="X" size={14} />
+                                                </button>
+                                            )}
+                                        </div>
+                                        <div className="text-slate-400 text-xs font-bold bg-slate-900 px-3 py-1 rounded-full border border-slate-700">
+                                            {payrollRecords.filter(r => !filterMonth || r.month_year.startsWith(filterMonth)).length} Records Found
+                                        </div>
+                                    </div>
                                 </div>
                                 <div className="overflow-x-auto">
                                     <table className="w-full text-left border-collapse">
@@ -2892,7 +3085,9 @@
                                             </tr>
                                         </thead>
                                         <tbody className="divide-y divide-slate-700/30">
-                                            {payrollRecords.map(r => (
+                                            {payrollRecords
+                                                .filter(r => !filterMonth || r.month_year.startsWith(filterMonth))
+                                                .map(r => (
                                                 <tr key={r.id} className="hover:bg-slate-800/20 transition-colors group">
                                                     <td className="p-5">
                                                         <p className="text-white font-bold">{r.staff_name}</p>
@@ -2910,7 +3105,10 @@
                                                         </span>
                                                     </td>
                                                     <td className="p-5 text-right">
-                                                        <button onClick={() => window.open(`/api/payroll/${r.id}/download_slip/`, '_blank')} className="bg-slate-700 hover:bg-blue-600 text-white p-2 rounded-lg transition-colors shadow-lg"><Icon name="Download" size={14} /></button>
+                                                        <div className="flex gap-2 justify-end">
+                                                            <button onClick={() => openEditPayroll(r)} className="bg-slate-700 hover:bg-emerald-600 text-white p-2 rounded-lg transition-colors shadow-lg" title="Edit / Mark Paid"><Icon name="Edit" size={14} /></button>
+                                                            <button onClick={() => window.open(`/api/payroll/${r.id}/download_slip/`, '_blank')} className="bg-slate-700 hover:bg-blue-600 text-white p-2 rounded-lg transition-colors shadow-lg" title="Download Slip"><Icon name="Download" size={14} /></button>
+                                                        </div>
                                                     </td>
                                                 </tr>
                                             ))}

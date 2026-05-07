@@ -26,7 +26,7 @@ from .forms import (
 )
 from .models import (
     CompanyProfile, Contact, Project, StaffProfile, Payroll,
-    SiteReview, InstallationProject, ProjectFinancials, JobPosition, JobApplication
+    SiteReview, InstallationProject, ProjectFinancials, JobPosition, JobApplication, ProjectPayment
 )
 from .permissions import IsOwnerOrAdmin
 from .serializers import (
@@ -39,7 +39,8 @@ from .serializers import (
     InstallationProjectSerializer,
     ProjectFinancialsSerializer,
     JobPositionSerializer,
-    JobApplicationSerializer
+    JobApplicationSerializer,
+    ProjectPaymentSerializer
 )
 
 
@@ -584,6 +585,8 @@ def dashboard_summary(request):
         item["status"]: item["total"]
         for item in Project.objects.values("status").annotate(total=Count("id"))
     }
+    total_contract_value = Project.objects.aggregate(total=Sum('contract_value'))['total'] or Decimal("0.00")
+    total_payments_collected = ProjectPayment.objects.aggregate(total=Sum('amount'))['total'] or Decimal("0.00")
 
     # Payroll totals
     total_payroll_paid = Payroll.objects.filter(status=Payroll.STATUS_PAID).aggregate(
@@ -612,7 +615,7 @@ def dashboard_summary(request):
             "closed_leads_count": won_leads,
             "conversion_rate": conversion_rate,
             "monthly_leads_chart": chart_data,
-            "active_projects_count": Project.objects.filter(status__in=[Project.STATUS_PENDING, Project.STATUS_IN_PROGRESS]).count(),
+            "active_projects_count": Project.objects.filter(status__in=[Project.STAGE_PENDING, Project.STAGE_CIVIL, Project.STAGE_ELECTRICAL, Project.STAGE_INSTALLATION]).count(),
             "total_projects": Project.objects.count(),
             "projects_by_status": projects_by_status,
             "staff_count": StaffProfile.objects.filter(is_active=True).count(),
@@ -623,6 +626,8 @@ def dashboard_summary(request):
             "total_project_cost": float(ProjectFinancials.objects.aggregate(total=Sum('total_cost'))['total'] or 0),
             "total_project_revenue": float(ProjectFinancials.objects.aggregate(total=Sum('total_revenue'))['total'] or 0),
             "total_project_profit": float(ProjectFinancials.objects.aggregate(total=Sum('profit_loss'))['total'] or 0),
+            "total_contract_value": float(total_contract_value),
+            "total_payments_collected": float(total_payments_collected),
             "net_profit": float(revenue_estimate) - float(total_payroll_paid),
         }
     )
@@ -640,6 +645,19 @@ class ContactViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return _lead_queryset_for_user(self.request.user)
+
+    @action(detail=True, methods=['post'])
+    def mark_as_viewed(self, request, pk=None):
+        lead = self.get_object()
+        lead.is_viewed = True
+        lead.save()
+        return Response({'status': 'viewed'})
+
+    @action(detail=False, methods=['post'])
+    def mark_all_viewed(self, request):
+        leads = self.get_queryset().filter(is_viewed=False)
+        leads.update(is_viewed=True)
+        return Response({'status': 'all marked as viewed'})
 
     def perform_create(self, serializer):
         data = self.request.data
@@ -718,6 +736,29 @@ class ProjectViewSet(viewsets.ModelViewSet):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
     permission_classes = [IsOwnerOrAdmin]
+
+    def get_queryset(self):
+        from django.db import models
+        from django.db.models import Sum, F, Value
+        from django.db.models.functions import Coalesce
+        return Project.objects.annotate(
+            annotated_total_paid=Coalesce(Sum('payments__amount'), Value(0, output_field=models.DecimalField()))
+        ).annotate(
+            annotated_balance_remaining=F('contract_value') - F('annotated_total_paid')
+        )
+
+
+class ProjectPaymentViewSet(viewsets.ModelViewSet):
+    queryset = ProjectPayment.objects.all()
+    serializer_class = ProjectPaymentSerializer
+    permission_classes = [IsOwnerOrAdmin]
+
+    def get_queryset(self):
+        qs = ProjectPayment.objects.all()
+        project_id = self.request.query_params.get('project')
+        if project_id:
+            qs = qs.filter(project_id=project_id)
+        return qs
 
 
 class StaffProfileViewSet(viewsets.ModelViewSet):

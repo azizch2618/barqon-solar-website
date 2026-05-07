@@ -207,6 +207,29 @@ def build_quotation_pdf_response(request, quotation):
         ]))
         elements.append(p_table)
         
+        # Financial & Savings Forecast (New Section)
+        elements.append(Spacer(1, 15))
+        elements.append(Paragraph("Economic & Savings Forecast", section_style))
+        economic_data = [
+            ["Estimated Monthly Savings", f"PKR {float(quotation.monthly_savings):,.0f}", "Projected ROI Period", f"{float(quotation.roi_years):.1f} Years"],
+            ["Estimated Yearly Savings", f"PKR {float(quotation.monthly_savings * 12):,.0f}", "10-Year Energy Savings", f"PKR {float(quotation.monthly_savings * 12 * 10):,.0f}"]
+        ]
+        t_econ = Table(economic_data, colWidths=[1.8*inch, 1.4*inch, 1.8*inch, 1.5*inch])
+        t_econ.setStyle(TableStyle([
+            ('GRID', (0,0), (-1,-1), 0.5, colors.HexColor("#e2e8f0")),
+            ('BACKGROUND', (0,0), (0,-1), colors.HexColor("#f8fafc")),
+            ('BACKGROUND', (2,0), (2,-1), colors.HexColor("#f8fafc")),
+            ('FONTNAME', (0,0), (0,-1), 'Helvetica-Bold'),
+            ('FONTNAME', (2,0), (2,-1), 'Helvetica-Bold'),
+            ('TEXTCOLOR', (1,0), (1,1), colors.HexColor("#059669")), # Monthly/Yearly Savings in Green
+            ('TEXTCOLOR', (3,1), (3,1), colors.HexColor("#059669")), # 10-Year Savings in Green
+            ('FONTNAME', (1,0), (1,1), 'Helvetica-Bold'),
+            ('FONTNAME', (3,0), (3,1), 'Helvetica-Bold'),
+            ('PADDING', (0,0), (-1,-1), 8),
+            ('FONTSIZE', (0,0), (-1,-1), 9),
+        ]))
+        elements.append(t_econ)
+
         # Financial Totals
         elements.append(Spacer(1, 15))
         totals = [
