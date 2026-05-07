@@ -10,15 +10,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = "django-insecure-xv+*5qt5cyx5sq-f#r$lj67c7q0b*cdsflecgob!*ig8ayc8gx"
 DEBUG = True
-ALLOWED_HOSTS = [
-    "127.0.0.1",
-    "localhost",
-    ".ngrok-free.dev",
-]
-
-CSRF_TRUSTED_ORIGINS = [
-    "https://*.ngrok-free.dev",
-]
+ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     "jazzmin",
