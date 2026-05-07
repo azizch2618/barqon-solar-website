@@ -9,8 +9,16 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = "django-insecure-xv+*5qt5cyx5sq-f#r$lj67c7q0b*cdsflecgob!*ig8ayc8gx"
-DEBUG = True
-ALLOWED_HOSTS = ['*']
+DEBUG = False
+ALLOWED_HOSTS = [
+    "barqon-solar-website-production.up.railway.app",
+    "127.0.0.1",
+    "localhost",
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://barqon-solar-website-production.up.railway.app",
+]
 
 INSTALLED_APPS = [
     "jazzmin",
@@ -202,3 +210,5 @@ CKEDITOR_CONFIGS = {
     },
 }
 
+STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
