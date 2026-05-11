@@ -21,8 +21,8 @@
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"></noscript>
 
-    <!-- Lucide Icons: deferred so it never blocks rendering -->
-    <script src="https://unpkg.com/lucide@latest" defer></script>
+    <!-- Lucide Icons: self-hosted for zero DNS lookup overhead -->
+    <script src="{% static 'js/lucide.min.js' %}" defer></script>
 
     <link rel="icon" href="{% static 'images/logo.png' %}">
     <link rel="stylesheet" href="{% static 'css/bq.css' %}?v=1.8">

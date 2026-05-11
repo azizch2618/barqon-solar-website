@@ -7,7 +7,7 @@
 across Pakistan. Free site survey, Tier-1 equipment, net metering support.{% endblock %}
 
 {% block preload_hero %}
-<link rel="preload" as="image" href="https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=1000&q=85" fetchpriority="high">
+<link rel="preload" as="image" href="{% static 'images/hero_solar.webp' %}" fetchpriority="high">
 {% endblock %}
 
 {% block content %}
@@ -60,13 +60,18 @@ across Pakistan. Free site survey, Tier-1 equipment, net metering support.{% end
         <!-- RIGHT: Image -->
         <div class="bq-hero-visual">
             <div class="bq-hero-img-wrap">
-                <img src="https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=1000&q=85"
-                    alt="Premium solar panels installed on a modern home"
-                    class="bq-hero-img"
-                    loading="eager"
-                    fetchpriority="high"
-                    width="1000" height="667"
-                    decoding="async">
+                <!-- Responsive hero: mobile gets smaller file, desktop gets full size -->
+                <picture>
+                    <source media="(max-width: 768px)" srcset="{% static 'images/hero_solar_mobile.webp' %}" type="image/webp">
+                    <source srcset="{% static 'images/hero_solar.webp' %}" type="image/webp">
+                    <img src="{% static 'images/hero_solar.webp' %}"
+                        alt="Premium solar panels installed on a modern home"
+                        class="bq-hero-img"
+                        loading="eager"
+                        fetchpriority="high"
+                        width="1200" height="798"
+                        decoding="async">
+                </picture>
                 <!-- Floating stat chip -->
                 <div class="bq-stat-chip bq-stat-chip--tl">
                     <div class="bq-stat-chip-value" data-count="70%"> 70% </div>
@@ -180,8 +185,12 @@ across Pakistan. Free site survey, Tier-1 equipment, net metering support.{% end
 <section class="bq-section bq-section--dark" id="why">
     <div class="bq-wrap bq-why-inner">
         <div class="bq-why-visual">
-            <img src="https://images.unsplash.com/photo-1613665813446-82a78c468a1d?auto=format&fit=crop&w=900&q=85"
-                alt="Solar engineers at work" class="bq-why-img" loading="lazy">
+            <picture>
+                <source srcset="{% static 'images/why_solar.webp' %}" type="image/webp">
+                <img src="{% static 'images/why_solar.webp' %}"
+                    alt="Solar engineers at work" class="bq-why-img"
+                    loading="lazy" decoding="async" width="900" height="609">
+            </picture>
         </div>
 
         <div class="bq-why-copy">
@@ -384,7 +393,13 @@ across Pakistan. Free site survey, Tier-1 equipment, net metering support.{% end
             <div class="bq-card bq-project-card" style="padding:0; overflow:hidden; background: #111827; cursor:pointer;" data-index="{{ forloop.counter0 }}">
                 <div class="bq-project-img-wrap" style="position:relative; height:240px;">
                     {% with project.photos.first as first_photo %}
-                    <img src="{% if first_photo %}{{ first_photo.photo.url }}{% else %}https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=600&q=80{% endif %}" alt="{{ project.title }}" loading="lazy" decoding="async" width="600" height="240" style="width:100%; height:100%; object-fit:cover;">
+                    <picture>
+                        <source srcset="{% if first_photo %}{{ first_photo.photo.url }}{% else %}{% static 'images/project_fallback.webp' %}{% endif %}" type="image/webp">
+                        <img src="{% if first_photo %}{{ first_photo.photo.url }}{% else %}{% static 'images/project_fallback.webp' %}{% endif %}"
+                            alt="{{ project.title }}"
+                            loading="lazy" decoding="async" width="600" height="240"
+                            style="width:100%; height:100%; object-fit:cover;">
+                    </picture>
                     {% endwith %}
                     <div style="position:absolute; bottom:12px; right:12px; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); padding:4px 10px; border-radius:4px; color:#fff; font-size:10px; font-weight:bold;">
                         {{ project.system_size }}
@@ -696,11 +711,11 @@ window.addEventListener('DOMContentLoaded', initProjectCards);
             <div class="bq-card bq-card--hover">
                 <div class="bq-card-img-wrap">
                     {% if post.image_url %}
-                        <img src="{{ post.image_url }}" alt="{{ post.title }}" loading="lazy">
+                        <img src="{{ post.image_url }}" alt="{{ post.title }}" loading="lazy" decoding="async">
                     {% elif post.image %}
-                        <img src="{{ post.image.url }}" alt="{{ post.title }}" loading="lazy">
+                        <img src="{{ post.image.url }}" alt="{{ post.title }}" loading="lazy" decoding="async">
                     {% else %}
-                        <img src="https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?auto=format&fit=crop&w=600&q=80" alt="{{ post.title }}" loading="lazy" decoding="async" width="600" height="400">
+                        <img src="{% static 'images/blog1.webp' %}" alt="{{ post.title }}" loading="lazy" decoding="async" width="600" height="399">
                     {% endif %}
                 </div>
                 <div class="bq-card-body">
@@ -713,8 +728,8 @@ window.addEventListener('DOMContentLoaded', initProjectCards);
             <!-- Fallback Placeholders with fixed images and links -->
             <div class="bq-card bq-card--hover">
                 <div class="bq-card-img-wrap">
-                    <img src="https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=600&q=80"
-                        alt="Net Metering Guide" loading="lazy">
+                    <img src="{% static 'images/project_fallback.webp' %}"
+                        alt="Net Metering Guide" loading="lazy" decoding="async" width="600" height="399">
                 </div>
                 <div class="bq-card-body">
                     <h3 class="bq-card-title" style="font-size:1.1rem; margin-left:0; margin-right:0">How Net Metering
@@ -728,8 +743,8 @@ window.addEventListener('DOMContentLoaded', initProjectCards);
 
             <div class="bq-card bq-card--hover">
                 <div class="bq-card-img-wrap">
-                    <img src="https://images.unsplash.com/photo-1620714223084-8fcacc6dfd8d?auto=format&fit=crop&w=600&q=80"
-                        alt="Solar Batteries" loading="lazy">
+                    <img src="{% static 'images/blog2.webp' %}"
+                        alt="Solar Batteries" loading="lazy" decoding="async" width="600" height="400">
                 </div>
                 <div class="bq-card-body">
                     <h3 class="bq-card-title" style="font-size:1.1rem; margin-left:0; margin-right:0">Lithium vs Tubular
@@ -743,8 +758,8 @@ window.addEventListener('DOMContentLoaded', initProjectCards);
 
             <div class="bq-card bq-card--hover">
                 <div class="bq-card-img-wrap">
-                    <img src="https://images.unsplash.com/photo-1613665813446-82a78c468a1d?auto=format&fit=crop&w=600&q=80"
-                        alt="Industrial Solar" loading="lazy">
+                    <img src="{% static 'images/blog3.webp' %}"
+                        alt="Industrial Solar" loading="lazy" decoding="async" width="600" height="406">
                 </div>
                 <div class="bq-card-body">
                     <h3 class="bq-card-title" style="font-size:1.1rem; margin-left:0; margin-right:0">Is Your Factory
