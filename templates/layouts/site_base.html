@@ -9,10 +9,20 @@
     {% block extra_meta %}{% endblock %}
     <meta name="keywords" content="solar company Pakistan, solar installation Pakistan, solar system price Pakistan, net metering Pakistan, residential solar Pakistan, commercial solar Pakistan">
 
+    <!-- Preconnect to external domains -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Preload critical above-the-fold assets -->
+    <link rel="preload" as="image" href="{% static 'images/logo_premium.png' %}" fetchpriority="high">
+    {% block preload_hero %}{% endblock %}
+
+    <!-- Google Fonts: non-render-blocking (font-display:swap via media trick) -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"></noscript>
+
+    <!-- Lucide Icons: deferred so it never blocks rendering -->
+    <script src="https://unpkg.com/lucide@latest" defer></script>
 
     <link rel="icon" href="{% static 'images/logo.png' %}">
     <link rel="stylesheet" href="{% static 'css/bq.css' %}?v=1.8">
@@ -250,43 +260,51 @@
         </div>
     </div>
 
-    <script src="{% static 'js/site.js' %}"></script>
+    <!-- site.js: deferred so it never blocks the parser -->
+    <script src="{% static 'js/site.js' %}" defer></script>
     <script>
-        // Init Lucide icons
-        if (window.lucide) lucide.createIcons();
+        // Wait for deferred Lucide to load, then init icons
+        function bqInitLucide() {
+            if (window.lucide) lucide.createIcons();
+        }
+        document.addEventListener('DOMContentLoaded', bqInitLucide);
 
         // Navbar scroll effect
-        const nav = document.getElementById('site-header');
-        window.addEventListener('scroll', () => {
-            nav.classList.toggle('bq-nav--scrolled', window.scrollY > 40);
-        }, { passive: true });
-
-        // Mobile Toggle Logic
-        const navToggle = document.getElementById('navToggle');
-        const navDropdown = document.getElementById('navDropdown');
-
-        navToggle?.addEventListener('click', () => {
-            const isActive = navDropdown?.classList.toggle('active');
-            const icon = navToggle.querySelector('i');
-            if (icon) {
-                icon.setAttribute('data-lucide', isActive ? 'x' : 'menu');
-                if (window.lucide) lucide.createIcons();
+        document.addEventListener('DOMContentLoaded', function() {
+            const nav = document.getElementById('site-header');
+            if (nav) {
+                window.addEventListener('scroll', () => {
+                    nav.classList.toggle('bq-nav--scrolled', window.scrollY > 40);
+                }, { passive: true });
             }
-        });
 
-        // Close on link click
-        document.querySelectorAll('#navDropdown .bq-nav-item, #navDropdown .bq-mobile-link').forEach(link => {
-            link.addEventListener('click', () => {
-                navDropdown?.classList.remove('active');
-                const icon = navToggle?.querySelector('i');
+            // Mobile Toggle Logic
+            const navToggle = document.getElementById('navToggle');
+            const navDropdown = document.getElementById('navDropdown');
+
+            navToggle?.addEventListener('click', () => {
+                const isActive = navDropdown?.classList.toggle('active');
+                const icon = navToggle.querySelector('i');
                 if (icon) {
-                    icon.setAttribute('data-lucide', 'menu');
+                    icon.setAttribute('data-lucide', isActive ? 'x' : 'menu');
                     if (window.lucide) lucide.createIcons();
                 }
             });
+
+            // Close on link click
+            document.querySelectorAll('#navDropdown .bq-nav-item, #navDropdown .bq-mobile-link').forEach(link => {
+                link.addEventListener('click', () => {
+                    navDropdown?.classList.remove('active');
+                    const icon = navToggle?.querySelector('i');
+                    if (icon) {
+                        icon.setAttribute('data-lucide', 'menu');
+                        if (window.lucide) lucide.createIcons();
+                    }
+                });
+            });
         });
 
-        // Review Modal Functions
+        // Review Modal Functions — kept global for onclick= attributes
         function openReviewModal() {
             document.getElementById('review-modal').style.display = 'flex';
             document.body.style.overflow = 'hidden';
@@ -295,35 +313,36 @@
             document.getElementById('review-modal').style.display = 'none';
             document.body.style.overflow = 'auto';
         }
-        document.getElementById('review-form')?.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const btn = e.target.querySelector('button');
-            const originalText = btn.innerText;
-            btn.disabled = true;
-            btn.innerText = 'Submitting...';
-            
-            const formData = new FormData(this);
-            try {
-                const response = await fetch('/api/site-reviews/', {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-CSRFToken': '{{ csrf_token }}'
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('review-form')?.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const btn = e.target.querySelector('button');
+                const originalText = btn.innerText;
+                btn.disabled = true;
+                btn.innerText = 'Submitting...';
+                
+                const formData = new FormData(this);
+                try {
+                    const response = await fetch('/api/site-reviews/', {
+                        method: 'POST',
+                        body: formData,
+                        headers: { 'X-CSRFToken': '{{ csrf_token }}' }
+                    });
+                    if (response.ok) {
+                        showBqSuccessModal('Review Received!', 'Thank you for sharing your experience. Your review will appear on the site once it is approved by our team.', false);
+                        closeReviewModal();
+                        this.reset();
+                    } else {
+                        alert('Error submitting review. Please try again.');
                     }
-                });
-                if (response.ok) {
-                    showBqSuccessModal('Review Received!', 'Thank you for sharing your experience. Your review will appear on the site once it is approved by our team.', false);
-                    closeReviewModal();
-                    this.reset();
-                } else {
-                    alert('Error submitting review. Please try again.');
+                } catch (err) {
+                    alert('Network error. Check your connection.');
+                } finally {
+                    btn.disabled = false;
+                    btn.innerText = originalText;
                 }
-            } catch (err) {
-                alert('Network error. Check your connection.');
-            } finally {
-                btn.disabled = false;
-                btn.innerText = originalText;
-            }
+            });
         });
 
         function showBqSuccessModal(title, message, showWhatsapp = true) {

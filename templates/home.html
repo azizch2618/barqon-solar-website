@@ -6,6 +6,10 @@
 {% block meta_description %}BARQON Solar designs and installs residential, commercial, and industrial solar systems
 across Pakistan. Free site survey, Tier-1 equipment, net metering support.{% endblock %}
 
+{% block preload_hero %}
+<link rel="preload" as="image" href="https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=1000&q=85" fetchpriority="high">
+{% endblock %}
+
 {% block content %}
 
 <!-- ════════════════════════════════════════════════════════
@@ -57,7 +61,12 @@ across Pakistan. Free site survey, Tier-1 equipment, net metering support.{% end
         <div class="bq-hero-visual">
             <div class="bq-hero-img-wrap">
                 <img src="https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=1000&q=85"
-                    alt="Premium solar panels installed on a modern home" class="bq-hero-img" loading="eager">
+                    alt="Premium solar panels installed on a modern home"
+                    class="bq-hero-img"
+                    loading="eager"
+                    fetchpriority="high"
+                    width="1000" height="667"
+                    decoding="async">
                 <!-- Floating stat chip -->
                 <div class="bq-stat-chip bq-stat-chip--tl">
                     <div class="bq-stat-chip-value" data-count="70%"> 70% </div>
@@ -330,7 +339,7 @@ across Pakistan. Free site survey, Tier-1 equipment, net metering support.{% end
                 {% if review.photos.all %}
                 <div class="bq-testimonial-photos" style="display:flex; gap:8px; margin-bottom:12px; overflow-x:auto;">
                     {% for p in review.photos.all %}
-                        <img src="{{ p.photo.url }}" style="width:60px; height:60px; object-fit:cover; border-radius:8px; cursor:pointer;" onclick="window.open(this.src)">
+                        <img src="{{ p.photo.url }}" loading="lazy" decoding="async" width="60" height="60" style="width:60px; height:60px; object-fit:cover; border-radius:8px; cursor:pointer;" onclick="window.open(this.src)">
                     {% endfor %}
                 </div>
                 {% endif %}
@@ -375,7 +384,7 @@ across Pakistan. Free site survey, Tier-1 equipment, net metering support.{% end
             <div class="bq-card bq-project-card" style="padding:0; overflow:hidden; background: #111827; cursor:pointer;" data-index="{{ forloop.counter0 }}">
                 <div class="bq-project-img-wrap" style="position:relative; height:240px;">
                     {% with project.photos.first as first_photo %}
-                    <img src="{% if first_photo %}{{ first_photo.photo.url }}{% else %}https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=600&q=80{% endif %}" alt="{{ project.title }}" style="width:100%; height:100%; object-fit:cover;">
+                    <img src="{% if first_photo %}{{ first_photo.photo.url }}{% else %}https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=600&q=80{% endif %}" alt="{{ project.title }}" loading="lazy" decoding="async" width="600" height="240" style="width:100%; height:100%; object-fit:cover;">
                     {% endwith %}
                     <div style="position:absolute; bottom:12px; right:12px; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); padding:4px 10px; border-radius:4px; color:#fff; font-size:10px; font-weight:bold;">
                         {{ project.system_size }}
@@ -691,7 +700,7 @@ window.addEventListener('DOMContentLoaded', initProjectCards);
                     {% elif post.image %}
                         <img src="{{ post.image.url }}" alt="{{ post.title }}" loading="lazy">
                     {% else %}
-                        <img src="https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?auto=format&fit=crop&w=600&q=80" alt="{{ post.title }}">
+                        <img src="https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?auto=format&fit=crop&w=600&q=80" alt="{{ post.title }}" loading="lazy" decoding="async" width="600" height="400">
                     {% endif %}
                 </div>
                 <div class="bq-card-body">

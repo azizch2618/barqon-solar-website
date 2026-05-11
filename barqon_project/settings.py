@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "compressor",
     "rest_framework",
     "ckeditor",
     "django_cleanup",
@@ -90,13 +91,32 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = "static/"
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
 STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+STATICFILES_FINDERS = [
+    "django.contrib.staticfiles.finders.FileSystemFinder",
+    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+    "compressor.finders.CompressorFinder",
+]
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
+
+# ── Django Compressor ──────────────────────────────────────────
+COMPRESS_ENABLED = True
+COMPRESS_OFFLINE = False
+COMPRESS_CSS_HASHING_METHOD = "content"
+COMPRESS_CSS_FILTERS = [
+    "compressor.filters.css_default.CssAbsoluteFilter",
+    "compressor.filters.cssmin.rCSSMinFilter",
+]
+COMPRESS_JS_FILTERS = [
+    "compressor.filters.jsmin.rJSMinFilter",
+]
+
+# ── Cache-Control headers via WhiteNoise ───────────────────────
+WHITENOISE_MAX_AGE = 31536000  # 1 year for hashed assets
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = "accounts.User"
@@ -212,5 +232,4 @@ CKEDITOR_CONFIGS = {
     },
 }
 
-STATIC_URL = 'static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+# (Static settings are defined above — do not duplicate them here)
