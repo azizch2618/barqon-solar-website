@@ -523,7 +523,7 @@ window.addEventListener('DOMContentLoaded', initProjectCards);
                     </div>
                     <div class="bq-field">
                         <label>Phone Number</label>
-                        <input type="tel" name="phone" placeholder="0315-6132042" required>
+                        <input type="tel" name="phone" placeholder="0300-9132042" required>
                     </div>
                     <div class="bq-field">
                         <label>City / Area</label>
@@ -547,7 +547,7 @@ window.addEventListener('DOMContentLoaded', initProjectCards);
                         <div class="bq-field"><label>Full Name</label><input type="text" name="name"
                                 placeholder="Your full name" required></div>
                         <div class="bq-field"><label>Phone Number</label><input type="tel" name="phone"
-                                placeholder="0315-6132042" required></div>
+                                placeholder="0300-9132042" required></div>
                         <div class="bq-field"><label>City / Area</label><input type="text" name="city_area"
                                 placeholder="E.g., Gulberg, Lahore"></div>
                         <div class="bq-field"><label>Property Type</label>
@@ -816,6 +816,19 @@ window.addEventListener('DOMContentLoaded', initProjectCards);
             return;
         }
 
+        const submitBtn = form.querySelector('button[type="button"]');
+        const originalBtnText = submitBtn.innerHTML;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="lucide-loader animate-spin" style="display:inline-block; animation: spin 1s linear infinite;"></i> Submitting...';
+        
+        // Add a simple keyframes animation for the spinner if it doesn't exist
+        if (!document.getElementById('spin-style')) {
+            const style = document.createElement('style');
+            style.id = 'spin-style';
+            style.innerHTML = `@keyframes spin { 100% { transform: rotate(360deg); } }`;
+            document.head.appendChild(style);
+        }
+
         const formData = new FormData(form);
         const data = {};
         const appliance_data = { acs: [] };
@@ -887,18 +900,32 @@ window.addEventListener('DOMContentLoaded', initProjectCards);
             if (result.success) {
                 // Trigger Premium Success Modal
                 if (typeof showBqSuccessModal === 'function') {
-                    showBqSuccessModal('Thank You!', 'Our team has received your inquiry and will contact you shortly with your solar proposal.', true);
+                    showBqSuccessModal('Thank You!', 'Your quotation request has been submitted successfully. Our solar consultant will contact you shortly.', true);
                 } else {
-                    alert('Thank you! Your inquiry has been received.');
+                    alert('Your quotation request has been submitted successfully. Our solar consultant will contact you shortly.');
                 }
                 form.reset();
+                
+                // Redirect to WhatsApp
+                if (result.whatsapp_url) {
+                    setTimeout(() => {
+                        window.location.href = result.whatsapp_url;
+                    }, 1500); // 1.5 second delay for smooth UX
+                } else {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnText;
+                }
             } else {
                 console.error('Validation errors:', result);
                 alert('Error submitting form. Please check your inputs: ' + (result.error || JSON.stringify(result)));
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
             }
         } catch (error) {
             console.error('Submission error:', error);
             alert('There was an error connecting to the server. Please try again later.');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnText;
         }
     }
 </script>

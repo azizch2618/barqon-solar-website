@@ -1,0 +1,111 @@
+<style>
+    /* DevGo Static Bottom Footer */
+    .devgo-static-footer {
+        background: #020617;
+        border-top: 1px solid #1e293b;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 16px 100px 16px 24px; /* Right padding 100px prevents overlap with BARQON WA button */
+        font-family: 'Inter', sans-serif;
+        color: #64748b;
+        font-size: 13px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .devgo-footer-content {
+        display: flex;
+        align-items: center;
+        justify-content: center; /* Centered to keep edges completely clear */
+        width: 100%;
+        gap: 60px; /* Generous spacing between brand and links */
+        flex-wrap: wrap; /* Allows wrapping on smaller screens if needed */
+    }
+
+    .devgo-powered-by {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #94a3b8;
+    }
+
+    .devgo-brand {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 700;
+        color: #e2e8f0;
+        text-decoration: none;
+        letter-spacing: -0.2px;
+    }
+
+    .devgo-logo {
+        height: 20px;
+        width: auto;
+        border-radius: 4px;
+    }
+
+    .devgo-links {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+    }
+
+    .devgo-link {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        text-decoration: none;
+        transition: color 0.2s;
+        font-weight: 600;
+    }
+
+    /* Distinct Colors for Identity */
+    .devgo-link.wa { color: #10b981; } /* Green */
+    .devgo-link.wa:hover { color: #34d399; }
+
+    .devgo-link.call { color: #3b82f6; } /* Blue */
+    .devgo-link.call:hover { color: #60a5fa; }
+
+    .devgo-link.email { color: #cbd5e1; } /* Grey/White */
+    .devgo-link.email:hover { color: #f8fafc; }
+
+    @media (max-width: 768px) {
+        .devgo-static-footer {
+            padding: 24px 16px 90px 16px; /* Bottom padding prevents mobile WA button overlap */
+        }
+        .devgo-footer-content {
+            flex-direction: column;
+            gap: 16px;
+            justify-content: center;
+        }
+        .devgo-links {
+            gap: 24px;
+        }
+    }
+</style>
+
+<div class="devgo-static-footer">
+    <div class="devgo-footer-content">
+        <div class="devgo-powered-by">
+            Powered by 
+            <a href="#" class="devgo-brand">
+                <img src="/static/images/devgo-logo.png" alt="" class="devgo-logo" onerror="this.style.display='none';">
+                DevGo
+            </a>
+        </div>
+
+        <div class="devgo-links">
+            <a href="https://wa.me/923029354969" target="_blank" class="devgo-link wa">
+                <i data-lucide="message-circle" style="width: 14px; height: 14px;"></i> WhatsApp
+            </a>
+            <a href="tel:+923029354969" class="devgo-link call">
+                <i data-lucide="phone-call" style="width: 14px; height: 14px;"></i> Call
+            </a>
+            <a href="mailto:devgo.ai99@gmail.com" class="devgo-link">
+                <i data-lucide="mail" style="width: 14px; height: 14px;"></i> Email
+            </a>
+        </div>
+    </div>
+</div>

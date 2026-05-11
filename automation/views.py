@@ -93,12 +93,26 @@ def submit_lead_view(request):
             panel_count=calc_result['panel_count']
         )
 
+        # Generate WhatsApp message securely
+        import urllib.parse
+        from django.utils import timezone
+        from core.models import CompanyProfile
+
+        company = CompanyProfile.objects.first()
+        wa_number = company.cleaned_whatsapp if company and company.cleaned_whatsapp else "923009132042"
+        
+        customer_message = data.get('message', 'Solar Quotation Request')
+        
+        wa_text = f"*New Solar Lead Received!* 🌞\n\n*Customer Details:*\n👤 Name: {name}\n📞 Phone: {phone}\n📍 City: {city}\n⚡ System Size: {calc_result['system_size_kw']} kW\n📝 Message: {customer_message}\n⏱️ Time: {timezone.localtime(timezone.now()).strftime('%d-%b-%Y %I:%M %p')}\n\n_Please contact the customer ASAP._"
+        
+        wa_url = f"https://wa.me/{wa_number}?text={urllib.parse.quote(wa_text)}"
 
         return JsonResponse({
             'success': True,
             'status': 'success',
             'message': 'Lead saved successfully',
-            'lead_id': lead.id
+            'lead_id': lead.id,
+            'whatsapp_url': wa_url
         })
 
     return JsonResponse({'success': False, 'error': 'Invalid method.'})

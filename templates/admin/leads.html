@@ -41,6 +41,9 @@
                         <th
                             style="padding: 16px 24px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: #5c6b7c;">
                             Est. Cost (PKR)</th>
+                        <th
+                            style="padding: 16px 24px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: #5c6b7c;">
+                            Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -48,7 +51,7 @@
                     <tr style="border-bottom: 1px solid #f1f5f9; transition: background 0.2s;"
                         onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='white'">
                         <td style="padding: 16px 24px; font-size: 0.85rem; color: #64748b;">{{ lead.created_at|date:"M
-                            d, Y" }}</td>
+                            d, Y h:i A" }}</td>
                         <td style="padding: 16px 24px; font-size: 0.95rem; font-weight: 700; color: #0b1c2c;">{{
                             lead.name }}</td>
                         <td style="padding: 16px 24px; font-size: 0.9rem; color: #0b1c2c;">{{ lead.phone }}</td>
@@ -64,10 +67,23 @@
                         <td style="padding: 16px 24px; font-size: 0.95rem; font-weight: 800; color: #10b981;">
                             {{ lead.estimated_cost|floatformat:0 }}
                         </td>
+                        <td style="padding: 16px 24px;">
+                            {% if lead.status == 'new' %}
+                            <span style="padding: 4px 12px; border-radius: 50px; font-size: 0.8rem; font-weight: 600; background: #dbeafe; color: #1e3a8a;">
+                            {% elif lead.status == 'contacted' %}
+                            <span style="padding: 4px 12px; border-radius: 50px; font-size: 0.8rem; font-weight: 600; background: #fef3c7; color: #92400e;">
+                            {% elif lead.status == 'closed' %}
+                            <span style="padding: 4px 12px; border-radius: 50px; font-size: 0.8rem; font-weight: 600; background: #d1fae5; color: #065f46;">
+                            {% else %}
+                            <span style="padding: 4px 12px; border-radius: 50px; font-size: 0.8rem; font-weight: 600; background: #f1f5f9; color: #475569;">
+                            {% endif %}
+                                {{ lead.get_status_display }}
+                            </span>
+                        </td>
                     </tr>
                     {% if lead.appliance_data %}
                     <tr style="background: #fafcff; border-bottom: 1px solid #dfe7f0;">
-                        <td colspan="7" style="padding: 16px 24px;">
+                        <td colspan="8" style="padding: 16px 24px;">
                             <details style="cursor: pointer;">
                                 <summary style="font-size: 0.85rem; font-weight: 600; color: #3b82f6;">View Detailed Load & Property Info</summary>
                                 <div style="margin-top: 12px; font-size: 0.85rem; color: #475569; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; padding: 12px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">

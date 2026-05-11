@@ -12,8 +12,8 @@ class ProposalInline(admin.TabularInline):
 
 @admin.register(Lead)
 class LeadAdmin(admin.ModelAdmin):
-    list_display = ('name', 'phone', 'city', 'monthly_units', 'system_size', 'estimated_cost', 'created_at')
-    list_filter = ('city', 'created_at')
+    list_display = ('name', 'phone', 'city', 'system_size', 'estimated_cost', 'status', 'created_at')
+    list_filter = ('status', 'city', 'created_at')
     search_fields = ('name', 'phone', 'city')
     inlines = [SolarCalculationInline, ProposalInline]
 
