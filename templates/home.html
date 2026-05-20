@@ -468,9 +468,15 @@
 
 <!-- Project Data -->
 <script>
-window.homeProjectData = [
-    {% for project in installation_projects %}
-    {
+window.homeProjectData = [];
+// {% for project in installation_projects %}
+{
+    const projectPhotos = [];
+    // {% for p in project.photos.all %}
+    projectPhotos.push("{{ p.photo.url|escapejs }}");
+    // {% endfor %}
+
+    window.homeProjectData.push({
         "title": "{{ project.title|escapejs }}",
         "location": "{{ project.location|escapejs }}",
         "size": "{{ project.system_size|escapejs }}",
@@ -481,14 +487,10 @@ window.homeProjectData = [
         "savings": "Up to 70%",
         "timeline": "21 days",
         "technologies": ["Tier-1 panels", "Hybrid inverter", "Net metering", "Remote monitoring"],
-        "photos": [
-            {% for p in project.photos.all %}
-            "{{ p.photo.url|escapejs }}"{% if not forloop.last %},{% endif %}
-            {% endfor %}
-        ]
-    }{% if not forloop.last %},{% endif %}
-    {% endfor %}
-];
+        "photos": projectPhotos
+    });
+}
+// {% endfor %}
 </script>
 
 <script>

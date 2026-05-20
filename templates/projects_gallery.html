@@ -94,21 +94,23 @@
 
 <!-- Project Data -->
 <script>
-window.projectData = [
-    {% for project in projects %}
-    {
+window.projectData = [];
+// {% for project in projects %}
+{
+    const projectPhotos = [];
+    // {% for p in project.photos.all %}
+    projectPhotos.push("{{ p.photo.url|escapejs }}");
+    // {% endfor %}
+
+    window.projectData.push({
         "title": "{{ project.title|escapejs }}",
         "location": "{{ project.location|escapejs }}",
         "size": "{{ project.system_size|escapejs }}",
         "description": "{{ project.description|escapejs }}",
-        "photos": [
-            {% for p in project.photos.all %}
-            "{{ p.photo.url|escapejs }}"{% if not forloop.last %},{% endif %}
-            {% endfor %}
-        ]
-    }{% if not forloop.last %},{% endif %}
-    {% endfor %}
-];
+        "photos": projectPhotos
+    });
+}
+// {% endfor %}
 </script>
 
 <script>
