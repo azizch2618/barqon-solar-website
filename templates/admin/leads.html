@@ -4,7 +4,7 @@
 {% block title %}Lead Dashboard | BARQON{% endblock %}
 
 {% block content %}
-<section class="bq-section bq-section--light" style="padding-top: 140px; min-height: 100vh;">
+<section class="bq-inline-0aef4d4f bq-section bq-section--light" >
     <div class="bq-wrap">
         <div class="bq-section-head bq-section-head--row">
             <div>
@@ -16,77 +16,77 @@
             </div>
         </div>
 
-        <div class="bq-card" style="padding: 0; overflow-x: auto;">
-            <table style="width: 100%; border-collapse: collapse; text-align: left;">
+        <div class="bq-inline-0c3c28bb bq-card" >
+            <table  class="bq-inline-fe41d0c4">
                 <thead>
-                    <tr style="background: #f8fafc; border-bottom: 1px solid #dfe7f0;">
+                    <tr  class="bq-inline-9a5ad228">
                         <th
-                            style="padding: 16px 24px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: #5c6b7c;">
+                             class="bq-inline-aecad806">
                             Date</th>
                         <th
-                            style="padding: 16px 24px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: #5c6b7c;">
+                             class="bq-inline-aecad806">
                             Customer</th>
                         <th
-                            style="padding: 16px 24px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: #5c6b7c;">
+                             class="bq-inline-aecad806">
                             Contact</th>
                         <th
-                            style="padding: 16px 24px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: #5c6b7c;">
+                             class="bq-inline-aecad806">
                             Location</th>
                         <th
-                            style="padding: 16px 24px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: #5c6b7c;">
+                             class="bq-inline-aecad806">
                             Monthly Units</th>
                         <th
-                            style="padding: 16px 24px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: #5c6b7c;">
+                             class="bq-inline-aecad806">
                             System Size</th>
                         <th
-                            style="padding: 16px 24px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: #5c6b7c;">
+                             class="bq-inline-aecad806">
                             Est. Cost (PKR)</th>
                         <th
-                            style="padding: 16px 24px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: #5c6b7c;">
+                             class="bq-inline-aecad806">
                             Status</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for lead in leads %}
-                    <tr style="border-bottom: 1px solid #f1f5f9; transition: background 0.2s;"
-                        onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='white'">
-                        <td style="padding: 16px 24px; font-size: 0.85rem; color: #64748b;">{{ lead.created_at|date:"M
+                    <tr 
+                        onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='white'" class="bq-inline-54c34605">
+                        <td  class="bq-inline-fbf8f460">{{ lead.created_at|date:"M
                             d, Y h:i A" }}</td>
-                        <td style="padding: 16px 24px; font-size: 0.95rem; font-weight: 700; color: #0b1c2c;">{{
+                        <td  class="bq-inline-b98d57b3">{{
                             lead.name }}</td>
-                        <td style="padding: 16px 24px; font-size: 0.9rem; color: #0b1c2c;">{{ lead.phone }}</td>
-                        <td style="padding: 16px 24px; font-size: 0.9rem; color: #5c6b7c;">{{ lead.city }}</td>
-                        <td style="padding: 16px 24px; font-size: 0.9rem; font-weight: 600; color: #0b1c2c;">{{
+                        <td  class="bq-inline-a2219e14">{{ lead.phone }}</td>
+                        <td  class="bq-inline-cbf70fca">{{ lead.city }}</td>
+                        <td  class="bq-inline-5cdd79e2">{{
                             lead.monthly_units }} Units</td>
-                        <td style="padding: 16px 24px;">
+                        <td  class="bq-inline-efd6703b">
                             <span
-                                style="background: rgba(245, 166, 35, 0.1); color: #F5A623; padding: 4px 12px; border-radius: 50px; font-size: 0.8rem; font-weight: 700;">
+                                 class="bq-inline-dfec19de">
                                 {{ lead.system_size }} kW
                             </span>
                         </td>
-                        <td style="padding: 16px 24px; font-size: 0.95rem; font-weight: 800; color: #10b981;">
+                        <td  class="bq-inline-ca4801ae">
                             {{ lead.estimated_cost|floatformat:0 }}
                         </td>
-                        <td style="padding: 16px 24px;">
+                        <td  class="bq-inline-efd6703b">
                             {% if lead.status == 'new' %}
-                            <span style="padding: 4px 12px; border-radius: 50px; font-size: 0.8rem; font-weight: 600; background: #dbeafe; color: #1e3a8a;">
+                            <span  class="bq-inline-ca289472">
                             {% elif lead.status == 'contacted' %}
-                            <span style="padding: 4px 12px; border-radius: 50px; font-size: 0.8rem; font-weight: 600; background: #fef3c7; color: #92400e;">
+                            <span  class="bq-inline-891d971d">
                             {% elif lead.status == 'closed' %}
-                            <span style="padding: 4px 12px; border-radius: 50px; font-size: 0.8rem; font-weight: 600; background: #d1fae5; color: #065f46;">
+                            <span  class="bq-inline-754c1b12">
                             {% else %}
-                            <span style="padding: 4px 12px; border-radius: 50px; font-size: 0.8rem; font-weight: 600; background: #f1f5f9; color: #475569;">
+                            <span  class="bq-inline-cc0466e2">
                             {% endif %}
                                 {{ lead.get_status_display }}
                             </span>
                         </td>
                     </tr>
                     {% if lead.appliance_data %}
-                    <tr style="background: #fafcff; border-bottom: 1px solid #dfe7f0;">
-                        <td colspan="8" style="padding: 16px 24px;">
-                            <details style="cursor: pointer;">
-                                <summary style="font-size: 0.85rem; font-weight: 600; color: #3b82f6;">View Detailed Load & Property Info</summary>
-                                <div style="margin-top: 12px; font-size: 0.85rem; color: #475569; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; padding: 12px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
+                    <tr  class="bq-inline-e08276c3">
+                        <td colspan="8"  class="bq-inline-efd6703b">
+                            <details  class="bq-inline-24b531c6">
+                                <summary  class="bq-inline-12fc15f8">View Detailed Load & Property Info</summary>
+                                <div  class="bq-inline-737866d1">
                                     {% if lead.appliance_data.roof_type %}<div><strong>Roof Type:</strong> {{ lead.appliance_data.roof_type|title }}</div>{% endif %}
                                     {% if lead.appliance_data.property_type %}<div><strong>Property Type:</strong> {{ lead.appliance_data.property_type|title }}</div>{% endif %}
                                     {% if lead.appliance_data.connection_phase %}<div><strong>Connection Phase:</strong> {{ lead.appliance_data.connection_phase }} Phase</div>{% endif %}
@@ -104,9 +104,9 @@
                                     {% if lead.appliance_data.other_load_watts %}<div><strong>Other Load:</strong> {{ lead.appliance_data.other_load_watts }} W</div>{% endif %}
                                     {% if lead.appliance_data.desired_backup_hours %}<div><strong>Backup Needed:</strong> {{ lead.appliance_data.desired_backup_hours }} hrs</div>{% endif %}
                                     {% if lead.appliance_data.acs %}
-                                        <div style="grid-column: 1 / -1;">
+                                        <div  class="bq-inline-e86cdd0b">
                                             <strong>Air Conditioners:</strong>
-                                            <ul style="margin: 4px 0 0 20px; padding: 0;">
+                                            <ul  class="bq-inline-8ea9efc5">
                                             {% for ac in lead.appliance_data.acs %}
                                                 <li>{{ ac.ton }} Ton ({{ ac.type|title }})</li>
                                             {% endfor %}
@@ -120,7 +120,7 @@
                     {% endif %}
                     {% empty %}
                     <tr>
-                        <td colspan="7" style="padding: 48px; text-align: center; color: #64748b; font-style: italic;">
+                        <td colspan="7"  class="bq-inline-ea7ec67d">
                             No leads found in the system yet.
                         </td>
                     </tr>

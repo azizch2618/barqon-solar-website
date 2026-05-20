@@ -7,25 +7,25 @@
 <!-- ════════════════════════════════════════════════════════
      CAREERS HERO
 ════════════════════════════════════════════════════════ -->
-<section class="bq-section" style="padding: 180px 0 120px; background: var(--navy-dark); position: relative; overflow: hidden; border-bottom: 1px solid rgba(255,255,255,0.03);">
+<section class="bq-inline-eef8290e bq-section">
     <!-- Ambient glowing background -->
-    <div style="position: absolute; top: -20%; left: -10%; width: 60vw; height: 60vw; background: radial-gradient(circle, rgba(255,200,87,0.08) 0%, transparent 60%); pointer-events: none;"></div>
+    <div class="bq-inline-55345562"></div>
     <!-- Mesh Background -->
-    <div class="mesh-bg" style="opacity: 0.4;"></div>
+    <div class="bq-inline-79abdede mesh-bg"></div>
 
-    <div class="bq-wrap" style="position: relative; z-index: 2;">
-        <div style="max-width: 900px; margin: 0 auto; text-align: center;" class="reveal-up">
-            <div style="display: inline-flex; align-items: center; gap: 12px; background: rgba(255, 200, 87, 0.05); border: 1px solid rgba(255, 200, 87, 0.2); padding: 8px 20px; border-radius: 50px; margin-bottom: 40px;">
-                <span style="display: block; width: 6px; height: 6px; background: var(--gold); border-radius: 50%; box-shadow: 0 0 10px var(--gold);"></span>
-                <span style="font-size: 0.75rem; font-weight: 800; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold);">Join BARQON</span>
+    <div class="bq-inline-c962d74f bq-wrap">
+        <div class="bq-inline-70cb8df6 reveal-up">
+            <div class="bq-inline-4421dc7a">
+                <span class="bq-inline-35ef463c"></span>
+                <span class="bq-inline-dce7e7dc">Join BARQON</span>
             </div>
             
-            <h1 style="font-size: clamp(3.5rem, 8vw, 6rem); font-weight: 900; line-height: 0.9; letter-spacing: -0.05em; color: #fff; margin-bottom: 32px;">
+            <h1 class="bq-inline-479ba4dc">
                 Help Us Power the<br>
-                <span style="background: linear-gradient(90deg, var(--gold), #fff); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">Future.</span>
+                <span class="bq-inline-19056c70">Future.</span>
             </h1>
             
-            <p style="font-size: 1.35rem; color: var(--text-secondary); line-height: 1.6; max-width: 700px; margin: 0 auto;">
+            <p class="bq-inline-becc2f01">
                 Join an elite team of passionate engineers, innovators, and problem solvers dedicated to making high-performance solar energy accessible across Pakistan.
             </p>
         </div>
@@ -35,48 +35,48 @@
 <!-- ════════════════════════════════════════════════════════
      OPEN POSITIONS
 ════════════════════════════════════════════════════════ -->
-<section class="bq-section" style="background: var(--navy-dark); padding-top: 100px; padding-bottom: 100px;">
+<section class="bq-inline-f74d7811 bq-section">
     <div class="bq-wrap">
-        <div style="text-align: center; margin-bottom: 80px;" class="reveal-up">
-            <span style="color: var(--gold); font-size: 0.85rem; font-weight: 800; letter-spacing: 0.2em; text-transform: uppercase; display: block; margin-bottom: 24px;">Current Opportunities</span>
-            <h2 style="font-size: var(--h2-size); font-weight: 900; color: #fff; line-height: 1.05; letter-spacing: -0.04em;">Open Positions.</h2>
-            <p style="color: var(--text-muted); font-size: 1.15rem; max-width: 600px; margin: 24px auto 0; line-height: 1.6;">Explore our current openings and find your next challenge.</p>
+        <div class="bq-inline-285f4dcf reveal-up">
+            <span class="bq-inline-4a4116b6">Current Opportunities</span>
+            <h2 class="bq-inline-c9ea77d8">Open Positions.</h2>
+            <p class="bq-inline-9986c251">Explore our current openings and find your next challenge.</p>
         </div>
 
-        <div style="display: grid; gap: 24px;" class="reveal-stagger">
+        <div class="bq-inline-83a6df7d reveal-stagger">
             {% for pos in positions %}
-            <a href="{% url 'job-apply' pos.id %}" style="display: block; text-decoration: none;">
-                <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; padding: 40px; background: var(--navy-deep); border: 1px solid var(--glass-border); border-radius: 24px; transition: all 0.4s ease; box-shadow: 0 10px 30px rgba(0,0,0,0.2);" onmouseover="this.style.transform='translateY(-5px)'; this.style.borderColor='rgba(255,200,87,0.3)'; this.style.boxShadow='0 20px 50px rgba(0,0,0,0.4)';" onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='var(--glass-border)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.2)';">
-                    <div style="flex: 1; min-width: 300px;">
-                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
-                            <span style="padding: 6px 16px; background: rgba(255, 200, 87, 0.1); color: var(--gold); border: 1px solid rgba(255,200,87,0.2); border-radius: 50px; font-size: 0.75rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase;">{{ pos.get_job_type_display }}</span>
-                            <span style="color: var(--text-muted); font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 6px; letter-spacing: 0.05em;"><i data-lucide="map-pin" size="14"></i> {{ pos.location }}</span>
+            <a href="{% url 'job-apply' pos.id %}" class="bq-inline-a87a53bd">
+                <div onmouseover="this.style.transform='translateY(-5px)'; this.style.borderColor='rgba(255,200,87,0.3)'; this.style.boxShadow='0 20px 50px rgba(0,0,0,0.4)';" onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='var(--glass-border)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.2)';" class="bq-inline-f862644f">
+                    <div class="bq-inline-5029516c">
+                        <div class="bq-inline-f6a68949">
+                            <span class="bq-inline-04bac119">{{ pos.get_job_type_display }}</span>
+                            <span class="bq-inline-c452386c"><i data-lucide="map-pin" size="14"></i> {{ pos.location }}</span>
                         </div>
-                        <h3 style="color: #fff; font-size: 1.8rem; font-weight: 800; margin-bottom: 12px; letter-spacing: -0.02em;">{{ pos.title }}</h3>
-                        <p style="color: var(--text-muted); font-size: 1.05rem; max-width: 700px; line-height: 1.6;">{{ pos.description|truncatewords:30 }}</p>
+                        <h3 class="bq-inline-477e80ad">{{ pos.title }}</h3>
+                        <p class="bq-inline-70470580">{{ pos.description|truncatewords:30 }}</p>
                     </div>
-                    <div style="margin-top: 20px; padding-left: 20px;">
-                        <div style="display: inline-flex; align-items: center; justify-content: center; width: 56px; height: 56px; border-radius: 50%; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); color: var(--gold); transition: all 0.3s;">
+                    <div class="bq-inline-e707cc0f">
+                        <div class="bq-inline-428f2230">
                             <i data-lucide="arrow-right"></i>
                         </div>
                     </div>
                 </div>
             </a>
             {% empty %}
-            <div style="text-align: center; padding: 80px 40px; background: rgba(255,255,255,0.01); border: 1px dashed rgba(255,255,255,0.1); border-radius: 32px;" class="reveal-up">
-                <div style="width: 80px; height: 80px; background: rgba(255,255,255,0.03); border-radius: 50%; display: grid; place-items: center; margin: 0 auto 24px; color: var(--text-muted); border: 1px solid rgba(255,255,255,0.05);">
+            <div class="bq-inline-4b1dd092 reveal-up">
+                <div class="bq-inline-4a67bcb4">
                     <i data-lucide="briefcase" size="32"></i>
                 </div>
-                <h3 style="color: #fff; font-size: 1.4rem; font-weight: 800; margin-bottom: 8px;">No open positions at the moment.</h3>
-                <p style="color: var(--text-muted);">Check back later or follow us on LinkedIn for updates.</p>
+                <h3 class="bq-inline-647484f0">No open positions at the moment.</h3>
+                <p class="bq-inline-7abb3a4e">Check back later or follow us on LinkedIn for updates.</p>
             </div>
             {% endfor %}
         </div>
 
-        <div style="margin-top: 60px; padding: 60px 40px; background: var(--navy-deep); border: 1px solid var(--glass-border); border-radius: 32px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.3);" class="reveal-up">
-            <h3 style="color: #fff; font-size: 1.8rem; font-weight: 800; margin-bottom: 16px; letter-spacing: -0.02em;">Don't see a role that fits?</h3>
-            <p style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 32px; max-width: 600px; margin-left: auto; margin-right: auto; line-height: 1.6;">We are always looking for passionate engineers and solar professionals to join our elite team. Send us your resume for future opportunities.</p>
-            <a href="{% url 'general-apply' %}" style="display: inline-flex; align-items: center; gap: 12px; padding: 18px 40px; font-size: 1rem; font-weight: 700; color: #fff; background: transparent; border: 1px solid rgba(255,255,255,0.2); border-radius: 100px; transition: all 0.3s; text-decoration: none;" onmouseover="this.style.background='rgba(255,255,255,0.05)'; this.style.borderColor='var(--gold)'; this.style.color='var(--gold)';" onmouseout="this.style.background='transparent'; this.style.borderColor='rgba(255,255,255,0.2)'; this.style.color='#fff';">
+        <div class="bq-inline-9937fe2f reveal-up">
+            <h3 class="bq-inline-78557a92">Don't see a role that fits?</h3>
+            <p class="bq-inline-fc47554c">We are always looking for passionate engineers and solar professionals to join our elite team. Send us your resume for future opportunities.</p>
+            <a href="{% url 'general-apply' %}" onmouseover="this.style.background='rgba(255,255,255,0.05)'; this.style.borderColor='var(--gold)'; this.style.color='var(--gold)';" onmouseout="this.style.background='transparent'; this.style.borderColor='rgba(255,255,255,0.2)'; this.style.color='#fff';" class="bq-inline-094f412b">
                 Submit General Application <i data-lucide="send" size="18"></i>
             </a>
         </div>
@@ -86,36 +86,36 @@
 <!-- ════════════════════════════════════════════════════════
      PERKS & BENEFITS
 ════════════════════════════════════════════════════════ -->
-<section class="bq-section" style="background: var(--navy-deep); padding-top: 120px; padding-bottom: 120px; border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05);">
+<section class="bq-inline-e5bc3d97 bq-section">
     <div class="bq-wrap">
-        <div style="text-align: center; margin-bottom: 80px;" class="reveal-up">
-            <span style="color: var(--gold); font-size: 0.85rem; font-weight: 800; letter-spacing: 0.2em; text-transform: uppercase; display: block; margin-bottom: 24px;">Perks & Benefits</span>
-            <h2 style="font-size: var(--h2-size); font-weight: 900; color: #fff; line-height: 1.05; letter-spacing: -0.04em;">Why work at BARQON?</h2>
+        <div class="bq-inline-285f4dcf reveal-up">
+            <span class="bq-inline-4a4116b6">Perks & Benefits</span>
+            <h2 class="bq-inline-c9ea77d8">Why work at BARQON?</h2>
         </div>
         
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 32px;" class="reveal-stagger">
-            <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 48px 40px; border-radius: 32px; text-align: center;">
-                <div style="width: 64px; height: 64px; background: rgba(255,200,87,0.1); border-radius: 20px; display: grid; place-items: center; margin: 0 auto 32px;">
-                    <i data-lucide="trending-up" style="color: var(--gold); width: 28px; height: 28px;"></i>
+        <div class="bq-inline-59b3219a reveal-stagger">
+            <div class="bq-inline-d2303806">
+                <div class="bq-inline-04a19408">
+                    <i data-lucide="trending-up" class="bq-inline-a58b1ae5"></i>
                 </div>
-                <h4 style="color: #fff; margin-bottom: 16px; font-weight: 800; font-size: 1.4rem; letter-spacing: -0.02em;">Growth Opportunities</h4>
-                <p style="color: var(--text-muted); font-size: 1.05rem; line-height: 1.6;">We invest in our people. Regular training, workshops, and clear paths for career advancement in a booming industry.</p>
+                <h4 class="bq-inline-e3f81325">Growth Opportunities</h4>
+                <p class="bq-inline-d90c3059">We invest in our people. Regular training, workshops, and clear paths for career advancement in a booming industry.</p>
             </div>
             
-            <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 48px 40px; border-radius: 32px; text-align: center;">
-                <div style="width: 64px; height: 64px; background: rgba(255,255,255,0.05); border-radius: 20px; display: grid; place-items: center; margin: 0 auto 32px;">
-                    <i data-lucide="zap" style="color: #fff; width: 28px; height: 28px;"></i>
+            <div class="bq-inline-d2303806">
+                <div class="bq-inline-b18455b1">
+                    <i data-lucide="zap" class="bq-inline-8454e4cf"></i>
                 </div>
-                <h4 style="color: #fff; margin-bottom: 16px; font-weight: 800; font-size: 1.4rem; letter-spacing: -0.02em;">Innovative Culture</h4>
-                <p style="color: var(--text-muted); font-size: 1.05rem; line-height: 1.6;">Work with the latest solar technology and engineering tools in a fast-paced, exciting, and supportive environment.</p>
+                <h4 class="bq-inline-e3f81325">Innovative Culture</h4>
+                <p class="bq-inline-d90c3059">Work with the latest solar technology and engineering tools in a fast-paced, exciting, and supportive environment.</p>
             </div>
             
-            <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 48px 40px; border-radius: 32px; text-align: center;">
-                <div style="width: 64px; height: 64px; background: rgba(255,255,255,0.05); border-radius: 20px; display: grid; place-items: center; margin: 0 auto 32px;">
-                    <i data-lucide="heart" style="color: #fff; width: 28px; height: 28px;"></i>
+            <div class="bq-inline-d2303806">
+                <div class="bq-inline-b18455b1">
+                    <i data-lucide="heart" class="bq-inline-8454e4cf"></i>
                 </div>
-                <h4 style="color: #fff; margin-bottom: 16px; font-weight: 800; font-size: 1.4rem; letter-spacing: -0.02em;">Health & Wellness</h4>
-                <p style="color: var(--text-muted); font-size: 1.05rem; line-height: 1.6;">Competitive salaries, comprehensive health benefits, and an environment that genuinely values work-life balance.</p>
+                <h4 class="bq-inline-e3f81325">Health & Wellness</h4>
+                <p class="bq-inline-d90c3059">Competitive salaries, comprehensive health benefits, and an environment that genuinely values work-life balance.</p>
             </div>
         </div>
     </div>
@@ -124,20 +124,20 @@
 <!-- ════════════════════════════════════════════════════════
      CTA BANNER
 ════════════════════════════════════════════════════════ -->
-<section style="background: var(--navy-dark); padding-top: 120px; padding-bottom: 120px;">
+<section class="bq-inline-a38a089a">
     <div class="bq-wrap">
-        <div style="background: linear-gradient(135deg, #07121d 0%, #0a1929 100%); border: 1px solid rgba(255,200,87,0.2); border-radius: 40px; padding: 80px; text-align: center; position: relative; overflow: hidden; box-shadow: 0 40px 100px rgba(0,0,0,0.8);" class="reveal-up">
-            <div style="position: absolute; inset: 0; background: radial-gradient(circle at 50% -20%, rgba(255,200,87,0.1) 0%, transparent 70%); pointer-events: none;"></div>
+        <div class="bq-inline-feff5f74 reveal-up">
+            <div class="bq-inline-9127e1b2"></div>
             
-            <h2 style="font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 900; color: #fff; line-height: 1; letter-spacing: -0.03em; margin-bottom: 24px; position: relative; z-index: 2;">Join the Solar Revolution.</h2>
-            <p style="color: var(--text-secondary); font-size: 1.25rem; line-height: 1.6; max-width: 600px; margin: 0 auto 48px; position: relative; z-index: 2;">Ready to build a sustainable future? Reach out to our engineering team today.</p>
+            <h2 class="bq-inline-549cdb70">Join the Solar Revolution.</h2>
+            <p class="bq-inline-7bfa533d">Ready to build a sustainable future? Reach out to our engineering team today.</p>
             
-            <div style="display: flex; gap: 20px; justify-content: center; position: relative; z-index: 2;">
-                <a href="{% url 'home' %}#quote" class="bq-btn-gold-fill" style="font-size: 1.05rem; padding: 20px 48px; border-radius: 100px;">
+            <div class="bq-inline-7b3e5ff2">
+                <a href="{% url 'home' %}#quote" class="bq-inline-b23f303d bq-btn-gold-fill">
                     Get a Free Quote
                 </a>
-                <a href="https://wa.me/{{ company.cleaned_whatsapp }}" style="display: inline-flex; align-items: center; justify-content: center; padding: 20px 48px; font-size: 1.05rem; font-weight: 700; color: #fff; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 100px; transition: all 0.3s; text-decoration: none;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">
-                    <i data-lucide="message-circle" style="margin-right: 8px;"></i> WhatsApp Us
+                <a href="https://wa.me/{{ company.cleaned_whatsapp }}" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'" class="bq-inline-87cd1690">
+                    <i data-lucide="message-circle" class="bq-inline-7f4ee4f3"></i> WhatsApp Us
                 </a>
             </div>
         </div>

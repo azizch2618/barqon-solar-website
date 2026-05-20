@@ -183,3 +183,92 @@
 @media (prefers-reduced-motion: reduce) {
     .bq-admin-kpi-alert { animation: none; }
 }
+
+
+/* Extracted from admin/dashboard.html */
+body {
+            background-color: #020617;
+            color: #f8fafc;
+            font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+            background-image:
+                radial-gradient(circle at 85% 0%, rgba(244, 182, 61, 0.06), transparent 38%),
+                radial-gradient(circle at 10% 100%, rgba(59, 130, 246, 0.05), transparent 42%);
+            background-attachment: fixed;
+        }
+
+        .glass-card {
+            background: rgba(6, 15, 30, 0.72);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(16px);
+            border-radius: 1.25rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .glow-border {
+            position: relative;
+        }
+
+        .glow-border::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: inherit;
+            padding: 1px;
+            background: linear-gradient(to right, rgba(16, 185, 129, 0.5), rgba(59, 130, 246, 0.5));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .glow-border:hover::before,
+        .glow-border.active::before {
+            opacity: 1;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.5);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(51, 65, 85, 0.8);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(71, 85, 105, 1);
+        }
+
+        /* Form Transitions */
+        .step-transition-enter {
+            opacity: 0;
+            transform: translateX(20px);
+        }
+
+        .step-transition-enter-active {
+            opacity: 1;
+            transform: translateX(0);
+            transition: opacity 300ms, transform 300ms;
+        }
+
+        .step-transition-exit {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .step-transition-exit-active {
+            opacity: 0;
+            transform: translateX(-20px);
+            transition: opacity 300ms, transform 300ms;
+        }

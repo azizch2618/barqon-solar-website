@@ -14,14 +14,14 @@
     <div class="mesh-bg mesh-bg-subtle" aria-hidden="true"></div>
     <div class="bq-wrap">
         <div class="bq-gallery-hero__inner reveal-up">
-            <div class="bq-hero-cinematic__badge" style="margin-bottom:28px;">
+            <div class="bq-inline-801732a1 bq-hero-cinematic__badge" >
                 <span class="bq-hero-cinematic__badge-dot"></span>
                 <span class="bq-hero-cinematic__badge-text">Full Portfolio</span>
             </div>
-            <h1 class="bq-section-title" style="font-size:clamp(2.5rem,7vw,5rem);margin-bottom:24px;">
-                Engineering Excellence<br><em style="color:var(--gold);font-style:normal;">Showcase.</em>
+            <h1 class="bq-inline-8df3718f bq-section-title" >
+                Engineering Excellence<br><em  class="bq-inline-27ebb363">Showcase.</em>
             </h1>
-            <p class="bq-hero-cinematic__sub" style="margin:0 auto;max-width:700px;text-align:center;">
+            <p class="bq-inline-cf6d8616 bq-hero-cinematic__sub" >
                 Explore our complete history of high-performance solar installations across Pakistan, from residential rooftops to massive commercial facilities.
             </p>
         </div>
@@ -31,7 +31,7 @@
 <!-- ════════════════════════════════════════════════════════
      GALLERY GRID
 ════════════════════════════════════════════════════════ -->
-<section class="bq-section" style="background: var(--navy-dark); padding-top: 80px; padding-bottom: 120px; min-height: 50vh;">
+<section class="bq-inline-b9549562 bq-section" >
     <div class="bq-wrap">
         <!-- Filter Bar -->
         <div class="bq-gallery-filters reveal-up" id="filterBar">
@@ -62,18 +62,18 @@
                 <div class="bq-project-content-premium">
                     <h3 class="bq-project-title-premium">{{ project.title }}</h3>
                     <div class="bq-project-card-footer">
-                        <span class="bq-project-meta-row"><i data-lucide="map-pin" style="width:14px;"></i> {{ project.location|default:"Pakistan" }}</span>
-                        <span class="bq-project-cta-reveal">View Project <i data-lucide="arrow-up-right" style="width:16px;"></i></span>
+                        <span class="bq-project-meta-row"><i data-lucide="map-pin"  class="bq-inline-8a6f71b5"></i> {{ project.location|default:"Pakistan" }}</span>
+                        <span class="bq-project-cta-reveal">View Project <i data-lucide="arrow-up-right"  class="bq-inline-02901468"></i></span>
                     </div>
                 </div>
             </div>
             {% empty %}
-            <div style="grid-column: 1 / -1; text-align: center; padding: 100px 40px; background: rgba(255,255,255,0.01); border: 1px dashed rgba(255,255,255,0.1); border-radius: 40px;" class="reveal-up">
-                <div style="width: 80px; height: 80px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 50%; display: grid; place-items: center; margin: 0 auto 24px; color: var(--text-muted);">
+            <div  class="bq-inline-6a166242 reveal-up">
+                <div  class="bq-inline-c99da26c">
                     <i data-lucide="image" size="32"></i>
                 </div>
-                <h3 style="color: #fff; font-size: 2rem; font-weight: 900; margin-bottom: 12px; letter-spacing: -0.03em;">No Projects Uploaded</h3>
-                <p style="color: var(--text-muted); font-size: 1.1rem;">Check back soon to see our latest installations.</p>
+                <h3  class="bq-inline-5b78913e">No Projects Uploaded</h3>
+                <p  class="bq-inline-9314b49a">Check back soon to see our latest installations.</p>
             </div>
             {% endfor %}
         </div>
@@ -153,7 +153,7 @@ function openProjectModal(index) {
                     <div class="bq-project-modal-head">
                         <div class="bq-project-tags"><span class="bq-project-tag">${p.size || 'Solar'} System</span><span class="bq-project-tag">Completed</span></div>
                         <h2 id="project-modal-title" class="bq-project-modal-title">${p.title}</h2>
-                        <div class="bq-project-meta-row" style="margin-top:18px;"><span><i data-lucide="map-pin" style="width:16px;"></i> ${p.location || 'Pakistan'}</span></div>
+                        <div class="bq-inline-82e88f39 bq-project-meta-row" ><span><i data-lucide="map-pin"  class="bq-inline-02901468"></i> ${p.location || 'Pakistan'}</span></div>
                     </div>
                     <div class="bq-project-scroll-zone">
                         <p class="bq-project-description">${p.description || 'A precision BARQON solar installation with engineered mounting, protection, and commissioning.'}</p>

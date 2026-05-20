@@ -19,14 +19,14 @@
 <section class="gallery-hero">
     <div class="bq-wrap">
         <div class="bq-eyebrow bq-eyebrow--light">Testimonials</div>
-        <h1 class="bq-section-h2 bq-text-white" style="font-size: 48px;">What our clients say</h1>
-        <p class="bq-section-sub" style="color: #94a3b8; max-width: 700px; margin: 20px auto 0;">Real stories from real customers who have switched to clean, affordable solar energy with BARQON.</p>
+        <h1 class="bq-inline-afbbd663 bq-section-h2 bq-text-white">What our clients say</h1>
+        <p class="bq-inline-7f8e83d8 bq-section-sub">Real stories from real customers who have switched to clean, affordable solar energy with BARQON.</p>
     </div>
 </section>
 
 <section class="bq-section bq-section--dark">
     <div class="bq-wrap">
-        <div class="bq-testimonials-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 32px;">
+        <div class="bq-inline-f4893f5b bq-testimonials-grid">
             {% for review in reviews %}
             <div class="bq-testimonial">
                 <div class="bq-testimonial-stars">
@@ -37,9 +37,9 @@
                 <p class="bq-testimonial-text">"{{ review.review_text }}"</p>
                 
                 {% if review.photos.exists %}
-                <div class="bq-testimonial-photos" style="display:flex; gap:8px; margin-bottom:12px; overflow-x:auto;">
+                <div class="bq-inline-d366b102 bq-testimonial-photos">
                     {% for p in review.photos.all %}
-                        <img src="{{ p.photo.url }}" style="width:60px; height:60px; object-fit:cover; border-radius:8px; cursor:pointer;" onclick="window.open(this.src)">
+                        <img src="{{ p.photo.url }}" onclick="window.open(this.src)" class="bq-inline-c9d883f6">
                     {% endfor %}
                 </div>
                 {% endif %}

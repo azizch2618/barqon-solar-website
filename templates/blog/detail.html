@@ -130,33 +130,33 @@
 <!-- ════════════════════════════════════════════════════════
      ARTICLE HERO
 ════════════════════════════════════════════════════════ -->
-<section class="bq-section" style="padding: 180px 0 100px; background: var(--navy-dark); position: relative; overflow: hidden; border-bottom: 1px solid rgba(255,255,255,0.03);">
+<section class="bq-inline-0bc12526 bq-section" >
     <!-- Ambient glowing background -->
-    <div style="position: absolute; top: -10%; left: -10%; width: 50vw; height: 50vw; background: radial-gradient(circle, rgba(255,200,87,0.08) 0%, transparent 60%); pointer-events: none;"></div>
+    <div  class="bq-inline-7155b120"></div>
     <!-- Mesh Background -->
-    <div class="mesh-bg" style="opacity: 0.3;"></div>
+    <div class="bq-inline-9a630cf3 mesh-bg" ></div>
 
-    <div class="bq-wrap" style="position: relative; z-index: 2;">
-        <div style="max-width: 900px; margin: 0 auto; text-align: center;" class="reveal-up">
-            <div style="display: inline-flex; align-items: center; gap: 12px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); padding: 8px 20px; border-radius: 50px; margin-bottom: 32px;">
-                <span style="font-size: 0.75rem; font-weight: 800; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold);">{{ post.category|default:"Solar Insight" }}</span>
+    <div class="bq-inline-c962d74f bq-wrap" >
+        <div  class="bq-inline-70cb8df6 reveal-up">
+            <div  class="bq-inline-96e4dc70">
+                <span  class="bq-inline-dce7e7dc">{{ post.category|default:"Solar Insight" }}</span>
             </div>
             
-            <h1 style="font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 900; line-height: 1.05; letter-spacing: -0.03em; color: #fff; margin-bottom: 40px;">
+            <h1  class="bq-inline-93323ff7">
                 {{ post.title }}
             </h1>
             
-            <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 32px; color: var(--text-secondary); font-size: 0.95rem; font-weight: 600; padding-top: 32px; border-top: 1px solid rgba(255,255,255,0.1);">
-                <span style="display: flex; align-items: center; gap: 10px;">
-                    <div style="width: 32px; height: 32px; border-radius: 50%; background: rgba(255,200,87,0.1); display: grid; place-items: center;"><i data-lucide="user" size="16" style="color: var(--gold);"></i></div>
+            <div  class="bq-inline-c016a7b9">
+                <span  class="bq-inline-b512c985">
+                    <div  class="bq-inline-2ba2dd9c"><i data-lucide="user" size="16"  class="bq-inline-ed12483e"></i></div>
                     {{ post.author_name|default:"BARQON Engineering" }}
                 </span>
-                <span style="display: flex; align-items: center; gap: 10px;">
-                    <div style="width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.05); display: grid; place-items: center;"><i data-lucide="calendar" size="16" style="color: #fff;"></i></div>
+                <span  class="bq-inline-b512c985">
+                    <div  class="bq-inline-74841191"><i data-lucide="calendar" size="16"  class="bq-inline-421b9989"></i></div>
                     {{ post.created_at|date:"F d, Y" }}
                 </span>
-                <span style="display: flex; align-items: center; gap: 10px;">
-                    <div style="width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.05); display: grid; place-items: center;"><i data-lucide="clock" size="16" style="color: #fff;"></i></div>
+                <span  class="bq-inline-b512c985">
+                    <div  class="bq-inline-74841191"><i data-lucide="clock" size="16"  class="bq-inline-421b9989"></i></div>
                     {{ post.read_time|default:"5 min read" }}
                 </span>
             </div>
@@ -167,72 +167,72 @@
 <!-- ════════════════════════════════════════════════════════
      ARTICLE CONTENT
 ════════════════════════════════════════════════════════ -->
-<section class="bq-section" style="background: var(--navy-dark); padding-top: 60px; padding-bottom: 120px;">
+<section class="bq-inline-9b51a6c6 bq-section" >
     <div class="bq-wrap">
-        <div style="max-width: 900px; margin: 0 auto;">
+        <div  class="bq-inline-12a642d2">
             <!-- Featured Image -->
-            <div class="reveal-up" style="border-radius: 32px; margin-bottom: 80px; box-shadow: 0 40px 100px rgba(0,0,0,0.5); overflow: hidden; aspect-ratio: 16 / 9; border: 1px solid rgba(255,255,255,0.05);">
+            <div class="bq-inline-d3a28e9e reveal-up" >
                 {% if post.image_url %}
-                    <img src="{{ post.image_url }}" alt="{{ post.title }}" style="width: 100%; height: 100%; object-fit: cover;">
+                    <img src="{{ post.image_url }}" alt="{{ post.title }}"  class="bq-inline-7d1faedf">
                 {% elif post.image %}
-                    <img src="{{ post.image.url }}" alt="{{ post.title }}" style="width: 100%; height: 100%; object-fit: cover;">
+                    <img src="{{ post.image.url }}" alt="{{ post.title }}"  class="bq-inline-7d1faedf">
                 {% else %}
-                    <img src="https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?auto=format&fit=crop&w=1200&q=80" alt="{{ post.title }}" style="width: 100%; height: 100%; object-fit: cover;">
+                    <img src="https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?auto=format&fit=crop&w=1200&q=80" alt="{{ post.title }}"  class="bq-inline-7d1faedf">
                 {% endif %}
             </div>
 
             <!-- Content Body -->
-            <div class="article-content reveal-up" style="transition-delay: 0.2s;">
+            <div class="bq-inline-429bd4c5 article-content reveal-up" >
                 {{ post.content|safe }}
             </div>
 
             <!-- Engineering Note Callout -->
-            <div class="reveal-up" style="background: rgba(255, 200, 87, 0.05); border: 1px solid rgba(255, 200, 87, 0.2); padding: 40px; border-radius: 24px; margin: 80px 0; position: relative; overflow: hidden;">
-                <div style="position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--gold);"></div>
-                <h4 style="color: #fff; font-weight: 800; font-size: 1.25rem; margin-bottom: 16px; display: flex; align-items: center; gap: 12px; letter-spacing: -0.01em;">
-                    <div style="width: 32px; height: 32px; background: rgba(255,200,87,0.1); border-radius: 8px; display: grid; place-items: center;">
-                        <i data-lucide="info" size="16" style="color: var(--gold);"></i>
+            <div class="bq-inline-f7b019df reveal-up" >
+                <div  class="bq-inline-8f479f08"></div>
+                <h4  class="bq-inline-f356228c">
+                    <div  class="bq-inline-ae22bb4f">
+                        <i data-lucide="info" size="16"  class="bq-inline-ed12483e"></i>
                     </div>
                     Engineering Note
                 </h4>
-                <p style="color: var(--text-muted); font-size: 1.05rem; line-height: 1.7; margin: 0; padding-left: 44px;">
+                <p  class="bq-inline-03dae710">
                     The data provided above is based on standard engineering practices in Pakistan. System performance and ROI may vary based on site-specific conditions, irradiance levels, and component selection. For a precise technical analysis, please consult directly with our engineering team.
                 </p>
             </div>
 
             <!-- Share Buttons -->
-            <div class="reveal-up" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 24px; padding: 40px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 24px; margin-top: 80px;">
-                <span style="color: #fff; font-size: 1.1rem; font-weight: 800; letter-spacing: -0.01em;">Share this insight</span>
-                <div style="display: flex; gap: 16px;">
-                    <a href="https://wa.me/?text={{ post.title }} - {{ request.build_absolute_uri }}" target="_blank" class="share-btn">
+            <div class="bq-inline-a31e30cd reveal-up" >
+                <span  class="bq-inline-9ce2796c">Share this insight</span>
+                <div  class="bq-inline-bf247de0">
+                    <a href="https://wa.me/?text={{ post.title }} - {{ request.build_absolute_uri }}" target="_blank" rel="noopener" class="share-btn" title="Share on WhatsApp" aria-label="Share on WhatsApp">
                         <i data-lucide="message-circle" size="18"></i>
                     </a>
-                    <a href="#" class="share-btn">
+                    <a href="#" class="share-btn" title="Share on LinkedIn" aria-label="Share on LinkedIn">
                         <i data-lucide="linkedin" size="18"></i>
                     </a>
-                    <a href="#" class="share-btn">
+                    <a href="#" class="share-btn" title="Share on Twitter" aria-label="Share on Twitter">
                         <i data-lucide="twitter" size="18"></i>
                     </a>
-                    <a href="#" class="share-btn">
+                    <a href="#" class="share-btn" title="Copy Link" aria-label="Copy Link">
                         <i data-lucide="link" size="18"></i>
                     </a>
                 </div>
             </div>
 
             <!-- CTA Section -->
-            <div class="reveal-up" style="background: linear-gradient(135deg, var(--navy-deep) 0%, #0a1929 100%); border-radius: 40px; padding: 80px 60px; text-align: center; margin-top: 100px; border: 1px solid rgba(255,200,87,0.2); position: relative; overflow: hidden; box-shadow: 0 40px 100px rgba(0,0,0,0.5);">
-                <div style="position: absolute; top: -20%; right: -10%; width: 50%; height: 100%; background: radial-gradient(circle, rgba(255,200,87,0.1) 0, transparent 70%); pointer-events: none;"></div>
+            <div class="bq-inline-593661c7 reveal-up" >
+                <div  class="bq-inline-9bac766a"></div>
                 
-                <h2 style="font-size: clamp(2rem, 4vw, 3rem); font-weight: 900; color: #fff; margin-bottom: 24px; letter-spacing: -0.03em; position: relative; z-index: 2;">Ready to go Solar?</h2>
-                <p style="color: var(--text-secondary); font-size: 1.2rem; line-height: 1.6; margin-bottom: 48px; max-width: 600px; margin-left: auto; margin-right: auto; position: relative; z-index: 2;">
+                <h2  class="bq-inline-87e5b93b">Ready to go Solar?</h2>
+                <p  class="bq-inline-718bbf16">
                     Our engineering team is ready to provide you with a detailed, no-obligation solar assessment tailored to your energy needs.
                 </p>
-                <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; position: relative; z-index: 2;">
-                    <a href="{% url 'home' %}#quote" class="bq-btn-gold-fill" style="font-size: 1.05rem; padding: 18px 40px; border-radius: 100px;">
-                        <i data-lucide="calculator" size="18" style="margin-right: 8px;"></i> Get Free Quotation
+                <div  class="bq-inline-0234c174">
+                    <a href="{% url 'home' %}#quote" title="Get Free Quotation" class="bq-inline-42643904 bq-btn-gold-fill" >
+                        <i data-lucide="calculator" size="18"  class="bq-inline-7f4ee4f3"></i> Get Free Quotation
                     </a>
-                    <a href="https://wa.me/{{ company.cleaned_whatsapp|default:'923000000000' }}" style="display: inline-flex; align-items: center; justify-content: center; padding: 18px 40px; font-size: 1.05rem; font-weight: 700; color: #fff; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 100px; transition: all 0.3s; text-decoration: none;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">
-                        <i data-lucide="message-square" size="18" style="margin-right: 8px;"></i> WhatsApp Us
+                    <a href="https://wa.me/{{ company.cleaned_whatsapp|default:'923000000000' }}"  onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'" class="bq-inline-845df355">
+                        <i data-lucide="message-square" size="18"  class="bq-inline-7f4ee4f3"></i> WhatsApp Us
                     </a>
                 </div>
             </div>
@@ -242,35 +242,35 @@
              RELATED POSTS
         ════════════════════════════════════════════════════════ -->
         {% if related_posts %}
-        <div style="margin-top: 140px;" class="reveal-up">
-            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 60px; flex-wrap: wrap; gap: 24px;">
+        <div  class="bq-inline-c45dad6f reveal-up">
+            <div  class="bq-inline-9ed9f019">
                 <div>
-                    <span style="color: var(--gold); font-size: 0.85rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.2em; display: block; margin-bottom: 12px;">Keep Reading</span>
-                    <h3 style="color: #fff; font-size: clamp(2rem, 4vw, 2.5rem); font-weight: 900; margin: 0; letter-spacing: -0.03em;">More from our Engineers</h3>
+                    <span  class="bq-inline-d35854e8">Keep Reading</span>
+                    <h3  class="bq-inline-48b4ceb8">More from our Engineers</h3>
                 </div>
-                <a href="{% url 'blog-page' %}" style="color: var(--text-secondary); font-weight: 700; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; padding: 12px 24px; border-radius: 50px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s ease;" onmouseover="this.style.background='rgba(255,255,255,0.1)'; this.style.color='#fff';" onmouseout="this.style.background='rgba(255,255,255,0.05)'; this.style.color='var(--text-secondary)';">
+                <a href="{% url 'blog-page' %}"  onmouseover="this.style.background='rgba(255,255,255,0.1)'; this.style.color='#fff';" onmouseout="this.style.background='rgba(255,255,255,0.05)'; this.style.color='var(--text-secondary)';" class="bq-inline-735e6e6c">
                     View All <i data-lucide="arrow-right" size="18"></i>
                 </a>
             </div>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 32px;" class="reveal-stagger">
+            <div  class="bq-inline-068007a7 reveal-stagger">
                 {% for rpost in related_posts %}
-                <a href="{% url 'blog-detail-page' rpost.slug %}" style="text-decoration: none; display: block;" class="blog-card-mini">
-                    <div style="aspect-ratio: 16/10; overflow: hidden; position: relative;">
+                <a href="{% url 'blog-detail-page' rpost.slug %}"  class="bq-inline-2e21276a blog-card-mini">
+                    <div  class="bq-inline-409fc484">
                         {% if rpost.image_url %}
-                            <img src="{{ rpost.image_url }}" alt="{{ rpost.title }}" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.85; transition: transform 0.6s ease;" class="hover-zoom">
+                            <img src="{{ rpost.image_url }}" alt="{{ rpost.title }}"  class="bq-inline-02b96e27 hover-zoom">
                         {% elif rpost.image %}
-                            <img src="{{ rpost.image.url }}" alt="{{ rpost.title }}" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.85; transition: transform 0.6s ease;" class="hover-zoom">
+                            <img src="{{ rpost.image.url }}" alt="{{ rpost.title }}"  class="bq-inline-02b96e27 hover-zoom">
                         {% else %}
-                            <img src="https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?auto=format&fit=crop&w=600&q=80" alt="{{ rpost.title }}" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.85; transition: transform 0.6s ease;" class="hover-zoom">
+                            <img src="https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?auto=format&fit=crop&w=600&q=80" alt="{{ rpost.title }}"  class="bq-inline-02b96e27 hover-zoom">
                         {% endif %}
-                        <div style="position: absolute; inset: 0; background: linear-gradient(180deg, transparent 50%, var(--navy-deep) 100%); pointer-events: none;"></div>
+                        <div  class="bq-inline-83de9df0"></div>
                     </div>
-                    <div style="padding: 32px;">
-                        <h4 style="color: #fff; font-weight: 800; font-size: 1.25rem; line-height: 1.4; margin-bottom: 12px; transition: color 0.3s ease; letter-spacing: -0.01em;">
+                    <div  class="bq-inline-fed0e88a">
+                        <h4  class="bq-inline-29276d77">
                             {{ rpost.title }}
                         </h4>
-                        <p style="color: var(--text-muted); font-size: 1rem; line-height: 1.6; margin: 0; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                        <p  class="bq-inline-c71bd7f9">
                             {{ rpost.excerpt|truncatechars:100 }}
                         </p>
                     </div>

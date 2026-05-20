@@ -549,6 +549,7 @@
         }
     </style>
     {% block extra_css %}{% endblock %}
+<link rel="stylesheet" href="{% static 'css/bq-inline.css' %}">
 </head>
 <body>
     <div class="page-shell has-topbar">
@@ -609,7 +610,7 @@
 
         <!-- Mobile Menu Overlay -->
         <div class="bq-mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Site navigation">
-            <div class="bq-mobile-menu-header bq-wrap" style="width:100%;max-width:none;padding:0;">
+            <div class="bq-inline-d1cf5f2a bq-mobile-menu-header bq-wrap" >
                 <a href="{% url 'home' %}" class="bq-brand-premium bq-logo-link" onclick="toggleMobileMenu()">
                     <span class="bq-brand-premium__mark">
                         <img src="{% static 'images/logo_premium.png' %}" alt="" width="40" height="40">
