@@ -1,9 +1,10 @@
 from rest_framework import serializers
+from django.db import transaction
 
 from .models import (
     CompanyProfile, Contact, Project, StaffProfile, Payroll,
     SiteReview, SiteReviewPhoto, InstallationProject, InstallationPhoto,
-    ProjectFinancials, JobPosition, JobApplication, ProjectPayment
+    ProjectFinancials, JobPosition, JobApplication, ProjectPayment, InventoryItem
 )
 
 
@@ -28,11 +29,18 @@ class SiteReviewSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ["is_approved", "created_at"]
 
+    def validate_rating(self, value):
+        if value < 1 or value > 5:
+            raise serializers.ValidationError("Please choose a rating from 1 to 5.")
+        return value
+
     def create(self, validated_data):
         uploaded_photos = validated_data.pop('uploaded_photos', [])
-        review = SiteReview.objects.create(**validated_data)
-        for photo in uploaded_photos:
-            SiteReviewPhoto.objects.create(review=review, photo=photo)
+        with transaction.atomic():
+            review = SiteReview.objects.create(**validated_data)
+            SiteReviewPhoto.objects.bulk_create(
+                [SiteReviewPhoto(review=review, photo=photo) for photo in uploaded_photos]
+            )
         return review
 
 
@@ -58,9 +66,14 @@ class InstallationProjectSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         uploaded_photos = validated_data.pop('uploaded_photos', [])
-        project = InstallationProject.objects.create(**validated_data)
-        for i, photo in enumerate(uploaded_photos):
-            InstallationPhoto.objects.create(project=project, photo=photo, order=i)
+        with transaction.atomic():
+            project = InstallationProject.objects.create(**validated_data)
+            InstallationPhoto.objects.bulk_create(
+                [
+                    InstallationPhoto(project=project, photo=photo, order=i)
+                    for i, photo in enumerate(uploaded_photos)
+                ]
+            )
         return project
 
 
@@ -215,6 +228,20 @@ class JobPositionSerializer(serializers.ModelSerializer):
     class Meta:
         model = JobPosition
         fields = "__all__"
+
+
+class InventoryItemSerializer(serializers.ModelSerializer):
+    category_display = serializers.CharField(source="get_category_display", read_only=True)
+    is_low_stock = serializers.BooleanField(read_only=True)
+
+    class Meta:
+        model = InventoryItem
+        fields = [
+            "id", "name", "sku", "category", "category_display",
+            "quantity_on_hand", "reorder_level", "unit_cost",
+            "supplier", "notes", "is_low_stock", "created_at", "updated_at",
+        ]
+        read_only_fields = ["created_at", "updated_at", "is_low_stock"]
 
 
 class JobApplicationSerializer(serializers.ModelSerializer):

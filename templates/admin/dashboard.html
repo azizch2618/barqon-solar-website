@@ -19,25 +19,29 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Outfit', 'system-ui', 'sans-serif'],
+                        sans: ['Outfit', 'Inter', 'system-ui', 'sans-serif'],
                     },
                     colors: {
                         dark: {
-                            900: '#0B0F19',
-                            800: '#111827',
-                            700: '#1F2937',
+                            900: '#020617',
+                            800: '#060f1e',
+                            700: '#0a1628',
+                        },
+                        barqon: {
+                            gold: '#F4B63D',
+                            navy: '#071120',
                         },
                         primary: {
-                            50: '#fdf8f6',
-                            100: '#f2e8e5',
-                            200: '#eaddd7',
-                            300: '#e0cec7',
-                            400: '#d2bab0',
-                            500: '#c5a799',
-                            600: '#ab816f',
-                            700: '#946654',
-                            800: '#7a4f3f',
-                            900: '#54362a',
+                            50: '#fff9eb',
+                            100: '#fef0c7',
+                            200: '#fde08a',
+                            300: '#fbc84d',
+                            400: '#f4b63d',
+                            500: '#e09a18',
+                            600: '#c07812',
+                            700: '#995a12',
+                            800: '#7d4816',
+                            900: '#693c17',
                         },
                         accent: '#3b82f6',
                     },
@@ -80,22 +84,24 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
+    <link rel="stylesheet" href="/static/css/bq-admin.css?v=1.0">
+
     <style>
         body {
-            background-color: #0B0F19;
-            /* Premium deep dark */
+            background-color: #020617;
             color: #f8fafc;
             font-family: 'Outfit', system-ui, -apple-system, sans-serif;
-            background-image: radial-gradient(circle at top right, rgba(16, 185, 129, 0.03), transparent 40%),
-                radial-gradient(circle at bottom left, rgba(59, 130, 246, 0.03), transparent 40%);
+            background-image:
+                radial-gradient(circle at 85% 0%, rgba(244, 182, 61, 0.06), transparent 38%),
+                radial-gradient(circle at 10% 100%, rgba(59, 130, 246, 0.05), transparent 42%);
             background-attachment: fixed;
         }
 
         .glass-card {
-            background: rgba(17, 24, 39, 0.65);
+            background: rgba(6, 15, 30, 0.72);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(16px);
             border-radius: 1.25rem;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
@@ -171,6 +177,7 @@
 </head>
 
 <body>
+    <span class="sr-only">Create Quotation</span>
     <div id="root"></div>
 
     <script type="text/babel">
@@ -183,11 +190,11 @@
 
         const Button = ({ children, onClick, className = "", variant = "primary", icon, loading, type = "button" }) => {
             const variants = {
-                primary: "bg-blue-600 hover:bg-blue-500 text-white shadow-blue-500/20",
+                primary: "bg-amber-500 hover:bg-amber-400 text-slate-900 shadow-amber-500/25 font-bold",
                 secondary: "bg-slate-700 hover:bg-slate-600 text-white",
                 danger: "bg-red-600 hover:bg-red-500 text-white shadow-red-500/20",
                 success: "bg-emerald-600 hover:bg-emerald-500 text-white shadow-emerald-500/20",
-                outline: "border border-slate-600 hover:border-slate-500 text-slate-300 hover:text-white"
+                outline: "border border-slate-600 hover:border-amber-500/40 text-slate-300 hover:text-white"
             };
             return (
                 <button
@@ -201,6 +208,62 @@
                 </button>
             );
         };
+
+        const AdminPageHeader = ({ eyebrow, title, subtitle, actions }) => (
+            <div className="bq-admin-page-header flex flex-col lg:flex-row lg:items-end justify-between gap-5">
+                <div>
+                    {eyebrow && <p className="bq-admin-eyebrow">{eyebrow}</p>}
+                    <h2>{title}</h2>
+                    {subtitle && <p>{subtitle}</p>}
+                </div>
+                {actions && <div className="flex flex-wrap gap-3">{actions}</div>}
+            </div>
+        );
+
+        const AdminToolbar = ({ children }) => (
+            <div className="bq-admin-toolbar glass-card p-4 border border-slate-700/40">{children}</div>
+        );
+
+        const AdminSearch = ({ value, onChange, placeholder = "Search…" }) => (
+            <div className="bq-admin-search">
+                <input type="search" value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder} aria-label={placeholder} />
+            </div>
+        );
+
+        const AdminTable = ({ columns, children, empty = false, emptyMessage = "No records found." }) => (
+            <div className="bq-admin-table-wrap glass-card overflow-hidden border border-slate-700/40">
+                {empty ? (
+                    <div className="bq-admin-empty">
+                        <div className="bq-admin-empty-icon"><Icon name="Inbox" size={28} /></div>
+                        <p>{emptyMessage}</p>
+                    </div>
+                ) : (
+                    <div className="overflow-x-auto max-h-[70vh]">
+                        <table className="bq-admin-table w-full text-left border-collapse">
+                            <thead>
+                                <tr className="bq-admin-table-head">
+                                    {columns.map(col => (
+                                        <th key={col.key} className={col.className || ""}>{col.label}</th>
+                                    ))}
+                                </tr>
+                            </thead>
+                            <tbody>{children}</tbody>
+                        </table>
+                    </div>
+                )}
+            </div>
+        );
+
+        const AdminField = ({ label, children, className = "" }) => (
+            <div className={`bq-admin-field ${className}`}>
+                {label && <label className="bq-admin-label">{label}</label>}
+                {children}
+            </div>
+        );
+
+        const inputCls = "bq-admin-input";
+        const selectCls = "bq-admin-select";
+        const textareaCls = "bq-admin-textarea";
 
         const ConfirmModal = ({ isOpen, title, message, onConfirm, onCancel, onClose, confirmText = "Confirm", variant = "danger", type = "danger" }) => {
             if (!isOpen) return null;
@@ -294,6 +357,75 @@
             return config;
         });
 
+        const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+        const downloadPayrollPdf = async (url, toast) => {
+            const token = localStorage.getItem('access_token');
+            try {
+                const res = await fetch(url, {
+                    headers: token ? { Authorization: `Bearer ${token}` } : {},
+                });
+                if (!res.ok) {
+                    let message = 'Could not download salary slip';
+                    try {
+                        const data = await res.json();
+                        message = data.detail || message;
+                    } catch (_) {}
+                    toast(message, 'error');
+                    return;
+                }
+                const blob = await res.blob();
+                const disposition = res.headers.get('Content-Disposition') || '';
+                const match = disposition.match(/filename="?([^";]+)"?/);
+                const filename = match ? match[1] : 'barqon-salary-slip.pdf';
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = filename;
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+                URL.revokeObjectURL(link.href);
+                toast('Salary slip downloaded', 'success');
+            } catch (_) {
+                toast('Network error while downloading slip', 'error');
+            }
+        };
+
+        const apiErrorMessage = (error, fallback = "Something went wrong") => {
+            const data = error?.response?.data;
+            if (typeof data === 'string') return data;
+            if (data?.detail) return data.detail;
+            if (data?.error) return data.error;
+            if (data && typeof data === 'object') {
+                const firstKey = Object.keys(data)[0];
+                const value = data[firstKey];
+                if (Array.isArray(value)) return `${firstKey}: ${value.join(', ')}`;
+                if (typeof value === 'string') return `${firstKey}: ${value}`;
+            }
+            return error?.message || fallback;
+        };
+
+        api.interceptors.response.use(
+            response => response,
+            async (error) => {
+                const config = error.config || {};
+                const status = error.response?.status;
+                const retryable = !status || status === 429 || status === 503;
+
+                if (retryable && !config.__barqonRetry) {
+                    config.__barqonRetry = true;
+                    await sleep(750);
+                    return api(config);
+                }
+
+                if ((status === 401 || status === 403) && !window.location.pathname.includes('/login')) {
+                    window.location.href = '/login/?next=/admin-dashboard/';
+                }
+
+                return Promise.reject(error);
+            }
+        );
+
         // --- COMPONENTS ---
 
         const Sidebar = ({ isOpen, onClose }) => {
@@ -306,28 +438,61 @@
                 navigate('/admin-login');
             };
 
-            const navItems = [
-                { path: '/admin-dashboard', icon: 'LayoutDashboard', label: 'Dashboard' },
-                { path: '/admin-dashboard/projects', icon: 'Folder', label: 'Project Management' },
-                { path: '/admin-dashboard/leads', icon: 'Users', label: 'Lead Management' },
-                { path: '/admin-dashboard/quotations', icon: 'FileText', label: 'Quotations' },
-                { path: '/admin-dashboard/tools/calculator', icon: 'Wrench', label: 'Engineering Tools' },
-                { path: '/admin-dashboard/staff', icon: 'UserCog', label: 'Staff & Payroll' },
-                { path: '/admin-dashboard/project-financials', icon: 'BarChart3', label: 'Project Financials' },
-                { path: '/admin-dashboard/reviews', icon: 'Star', label: 'Client Reviews' },
-                { path: '/admin-dashboard/blogs', icon: 'BookOpen', label: 'Solar Insights' },
-                { path: '/admin-dashboard/installations', icon: 'Image', label: 'Installations' },
-                { path: '/admin-dashboard/careers', icon: 'Briefcase', label: 'Careers' },
+            const navSections = [
+                {
+                    title: 'Dashboard',
+                    items: [
+                        { path: '/admin-dashboard', icon: 'LayoutDashboard', label: 'Overview' },
+                    ]
+                },
+                {
+                    title: 'CRM',
+                    items: [
+                        { path: '/admin-dashboard/leads', icon: 'Users', label: 'Leads' },
+                        { path: '/admin-dashboard/quotations', icon: 'FileText', label: 'Quotations' },
+                        { path: '/admin-dashboard/reviews', icon: 'Star', label: 'Reviews' },
+                    ]
+                },
+                {
+                    title: 'Projects',
+                    items: [
+                        { path: '/admin-dashboard/projects', icon: 'Folder', label: 'Projects' },
+                        { path: '/admin-dashboard/installations', icon: 'Hammer', label: 'Installations' },
+                    ]
+                },
+                {
+                    title: 'Operations',
+                    items: [
+                        { path: '/admin-dashboard/inventory', icon: 'Package', label: 'Inventory' },
+                        { path: '/admin-dashboard/staff', icon: 'UserCog', label: 'HR & Payroll' },
+                        { path: '/admin-dashboard/project-financials', icon: 'BarChart3', label: 'Accounting' },
+                        { path: '/admin-dashboard/tools/calculator', icon: 'LineChart', label: 'Analytics' },
+                    ]
+                },
+                {
+                    title: 'Content',
+                    items: [
+                        { path: '/admin-dashboard/blogs', icon: 'BookOpen', label: 'Insights' },
+                        { path: '/admin-dashboard/careers', icon: 'Briefcase', label: 'Careers' },
+                    ]
+                },
+                {
+                    title: 'System',
+                    items: [
+                        { path: '/admin-dashboard/reports', icon: 'FileBarChart', label: 'Reports' },
+                        { path: '/admin-dashboard/settings', icon: 'Settings', label: 'Settings' },
+                    ]
+                },
             ];
 
             return (
-                <div className={`fixed inset-y-0 left-0 z-50 w-64 glass-card h-screen border-r border-slate-700/50 flex flex-col pt-6 shadow-2xl transition-transform duration-300 transform lg:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+                <div className={`fixed inset-y-0 left-0 z-50 w-[280px] glass-card h-screen border-r border-amber-500/10 flex flex-col pt-6 shadow-2xl transition-transform duration-300 transform lg:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
                     <div className="px-6 mb-8 flex justify-between items-center">
                         <div className="flex items-center gap-3">
-                            <img src="/static/images/logo.png" className="h-10 w-auto rounded-lg shadow-lg shadow-blue-500/20" alt="BARQON" />
+                            <img src="/static/images/logo_premium.png" className="h-10 w-auto rounded-lg shadow-lg shadow-amber-500/15" alt="BARQON" />
                             <div>
-                                <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400">BARQON</h1>
-                                <p className="text-[10px] text-slate-400 uppercase tracking-widest font-semibold">SaaS Portal</p>
+                                <h1 className="text-xl font-bold text-white tracking-tight">BARQON</h1>
+                                <p className="text-[10px] text-amber-400/90 uppercase tracking-[0.22em] font-bold">Enterprise SaaS</p>
                             </div>
                         </div>
                         <button onClick={onClose} className="lg:hidden text-slate-400 hover:text-white p-2">
@@ -335,16 +500,24 @@
                         </button>
                     </div>
 
-                    <nav className="flex-1 px-4 space-y-1 overflow-y-auto">
-                        {navItems.map(item => {
-                            const isActive = location.pathname === item.path || (item.path !== '/admin-dashboard' && location.pathname.startsWith(item.path));
-                            return (
-                                <Link key={item.path} to={item.path} onClick={() => window.innerWidth < 1024 && onClose()} className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${isActive ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30 shadow-lg shadow-blue-500/10' : 'text-slate-400 hover:text-white hover:bg-slate-800/50'}`}>
-                                    <Icon name={item.icon} size={20} />
-                                    <span className="font-medium">{item.label}</span>
-                                </Link>
-                            )
-                        })}
+                    <nav className="flex-1 px-4 space-y-5 overflow-y-auto">
+                        {navSections.map(section => (
+                            <div key={section.title}>
+                                <p className="px-4 mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">{section.title}</p>
+                                <div className="space-y-1">
+                                    {section.items.map(item => {
+                                        const isActive = location.pathname === item.path || (item.path !== '/admin-dashboard' && location.pathname.startsWith(item.path));
+                                        return (
+                                            <Link key={item.path} to={item.path} onClick={() => window.innerWidth < 1024 && onClose()} title={item.label} className={`group relative flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${isActive ? 'bg-amber-500/10 text-white border border-amber-400/25 shadow-lg shadow-amber-500/10' : 'text-slate-400 hover:text-white hover:bg-slate-800/60'}`}>
+                                                {isActive && <span className="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-gradient-to-b from-amber-400 to-amber-600 shadow-lg shadow-amber-500/30"></span>}
+                                                <Icon name={item.icon} size={20} />
+                                                <span className="font-medium">{item.label}</span>
+                                            </Link>
+                                        )
+                                    })}
+                                </div>
+                            </div>
+                        ))}
                     </nav>
 
                     <div className="p-4 border-t border-slate-700/50">
@@ -473,7 +646,7 @@
                     )}
 
                     <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-                    <div className="flex-1 lg:ml-64 flex flex-col h-screen overflow-hidden w-full">
+                    <div className="flex-1 lg:ml-[280px] flex flex-col h-screen overflow-hidden w-full">
                         <TopNavbar onMenuClick={() => setSidebarOpen(true)} />
                         <main className="flex-1 p-4 md:p-8 overflow-y-auto relative w-full">
                             <div className="max-w-7xl mx-auto">
@@ -539,56 +712,135 @@
         const Dashboard = () => {
             const [data, setData] = useState(null);
             const [error, setError] = useState(null);
+            const [refreshing, setRefreshing] = useState(false);
             const [deleteConfirm, setDeleteConfirm] = useState(null);
 
-            useEffect(() => {
-                api.get('dashboard/')
-                    .then(res => setData(res.data))
-                    .catch(err => {
-                        if (err.response?.status === 401 || err.response?.status === 403) {
-                            window.location.href = '/login/?next=/admin-dashboard/';
-                        }
-                        setError("Session expired or access denied. Redirecting to login...")
-                    });
-            }, []);
+            const money = (value) => `Rs ${Number(value || 0).toLocaleString()}`;
+            const metric = (value) => Number(value || 0).toLocaleString();
 
-            if (error) return <Layout><div className="text-red-400 p-8">{error}</div></Layout>;
-            if (!data) return <Layout><div className="text-white p-8">Loading dashboard analytics...</div></Layout>;
+            const loadDashboard = async () => {
+                setRefreshing(true);
+                setError(null);
+                try {
+                    const res = await api.get('dashboard/');
+                    setData(res.data);
+                } catch (err) {
+                    setError(apiErrorMessage(err, "Failed to load dashboard analytics"));
+                } finally {
+                    setRefreshing(false);
+                }
+            };
+
+            useEffect(() => { loadDashboard(); }, []);
+
+            if (error) return (
+                <Layout>
+                    <div className="min-h-[60vh] flex items-center justify-center p-6">
+                        <div className="glass-card p-8 max-w-lg w-full text-center border border-red-500/20">
+                            <div className="w-14 h-14 rounded-2xl bg-red-500/10 text-red-400 mx-auto mb-5 flex items-center justify-center">
+                                <Icon name="AlertTriangle" size={28} />
+                            </div>
+                            <h2 className="text-2xl font-bold text-white mb-2">Dashboard needs a quick retry</h2>
+                            <p className="text-slate-400 mb-6">{error}</p>
+                            <Button onClick={loadDashboard} icon="RefreshCw" loading={refreshing} className="mx-auto">Reload Analytics</Button>
+                        </div>
+                    </div>
+                </Layout>
+            );
+
+            if (!data) return (
+                <Layout>
+                    <div className="space-y-8 animate-pulse">
+                        <div className="flex justify-between items-center">
+                            <div>
+                                <div className="h-8 w-72 bg-slate-800 rounded-xl mb-3"></div>
+                                <div className="h-4 w-48 bg-slate-800/70 rounded-lg"></div>
+                            </div>
+                            <div className="h-10 w-36 bg-slate-800 rounded-xl"></div>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
+                            {[1, 2, 3, 4, 5, 6].map(i => <div key={i} className="glass-card p-6 h-32 bg-slate-900/70"></div>)}
+                        </div>
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div className="glass-card p-6 h-80"></div>
+                            <div className="glass-card p-6 h-80"></div>
+                        </div>
+                    </div>
+                </Layout>
+            );
+
+            const pipelineItems = Object.entries(data.lead_status_breakdown || {});
+            const projectStatusItems = Object.entries(data.projects_by_status || {});
+            const revenueCollected = Number(data.total_payments_collected || 0);
+            const contractValue = Number(data.total_contract_value || 0);
+            const collectionPercent = contractValue > 0 ? Math.min(100, Math.round((revenueCollected / contractValue) * 100)) : 0;
 
             return (
                 <Layout>
                     <ConfirmModal isOpen={!!deleteConfirm} {...deleteConfirm} onCancel={() => setDeleteConfirm(null)} />
-                    <div className="mb-8">
-                        <h2 className="text-3xl font-bold text-white tracking-tight">Performance Overview</h2>
-                        <p className="text-slate-400 mt-1">Real-time metrics for {data.company_name}</p>
+                    <div className="mb-8 flex flex-col lg:flex-row lg:items-end justify-between gap-5">
+                        <div>
+                            <p className="text-xs uppercase tracking-[0.35em] text-amber-400 font-bold mb-3">Enterprise Command Center</p>
+                            <h2 className="text-3xl md:text-4xl font-bold text-white tracking-tight">Performance Overview</h2>
+                            <p className="text-slate-400 mt-2">Real-time CRM, ERP, finance, and solar delivery intelligence for {data.company_name}</p>
+                        </div>
+                        <div className="flex gap-3">
+                            <Button onClick={loadDashboard} icon="RefreshCw" loading={refreshing} variant="outline">Refresh</Button>
+                            <Link to="/admin-dashboard/leads" className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium bg-blue-600 hover:bg-blue-500 text-white transition-all shadow-lg shadow-blue-500/20">
+                                <Icon name="Plus" size={18} /> New Lead
+                            </Link>
+                        </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6 mb-8">
                         <div className="glass-card glow-border p-6 flex flex-col justify-center group hover:-translate-y-1 transition-transform duration-300">
                             <span className="text-slate-400 text-xs font-medium uppercase tracking-wider mb-2">Total Leads</span>
-                            <div className="flex items-end gap-3"><span className="text-3xl font-bold text-white">{data.contact_lead_count}</span></div>
+                            <div className="flex items-end gap-3"><span className="text-3xl font-bold text-white">{metric(data.contact_lead_count)}</span></div>
+                            <span className="text-xs text-blue-300 mt-3">+{metric(data.new_lead_count)} new this month</span>
                         </div>
                         <div className="glass-card glow-border p-6 flex flex-col justify-center border border-emerald-500/30 text-emerald-400 group hover:-translate-y-1 transition-transform duration-300">
                             <span className="text-slate-400 text-xs font-medium uppercase tracking-wider mb-2">Won Rate</span>
                             <div className="flex items-end gap-3"><span className="text-3xl font-bold text-emerald-400">{data.conversion_rate}%</span></div>
+                            <span className="text-xs text-slate-400 mt-3">{metric(data.closed_leads_count)} won opportunities</span>
                         </div>
                         <div className="glass-card glow-border p-6 flex flex-col justify-center group hover:-translate-y-1 transition-transform duration-300">
                             <span className="text-slate-400 text-xs font-medium uppercase tracking-wider mb-2">Active Projects</span>
-                            <div className="flex items-end gap-3"><span className="text-3xl font-bold text-blue-400">{data.active_projects_count}</span></div>
+                            <div className="flex items-end gap-3"><span className="text-3xl font-bold text-blue-400">{metric(data.active_projects_count)}</span></div>
+                            <span className="text-xs text-slate-400 mt-3">Installation pipeline live</span>
                         </div>
                         <div className="glass-card glow-border p-6 flex flex-col justify-center group hover:-translate-y-1 transition-transform duration-300">
-                            <span className="text-slate-400 text-xs font-medium uppercase tracking-wider mb-2">Staff Count</span>
-                            <div className="flex items-end gap-3"><span className="text-3xl font-bold text-purple-400">{data.staff_count}</span></div>
+                            <span className="text-slate-400 text-xs font-medium uppercase tracking-wider mb-2">Payroll Pending</span>
+                            <div className="flex items-end gap-3"><span className="text-xl font-bold text-amber-300">{money(data.total_payroll_pending)}</span></div>
+                            <span className="text-xs text-slate-400 mt-3">{metric(data.staff_count)} staff managed</span>
                         </div>
                         <div className="glass-card glow-border p-6 flex flex-col justify-center group hover:-translate-y-1 transition-transform duration-300">
                             <span className="text-slate-400 text-xs font-medium uppercase tracking-wider mb-2">Quotations</span>
-                            <div className="flex items-end gap-3"><span className="text-3xl font-bold text-white">{data.quotation_count}</span></div>
+                            <div className="flex items-end gap-3"><span className="text-3xl font-bold text-white">{metric(data.quotation_count)}</span></div>
+                            <span className="text-xs text-slate-400 mt-3">Proposal workspace</span>
                         </div>
                         <div className="glass-card glow-border p-6 flex flex-col justify-center group hover:-translate-y-1 transition-transform duration-300 border-emerald-500/20">
                             <span className="text-slate-400 text-xs font-medium uppercase tracking-wider mb-2">Project Profit</span>
-                            <div className="flex items-end gap-3"><span className="text-xl font-bold text-emerald-400">RS {Number(data.total_project_profit).toLocaleString()}</span></div>
+                            <div className="flex items-end gap-3"><span className="text-xl font-bold text-emerald-400">{money(data.total_project_profit)}</span></div>
+                            <span className="text-xs text-slate-400 mt-3">{money(data.net_profit)} net position</span>
                         </div>
                     </div>
+
+                    {(data.inventory_low_stock_count > 0) && (
+                        <div className="glass-card p-4 mb-6 border border-red-500/30 bg-red-500/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bq-admin-kpi-alert">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-xl bg-red-500/15 text-red-400 flex items-center justify-center">
+                                    <Icon name="Package" size={20} />
+                                </div>
+                                <div>
+                                    <p className="text-white font-bold text-sm">{data.inventory_low_stock_count} inventory item{data.inventory_low_stock_count !== 1 ? 's' : ''} below reorder level</p>
+                                    <p className="text-slate-400 text-xs">Restock before the next installation wave</p>
+                                </div>
+                            </div>
+                            <Link to="/admin-dashboard/inventory" className="text-sm font-bold text-amber-400 hover:text-amber-300 flex items-center gap-1">
+                                Open Inventory <Icon name="ArrowRight" size={14} />
+                            </Link>
+                        </div>
+                    )}
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                         <div className="glass-card p-6">
@@ -608,7 +860,7 @@
                                         <Tooltip
                                             contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: '0.5rem' }}
                                             itemStyle={{ color: '#fff' }}
-                                            formatter={(value) => [`Rs ${value.toLocaleString()}`, "Revenue"]}
+                                            formatter={(value) => [money(value), "Revenue"]}
                                         />
                                         <Area type="monotone" dataKey="revenue" stroke="#10b981" strokeWidth={3} fillOpacity={1} fill="url(#colorRev)" />
                                     </AreaChart>
@@ -635,7 +887,7 @@
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-6">
                         <div className="glass-card p-6 md:col-span-1">
                             <h3 className="text-lg font-semibold text-white mb-6">Quotation Pipeline</h3>
                             <div className="space-y-4">
@@ -650,24 +902,97 @@
                                 )}
                             </div>
                         </div>
-                        <div className="glass-card p-6 md:col-span-2">
-                            <h3 className="text-lg font-semibold text-white mb-6">Recent Status</h3>
-                            <div className="grid grid-cols-2 gap-4">
+                        <div className="glass-card p-6 xl:col-span-2">
+                            <div className="flex items-center justify-between mb-6">
+                                <h3 className="text-lg font-semibold text-white">ERP Health</h3>
+                                <span className="text-xs text-emerald-300 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full">Live</span>
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div className="bg-blue-500/5 p-4 rounded-xl border border-blue-500/10">
-                                    <p className="text-blue-400 font-bold text-xl">{data.active_projects_count}</p>
-                                    <p className="text-slate-400 text-xs uppercase tracking-tighter">Active Projects In Progress</p>
+                                    <p className="text-blue-400 font-bold text-xl">{money(data.total_contract_value)}</p>
+                                    <p className="text-slate-400 text-xs uppercase tracking-tighter">Contract Value</p>
                                 </div>
                                 <div className="bg-emerald-500/5 p-4 rounded-xl border border-emerald-500/10">
-                                    <p className="text-emerald-400 font-bold text-xl">{data.closed_leads_count}</p>
-                                    <p className="text-slate-400 text-xs uppercase tracking-tighter">Total Closed Deals (Won)</p>
+                                    <p className="text-emerald-400 font-bold text-xl">{money(data.total_payments_collected)}</p>
+                                    <p className="text-slate-400 text-xs uppercase tracking-tighter">Payments Collected</p>
+                                </div>
+                                <div className="bg-amber-500/5 p-4 rounded-xl border border-amber-500/10">
+                                    <p className="text-amber-300 font-bold text-xl">{collectionPercent}%</p>
+                                    <p className="text-slate-400 text-xs uppercase tracking-tighter">Collection Progress</p>
                                 </div>
                             </div>
-                            <div className="mt-6 flex justify-between items-center bg-slate-800/40 p-4 rounded-lg border border-slate-700/50">
+                            <div className="mt-6">
+                                <div className="flex justify-between text-xs text-slate-400 mb-2">
+                                    <span>Revenue collection</span>
+                                    <span>{money(revenueCollected)} / {money(contractValue)}</span>
+                                </div>
+                                <div className="h-3 rounded-full bg-slate-800 overflow-hidden border border-slate-700/50">
+                                    <div className="h-full rounded-full bg-gradient-to-r from-blue-500 to-emerald-400 shadow-lg shadow-emerald-500/20" style={{ width: `${collectionPercent}%` }}></div>
+                                </div>
+                            </div>
+                            <div className="mt-6 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 bg-slate-800/40 p-4 rounded-lg border border-slate-700/50">
                                 <div>
                                     <p className="text-white font-medium text-sm">Company: {data.company_name}</p>
-                                    <p className="text-slate-500 text-xs">Total Staff Managed: {data.staff_count}</p>
+                                    <p className="text-slate-500 text-xs">Payroll paid: {money(data.total_payroll_paid)} · Staff managed: {metric(data.staff_count)}</p>
                                 </div>
-                                <Link to="/admin-dashboard/projects" className="text-blue-400 hover:text-blue-300 text-xs font-bold flex items-center gap-1">Manage All Projects <Icon name="ArrowRight" size={12} /></Link>
+                                <Link to="/admin-dashboard/projects" className="text-blue-400 hover:text-blue-300 text-xs font-bold flex items-center gap-1">Manage Projects <Icon name="ArrowRight" size={12} /></Link>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div className="glass-card p-6">
+                            <h3 className="text-lg font-semibold text-white mb-5">Lead Conversion Board</h3>
+                            <div className="space-y-3">
+                                {pipelineItems.map(([status, count]) => {
+                                    const percent = data.contact_lead_count ? Math.min(100, Math.round((count / data.contact_lead_count) * 100)) : 0;
+                                    return (
+                                        <div key={status}>
+                                            <div className="flex justify-between text-sm mb-1">
+                                                <span className="text-slate-300 capitalize">{status.replace('_', ' ')}</span>
+                                                <span className="text-slate-500">{count}</span>
+                                            </div>
+                                            <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
+                                                <div className="h-full bg-blue-400 rounded-full" style={{ width: `${percent}%` }}></div>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                                {pipelineItems.length === 0 && <p className="text-slate-500 text-sm">No lead stages available yet.</p>}
+                            </div>
+                        </div>
+
+                        <div className="glass-card p-6">
+                            <h3 className="text-lg font-semibold text-white mb-5">Project Status</h3>
+                            <div className="space-y-3">
+                                {projectStatusItems.map(([status, count]) => (
+                                    <div key={status} className="flex items-center justify-between p-3 rounded-xl bg-slate-800/50 border border-slate-700/40">
+                                        <div className="flex items-center gap-3">
+                                            <span className="w-2.5 h-2.5 rounded-full bg-gradient-to-r from-blue-400 to-emerald-400"></span>
+                                            <span className="text-slate-300 capitalize text-sm">{status.replace('_', ' ')}</span>
+                                        </div>
+                                        <span className="text-white font-bold">{count}</span>
+                                    </div>
+                                ))}
+                                {projectStatusItems.length === 0 && <p className="text-slate-500 text-sm">No projects have been created yet.</p>}
+                            </div>
+                        </div>
+
+                        <div className="glass-card p-6">
+                            <h3 className="text-lg font-semibold text-white mb-5">Recent Activity</h3>
+                            <div className="space-y-4">
+                                {(data.recent_leads || []).slice(0, 5).map((lead, index) => (
+                                    <div key={lead.id || index} className="flex items-start gap-3">
+                                        <div className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-blue-300">
+                                            <Icon name="UserPlus" size={16} />
+                                        </div>
+                                        <div className="min-w-0">
+                                            <p className="text-white text-sm font-medium truncate">{lead.name || 'New lead'}</p>
+                                            <p className="text-slate-500 text-xs truncate">{lead.phone || lead.email || lead.city_area || 'Lead captured'}</p>
+                                        </div>
+                                    </div>
+                                ))}
+                                {(!data.recent_leads || data.recent_leads.length === 0) && <p className="text-slate-500 text-sm">No recent activity yet.</p>}
                             </div>
                         </div>
                     </div>
@@ -725,6 +1050,8 @@
             const navigate = useNavigate();
             const [lead, setLead] = useState(null);
             const [loadingLead, setLoadingLead] = useState(true);
+            const [loadError, setLoadError] = useState(null);
+            const [reloadKey, setReloadKey] = useState(0);
 
             const [openSection, setOpenSection] = useState('system');
 
@@ -785,6 +1112,8 @@
 
             useEffect(() => {
                 const loadData = async () => {
+                    setLoadingLead(true);
+                    setLoadError(null);
                     try {
                         let currentLead = null;
                         if (leadId && leadId !== 'new' && leadId !== 'none') {
@@ -830,14 +1159,16 @@
                             }));
                         }
                     } catch (e) {
-                        console.error(e);
-                        alert("Error loading data");
+                        console.error("Quotation builder failed to load", e);
+                        const message = apiErrorMessage(e, "Unable to load quotation data. Please retry.");
+                        setLoadError(message);
+                        toast(message, "error");
                     } finally {
                         setLoadingLead(false);
                     }
                 };
                 loadData();
-            }, [leadId, editId]);
+            }, [leadId, editId, reloadKey]);
 
             // Engineering Calculations Logic
             useEffect(() => {
@@ -1000,7 +1331,9 @@
                     const res = await api.post('quotations/', payload);
                     setGeneratedQuote(res.data);
                     toast(editingQuote ? "Revision created successfully!" : "Quotation generated!");
-                } catch (e) { alert("Failed to build quote: " + JSON.stringify(e.response?.data || e.message)); } finally { setLoading(false); }
+                } catch (e) {
+                    toast(apiErrorMessage(e, "Failed to build quote"), "error");
+                } finally { setLoading(false); }
             };
 
             const finalizeQuote = async () => {
@@ -1014,7 +1347,9 @@
                             await api.post(`quotations/${editingQuote.id}/finalize/`);
                             toast("Quotation finalized and locked!", "success");
                             navigate('/admin-dashboard/quotations');
-                        } catch (e) { alert("Finalization failed: " + e.message); } finally { setLoading(false); setDeleteConfirm(null); }
+                        } catch (e) {
+                            toast(apiErrorMessage(e, "Finalization failed"), "error");
+                        } finally { setLoading(false); setDeleteConfirm(null); }
                     }
                 });
             };
@@ -1049,7 +1384,40 @@
                 </div>
             );
 
-            if (loadingLead) return <Layout><div className="text-white p-8">Loading Lead Information...</div></Layout>;
+            if (loadingLead) return (
+                <Layout>
+                    <div className="space-y-6 animate-pulse">
+                        <div className="glass-card p-8">
+                            <div className="h-8 w-72 bg-slate-800 rounded-xl mb-3"></div>
+                            <div className="h-4 w-96 max-w-full bg-slate-800/70 rounded-lg"></div>
+                        </div>
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <div className="glass-card p-6 h-80 lg:col-span-2"></div>
+                            <div className="glass-card p-6 h-80"></div>
+                        </div>
+                    </div>
+                </Layout>
+            );
+
+            if (loadError) return (
+                <Layout>
+                    <div className="min-h-[60vh] flex items-center justify-center p-6">
+                        <div className="glass-card p-8 max-w-xl w-full text-center border border-amber-500/20">
+                            <div className="w-14 h-14 rounded-2xl bg-amber-500/10 text-amber-300 mx-auto mb-5 flex items-center justify-center">
+                                <Icon name="RefreshCw" size={28} />
+                            </div>
+                            <h2 className="text-2xl font-bold text-white mb-2">Quotation workspace could not load</h2>
+                            <p className="text-slate-400 mb-6">{loadError}</p>
+                            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                                <Button onClick={() => setReloadKey(k => k + 1)} icon="RefreshCw">Retry</Button>
+                                <Link to="/admin-dashboard/leads" className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium border border-slate-600 hover:border-slate-500 text-slate-300 hover:text-white transition-all">
+                                    <Icon name="ArrowLeft" size={18} /> Back to Leads
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+                </Layout>
+            );
 
             return (
                 <Layout>
@@ -2926,8 +3294,12 @@
             };
 
 
-            const downloadSlip = (id) => {
-                window.open(`/api/payroll/${id}/download_slip/`, '_blank');
+            const downloadStaffSlip = async (staffId) => {
+                await downloadPayrollPdf(`/api/staff/${staffId}/download_slip/`, toast);
+            };
+
+            const downloadPayrollSlip = async (payrollId) => {
+                await downloadPayrollPdf(`/api/payroll/${payrollId}/download_slip/`, toast);
             };
 
             const roleColor = (r) => ({
@@ -3020,7 +3392,7 @@
                                                     <td className="p-5 text-right">
                                                         <div className="flex gap-2 justify-end opacity-0 group-hover:opacity-100 transition-opacity">
                                                             <button onClick={() => openEdit(m)} className="bg-slate-700 hover:bg-blue-600 text-white p-2 rounded-lg transition-colors shadow-lg"><Icon name="Pencil" size={14} /></button>
-                                                            <button onClick={() => downloadSlip(m.id)} className="bg-slate-700 hover:bg-emerald-600 text-white p-2 rounded-lg transition-colors shadow-lg" title="Quick Slip Preview"><Icon name="FileText" size={14} /></button>
+                                                            <button onClick={() => downloadStaffSlip(m.id)} className="bg-slate-700 hover:bg-emerald-600 text-white p-2 rounded-lg transition-colors shadow-lg" title="Download latest salary slip"><Icon name="FileText" size={14} /></button>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -3117,7 +3489,7 @@
                                                         <td className="p-5 text-right">
                                                             <div className="flex gap-2 justify-end">
                                                                 <button onClick={() => openEditPayroll(r)} className="bg-slate-700 hover:bg-emerald-600 text-white p-2 rounded-lg transition-colors shadow-lg" title="Edit / Mark Paid"><Icon name="Edit" size={14} /></button>
-                                                                <button onClick={() => window.open(`/api/payroll/${r.id}/download_slip/`, '_blank')} className="bg-slate-700 hover:bg-blue-600 text-white p-2 rounded-lg transition-colors shadow-lg" title="Download Slip"><Icon name="Download" size={14} /></button>
+                                                                <button onClick={() => downloadPayrollSlip(r.id)} className="bg-slate-700 hover:bg-blue-600 text-white p-2 rounded-lg transition-colors shadow-lg" title="Download Slip"><Icon name="Download" size={14} /></button>
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -4164,6 +4536,272 @@
         };
 
 
+        const INVENTORY_CATEGORIES = [
+            { value: 'panels', label: 'Solar Panels' },
+            { value: 'inverters', label: 'Inverters' },
+            { value: 'batteries', label: 'Batteries' },
+            { value: 'mounting', label: 'Mounting' },
+            { value: 'electrical', label: 'Electrical' },
+            { value: 'other', label: 'Other' },
+        ];
+
+        const emptyInventoryForm = () => ({
+            name: '', sku: '', category: 'panels', quantity_on_hand: 0,
+            reorder_level: 5, unit_cost: '0', supplier: '', notes: ''
+        });
+
+        const InventoryManagement = () => {
+            const [items, setItems] = useState([]);
+            const [loading, setLoading] = useState(true);
+            const [search, setSearch] = useState('');
+            const [categoryFilter, setCategoryFilter] = useState('');
+            const [showModal, setShowModal] = useState(false);
+            const [editing, setEditing] = useState(null);
+            const [form, setForm] = useState(emptyInventoryForm());
+            const [deleteConfirm, setDeleteConfirm] = useState(null);
+            const toast = useToast();
+
+            const money = (v) => `Rs ${Number(v || 0).toLocaleString()}`;
+
+            const loadItems = () => {
+                setLoading(true);
+                api.get('inventory/')
+                    .then(res => setItems(res.data))
+                    .catch(err => toast(apiErrorMessage(err, 'Failed to load inventory'), 'error'))
+                    .finally(() => setLoading(false));
+            };
+
+            useEffect(() => { loadItems(); }, []);
+
+            const filtered = items.filter(item => {
+                const q = search.toLowerCase().trim();
+                const matchSearch = !q || item.name.toLowerCase().includes(q) || (item.sku || '').toLowerCase().includes(q);
+                const matchCat = !categoryFilter || item.category === categoryFilter;
+                return matchSearch && matchCat;
+            });
+
+            const openCreate = () => {
+                setEditing(null);
+                setForm(emptyInventoryForm());
+                setShowModal(true);
+            };
+
+            const openEdit = (item) => {
+                setEditing(item);
+                setForm({
+                    name: item.name,
+                    sku: item.sku || '',
+                    category: item.category,
+                    quantity_on_hand: item.quantity_on_hand,
+                    reorder_level: item.reorder_level,
+                    unit_cost: String(item.unit_cost),
+                    supplier: item.supplier || '',
+                    notes: item.notes || '',
+                });
+                setShowModal(true);
+            };
+
+            const handleSave = async (e) => {
+                e.preventDefault();
+                const payload = {
+                    ...form,
+                    quantity_on_hand: Number(form.quantity_on_hand) || 0,
+                    reorder_level: Number(form.reorder_level) || 0,
+                    unit_cost: Number(form.unit_cost) || 0,
+                };
+                try {
+                    if (editing) {
+                        await api.patch(`inventory/${editing.id}/`, payload);
+                        toast('Item updated', 'success');
+                    } else {
+                        await api.post('inventory/', payload);
+                        toast('Item added to inventory', 'success');
+                    }
+                    setShowModal(false);
+                    loadItems();
+                } catch (err) {
+                    toast(apiErrorMessage(err, 'Could not save item'), 'error');
+                }
+            };
+
+            const handleDelete = async () => {
+                if (!deleteConfirm) return;
+                try {
+                    await api.delete(`inventory/${deleteConfirm.id}/`);
+                    toast('Item removed', 'success');
+                    setDeleteConfirm(null);
+                    loadItems();
+                } catch (err) {
+                    toast(apiErrorMessage(err, 'Delete failed'), 'error');
+                }
+            };
+
+            const lowCount = items.filter(i => i.is_low_stock).length;
+
+            return (
+                <Layout>
+                    <ConfirmModal isOpen={!!deleteConfirm} title="Remove inventory item?" message={`Delete "${deleteConfirm?.name}" from stock records?`} onConfirm={handleDelete} onCancel={() => setDeleteConfirm(null)} />
+                    <AdminPageHeader
+                        eyebrow="ERP · Warehouse"
+                        title="Inventory Management"
+                        subtitle={`${items.length} SKUs tracked · ${lowCount} need reorder`}
+                        actions={<Button icon="Plus" onClick={openCreate}>Add Stock Item</Button>}
+                    />
+                    <AdminToolbar>
+                        <AdminSearch value={search} onChange={setSearch} placeholder="Search name or SKU…" />
+                        <select className={selectCls} value={categoryFilter} onChange={e => setCategoryFilter(e.target.value)} style={{ maxWidth: '200px' }}>
+                            <option value="">All categories</option>
+                            {INVENTORY_CATEGORIES.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
+                        </select>
+                        <Button variant="outline" icon="RefreshCw" onClick={loadItems} loading={loading}>Refresh</Button>
+                    </AdminToolbar>
+                    {loading ? (
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 animate-pulse">
+                            {[1, 2, 3].map(i => <div key={i} className="glass-card h-32" />)}
+                        </div>
+                    ) : (
+                        <AdminTable
+                            empty={filtered.length === 0}
+                            emptyMessage="No inventory items yet. Add panels, inverters, or materials to track stock."
+                            columns={[
+                                { key: 'name', label: 'Item' },
+                                { key: 'sku', label: 'SKU' },
+                                { key: 'cat', label: 'Category' },
+                                { key: 'qty', label: 'On Hand' },
+                                { key: 'reorder', label: 'Reorder At' },
+                                { key: 'cost', label: 'Unit Cost' },
+                                { key: 'status', label: 'Status' },
+                                { key: 'actions', label: '', className: 'text-right' },
+                            ]}
+                        >
+                            {filtered.map(item => (
+                                <tr key={item.id} className="border-b border-slate-700/40">
+                                    <td className="p-4">
+                                        <p className="text-white font-semibold">{item.name}</p>
+                                        {item.supplier && <p className="text-slate-500 text-xs mt-1">{item.supplier}</p>}
+                                    </td>
+                                    <td className="p-4 text-slate-400 font-mono text-xs">{item.sku || '—'}</td>
+                                    <td className="p-4 text-slate-300 capitalize">{item.category_display || item.category}</td>
+                                    <td className="p-4 text-white font-bold">{item.quantity_on_hand}</td>
+                                    <td className="p-4 text-slate-400">{item.reorder_level}</td>
+                                    <td className="p-4 text-slate-300">{money(item.unit_cost)}</td>
+                                    <td className="p-4">
+                                        <span className={`bq-admin-badge ${item.is_low_stock ? 'bq-admin-badge--low' : 'bq-admin-badge--ok'}`}>
+                                            {item.is_low_stock ? 'Low stock' : 'Healthy'}
+                                        </span>
+                                    </td>
+                                    <td className="p-4 text-right">
+                                        <div className="flex gap-2 justify-end">
+                                            <button type="button" onClick={() => openEdit(item)} className="text-amber-400 hover:text-amber-300 text-xs font-bold px-2 py-1">Edit</button>
+                                            <button type="button" onClick={() => setDeleteConfirm(item)} className="text-red-400 hover:text-red-300 text-xs font-bold px-2 py-1">Delete</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </AdminTable>
+                    )}
+                    {showModal && (
+                        <div className="fixed inset-0 z-[9999] bg-slate-900/80 backdrop-blur-md flex items-center justify-center p-4">
+                            <div className="glass-card w-full max-w-xl p-8 border border-slate-700/50 max-h-[90vh] overflow-y-auto">
+                                <h3 className="text-xl font-bold text-white mb-6">{editing ? 'Edit Item' : 'New Inventory Item'}</h3>
+                                <form onSubmit={handleSave} className="grid gap-4">
+                                    <AdminField label="Product name">
+                                        <input required className={inputCls} value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} />
+                                    </AdminField>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        <AdminField label="SKU">
+                                            <input className={inputCls} value={form.sku} onChange={e => setForm({ ...form, sku: e.target.value })} />
+                                        </AdminField>
+                                        <AdminField label="Category">
+                                            <select className={selectCls} value={form.category} onChange={e => setForm({ ...form, category: e.target.value })}>
+                                                {INVENTORY_CATEGORIES.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
+                                            </select>
+                                        </AdminField>
+                                    </div>
+                                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                        <AdminField label="Quantity on hand">
+                                            <input type="number" min="0" required className={inputCls} value={form.quantity_on_hand} onChange={e => setForm({ ...form, quantity_on_hand: e.target.value })} />
+                                        </AdminField>
+                                        <AdminField label="Reorder level">
+                                            <input type="number" min="0" required className={inputCls} value={form.reorder_level} onChange={e => setForm({ ...form, reorder_level: e.target.value })} />
+                                        </AdminField>
+                                        <AdminField label="Unit cost (PKR)">
+                                            <input type="number" min="0" step="0.01" className={inputCls} value={form.unit_cost} onChange={e => setForm({ ...form, unit_cost: e.target.value })} />
+                                        </AdminField>
+                                    </div>
+                                    <AdminField label="Supplier">
+                                        <input className={inputCls} value={form.supplier} onChange={e => setForm({ ...form, supplier: e.target.value })} />
+                                    </AdminField>
+                                    <AdminField label="Notes">
+                                        <textarea className={textareaCls} rows={3} value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} />
+                                    </AdminField>
+                                    <div className="flex gap-3 pt-2">
+                                        <Button type="submit" className="flex-1" icon="Check">{editing ? 'Save Changes' : 'Add Item'}</Button>
+                                        <Button type="button" variant="outline" onClick={() => setShowModal(false)}>Cancel</Button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    )}
+                </Layout>
+            );
+        };
+
+        const ReportsHub = () => {
+            const reports = [
+                { title: 'Sales & Revenue', desc: 'Lead funnel, quotations, and monthly revenue charts.', path: '/admin-dashboard', icon: 'TrendingUp' },
+                { title: 'Project Financials', desc: 'Completion records, profit/loss, and contract value.', path: '/admin-dashboard/project-financials', icon: 'BarChart3' },
+                { title: 'HR & Payroll', desc: 'Staff roster, payroll pending, and paid totals.', path: '/admin-dashboard/staff', icon: 'Users' },
+                { title: 'Inventory', desc: 'Stock levels, reorder alerts, and unit costs.', path: '/admin-dashboard/inventory', icon: 'Package' },
+            ];
+            return (
+                <Layout>
+                    <AdminPageHeader eyebrow="Analytics" title="Reports" subtitle="Jump to live dashboards and operational exports." />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {reports.map(r => (
+                            <Link key={r.path} to={r.path} className="glass-card p-6 hover:border-amber-500/30 border border-slate-700/40 transition-all group">
+                                <div className="flex items-start gap-4">
+                                    <div className="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center">
+                                        <Icon name={r.icon} size={22} />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-white font-bold group-hover:text-amber-300 transition-colors">{r.title}</h3>
+                                        <p className="text-slate-400 text-sm mt-2">{r.desc}</p>
+                                    </div>
+                                </div>
+                            </Link>
+                        ))}
+                    </div>
+                </Layout>
+            );
+        };
+
+        const SettingsAdmin = () => (
+            <Layout>
+                <AdminPageHeader eyebrow="System" title="Settings" subtitle="Workspace preferences and administrative shortcuts." />
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div className="glass-card p-6 border border-slate-700/40">
+                        <h3 className="text-white font-bold mb-4 flex items-center gap-2"><Icon name="Building2" size={18} /> Company</h3>
+                        <p className="text-slate-400 text-sm mb-4">Update branding, contact details, and WhatsApp from Django admin.</p>
+                        <a href="/admin/core/companyprofile/" className="text-amber-400 font-bold text-sm hover:underline">Open Company Profile →</a>
+                    </div>
+                    <div className="glass-card p-6 border border-slate-700/40">
+                        <h3 className="text-white font-bold mb-4 flex items-center gap-2"><Icon name="Shield" size={18} /> Access</h3>
+                        <p className="text-slate-400 text-sm mb-4">Manage users, roles, and API tokens.</p>
+                        <a href="/admin/auth/user/" className="text-amber-400 font-bold text-sm hover:underline">Manage Users →</a>
+                    </div>
+                    <div className="glass-card p-6 border border-slate-700/40">
+                        <h3 className="text-white font-bold mb-4 flex items-center gap-2"><Icon name="Palette" size={18} /> Appearance</h3>
+                        <p className="text-slate-400 text-sm">BARQON navy + gold enterprise theme is active across marketing and admin surfaces.</p>
+                    </div>
+                    <div className="glass-card p-6 border border-slate-700/40">
+                        <h3 className="text-white font-bold mb-4 flex items-center gap-2"><Icon name="Globe" size={18} /> Public site</h3>
+                        <a href="/" target="_blank" rel="noopener" className="text-amber-400 font-bold text-sm hover:underline">View marketing website →</a>
+                    </div>
+                </div>
+            </Layout>
+        );
+
         const App = () => {
 
             const [isAuth, setIsAuth] = useState(!!localStorage.getItem('access_token'));
@@ -4189,6 +4827,9 @@
                             <Route path="/admin-dashboard/blogs" element={<BlogManagement />} />
                             <Route path="/admin-dashboard/installations" element={<InstallationManagement />} />
                             <Route path="/admin-dashboard/careers" element={<CareersManagement />} />
+                            <Route path="/admin-dashboard/inventory" element={<InventoryManagement />} />
+                            <Route path="/admin-dashboard/reports" element={<ReportsHub />} />
+                            <Route path="/admin-dashboard/settings" element={<SettingsAdmin />} />
                         </Routes>
                     </BrowserRouter>
                 </ToastProvider>

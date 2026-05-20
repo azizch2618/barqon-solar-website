@@ -1,110 +1,123 @@
 <style>
-    /* DevGo Static Bottom Footer */
-    .devgo-static-footer {
-        background: #020617;
-        border-top: 1px solid #1e293b;
+    .devgo-micro-footer {
+        position: relative;
+        overflow: hidden;
+        background:
+            radial-gradient(circle at 50% 0%, rgba(255, 200, 87, 0.08), transparent 34%),
+            #020617;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        padding: 24px clamp(18px, 4vw, 48px) 28px;
+        color: #94a3b8;
+        font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    .devgo-micro-footer::before {
+        content: "";
+        display: block;
+        width: min(760px, 80vw);
+        height: 1px;
+        margin: 0 auto 22px;
+        background: linear-gradient(90deg, transparent, rgba(255, 200, 87, 0.42), transparent);
+    }
+
+    .devgo-micro-inner {
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 16px 100px 16px 24px; /* Right padding 100px prevents overlap with BARQON WA button */
-        font-family: 'Inter', sans-serif;
-        color: #64748b;
-        font-size: 13px;
-        width: 100%;
-        box-sizing: border-box;
-    }
-
-    .devgo-footer-content {
-        display: flex;
-        align-items: center;
-        justify-content: center; /* Centered to keep edges completely clear */
-        width: 100%;
-        gap: 60px; /* Generous spacing between brand and links */
-        flex-wrap: wrap; /* Allows wrapping on smaller screens if needed */
+        gap: clamp(18px, 4vw, 48px);
+        flex-wrap: wrap;
+        text-align: center;
     }
 
     .devgo-powered-by {
-        display: flex;
+        display: inline-flex;
         align-items: center;
-        gap: 8px;
-        color: #94a3b8;
+        gap: 10px;
+        font-size: 0.82rem;
+        letter-spacing: 0.04em;
     }
 
     .devgo-brand {
-        display: flex;
+        display: inline-flex;
         align-items: center;
         gap: 8px;
-        font-weight: 700;
-        color: #e2e8f0;
+        color: #f8fafc;
+        font-weight: 800;
         text-decoration: none;
-        letter-spacing: -0.2px;
+        transition: color 0.25s ease, transform 0.25s ease;
+    }
+
+    .devgo-brand:hover {
+        color: var(--gold);
+        transform: translateY(-1px);
     }
 
     .devgo-logo {
-        height: 20px;
+        height: 18px;
         width: auto;
         border-radius: 4px;
+        filter: drop-shadow(0 0 12px rgba(255, 200, 87, 0.12));
     }
 
     .devgo-links {
-        display: flex;
+        display: inline-flex;
         align-items: center;
-        gap: 24px;
+        justify-content: center;
+        gap: 18px;
+        flex-wrap: wrap;
     }
 
     .devgo-link {
-        display: flex;
+        display: inline-flex;
         align-items: center;
-        gap: 6px;
+        gap: 7px;
+        color: #94a3b8;
         text-decoration: none;
-        transition: color 0.2s;
-        font-weight: 600;
+        font-size: 0.82rem;
+        font-weight: 700;
+        transition: color 0.25s ease, transform 0.25s ease;
     }
 
-    /* Distinct Colors for Identity */
-    .devgo-link.wa { color: #10b981; } /* Green */
-    .devgo-link.wa:hover { color: #34d399; }
+    .devgo-link:hover {
+        color: var(--gold);
+        transform: translateY(-1px);
+    }
 
-    .devgo-link.call { color: #3b82f6; } /* Blue */
-    .devgo-link.call:hover { color: #60a5fa; }
-
-    .devgo-link.email { color: #cbd5e1; } /* Grey/White */
-    .devgo-link.email:hover { color: #f8fafc; }
+    .devgo-link i {
+        width: 14px;
+        height: 14px;
+    }
 
     @media (max-width: 768px) {
-        .devgo-static-footer {
-            padding: 24px 16px 90px 16px; /* Bottom padding prevents mobile WA button overlap */
+        .devgo-micro-footer {
+            padding-bottom: 92px;
         }
-        .devgo-footer-content {
+        .devgo-micro-inner {
             flex-direction: column;
             gap: 16px;
-            justify-content: center;
-        }
-        .devgo-links {
-            gap: 24px;
         }
     }
 </style>
 
-<div class="devgo-static-footer">
-    <div class="devgo-footer-content">
+<div class="devgo-micro-footer">
+    <div class="devgo-micro-inner">
         <div class="devgo-powered-by">
-            Powered by 
-            <a href="#" class="devgo-brand">
+            <span>Powered by</span>
+            <a href="#" class="devgo-brand" aria-label="Powered by DevGo">
                 <img src="/static/images/devgo-logo.png" alt="" class="devgo-logo" onerror="this.style.display='none';">
                 DevGo
             </a>
         </div>
 
         <div class="devgo-links">
-            <a href="https://wa.me/923029354969" target="_blank" class="devgo-link wa">
-                <i data-lucide="message-circle" style="width: 14px; height: 14px;"></i> WhatsApp
+            <a href="https://wa.me/923029354969" target="_blank" rel="noopener" class="devgo-link">
+                <i data-lucide="message-circle"></i> WhatsApp
             </a>
-            <a href="tel:+923029354969" class="devgo-link call">
-                <i data-lucide="phone-call" style="width: 14px; height: 14px;"></i> Call
+            <a href="tel:+923029354969" class="devgo-link">
+                <i data-lucide="phone-call"></i> Call
             </a>
             <a href="mailto:devgo.ai99@gmail.com" class="devgo-link">
-                <i data-lucide="mail" style="width: 14px; height: 14px;"></i> Email
+                <i data-lucide="mail"></i> Email
             </a>
         </div>
     </div>

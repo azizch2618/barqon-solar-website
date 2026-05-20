@@ -94,8 +94,8 @@
         .glass-card {
             background: rgba(17, 24, 39, 0.65);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(16px);
             border-radius: 1.25rem;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
@@ -294,9 +294,78 @@
             return config;
         });
 
+        const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+        const downloadPayrollPdf = async (url, toast) => {
+            const token = localStorage.getItem('access_token');
+            try {
+                const res = await fetch(url, {
+                    headers: token ? { Authorization: `Bearer ${token}` } : {},
+                });
+                if (!res.ok) {
+                    let message = 'Could not download salary slip';
+                    try {
+                        const data = await res.json();
+                        message = data.detail || message;
+                    } catch (_) {}
+                    toast(message, 'error');
+                    return;
+                }
+                const blob = await res.blob();
+                const disposition = res.headers.get('Content-Disposition') || '';
+                const match = disposition.match(/filename="?([^";]+)"?/);
+                const filename = match ? match[1] : 'barqon-salary-slip.pdf';
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = filename;
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+                URL.revokeObjectURL(link.href);
+                toast('Salary slip downloaded', 'success');
+            } catch (_) {
+                toast('Network error while downloading slip', 'error');
+            }
+        };
+
+        const apiErrorMessage = (error, fallback = "Something went wrong") => {
+            const data = error?.response?.data;
+            if (typeof data === 'string') return data;
+            if (data?.detail) return data.detail;
+            if (data?.error) return data.error;
+            if (data && typeof data === 'object') {
+                const firstKey = Object.keys(data)[0];
+                const value = data[firstKey];
+                if (Array.isArray(value)) return `${firstKey}: ${value.join(', ')}`;
+                if (typeof value === 'string') return `${firstKey}: ${value}`;
+            }
+            return error?.message || fallback;
+        };
+
+        api.interceptors.response.use(
+            response => response,
+            async (error) => {
+                const config = error.config || {};
+                const status = error.response?.status;
+                const retryable = !status || status === 429 || status === 503;
+
+                if (retryable && !config.__barqonRetry) {
+                    config.__barqonRetry = true;
+                    await sleep(750);
+                    return api(config);
+                }
+
+                if (status === 401 && !window.location.pathname.includes('/admin-login')) {
+                    window.location.href = '/admin-login';
+                }
+
+                return Promise.reject(error);
+            }
+        );
+
         // --- COMPONENTS ---
 
-        const Sidebar = () => {
+        const Sidebar = ({ isOpen, onClose }) => {
             const navigate = useNavigate();
             const location = useLocation();
 
@@ -306,17 +375,37 @@
                 navigate('/admin-login');
             };
 
-            const navItems = [
-                { path: '/admin-dashboard', icon: 'LayoutDashboard', label: 'Dashboard' },
-                { path: '/admin-dashboard/projects', icon: 'Folder', label: 'Project Management' },
-                { path: '/admin-dashboard/leads', icon: 'Users', label: 'Lead Management' },
-                { path: '/admin-dashboard/quotations', icon: 'FileText', label: 'Quotations' },
-                { path: '/admin-dashboard/tools/calculator', icon: 'Wrench', label: 'Engineering Tools' },
-                { path: '/admin-dashboard/staff', icon: 'UserCog', label: 'Staff & Payroll' },
-                { path: '/admin-dashboard/project-financials', icon: 'BarChart3', label: 'Project Financials' },
-                { path: '/admin-dashboard/reviews', icon: 'Star', label: 'Client Reviews' },
-                { path: '/admin-dashboard/blogs', icon: 'BookOpen', label: 'Solar Insights' },
-                { path: '/admin-dashboard/installations', icon: 'Image', label: 'Installations' },
+            const navSections = [
+                {
+                    title: 'Command Center',
+                    items: [
+                        { path: '/admin-dashboard', icon: 'LayoutDashboard', label: 'Dashboard' },
+                        { path: '/admin-dashboard/projects', icon: 'Folder', label: 'Projects' },
+                        { path: '/admin-dashboard/installations', icon: 'Hammer', label: 'Installations' },
+                    ]
+                },
+                {
+                    title: 'CRM',
+                    items: [
+                        { path: '/admin-dashboard/leads', icon: 'Users', label: 'Leads' },
+                        { path: '/admin-dashboard/quotations', icon: 'FileText', label: 'Quotations' },
+                        { path: '/admin-dashboard/reviews', icon: 'Star', label: 'Reviews' },
+                    ]
+                },
+                {
+                    title: 'ERP',
+                    items: [
+                        { path: '/admin-dashboard/staff', icon: 'UserCog', label: 'HR & Payroll' },
+                        { path: '/admin-dashboard/project-financials', icon: 'BarChart3', label: 'Accounting' },
+                        { path: '/admin-dashboard/tools/calculator', icon: 'Wrench', label: 'Solar Analytics' },
+                    ]
+                },
+                {
+                    title: 'Growth',
+                    items: [
+                        { path: '/admin-dashboard/blogs', icon: 'BookOpen', label: 'Insights' },
+                    ]
+                },
             ];
 
             return (
@@ -334,16 +423,24 @@
                         </button>
                     </div>
 
-                    <nav className="flex-1 px-4 space-y-1 overflow-y-auto">
-                        {navItems.map(item => {
-                            const isActive = location.pathname === item.path || (item.path !== '/admin-dashboard' && location.pathname.startsWith(item.path));
-                            return (
-                                <Link key={item.path} to={item.path} onClick={() => window.innerWidth < 1024 && onClose()} className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${isActive ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30 shadow-lg shadow-blue-500/10' : 'text-slate-400 hover:text-white hover:bg-slate-800/50'}`}>
-                                    <Icon name={item.icon} size={20} />
-                                    <span className="font-medium">{item.label}</span>
-                                </Link>
-                            )
-                        })}
+                    <nav className="flex-1 px-4 space-y-5 overflow-y-auto">
+                        {navSections.map(section => (
+                            <div key={section.title}>
+                                <p className="px-4 mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">{section.title}</p>
+                                <div className="space-y-1">
+                                    {section.items.map(item => {
+                                        const isActive = location.pathname === item.path || (item.path !== '/admin-dashboard' && location.pathname.startsWith(item.path));
+                                        return (
+                                            <Link key={item.path} to={item.path} onClick={() => window.innerWidth < 1024 && onClose()} className={`group relative flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${isActive ? 'bg-white/[0.07] text-white border border-blue-400/30 shadow-lg shadow-blue-500/10' : 'text-slate-400 hover:text-white hover:bg-slate-800/60'}`}>
+                                                {isActive && <span className="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-gradient-to-b from-blue-400 to-emerald-400 shadow-lg shadow-blue-500/40"></span>}
+                                                <Icon name={item.icon} size={20} />
+                                                <span className="font-medium">{item.label}</span>
+                                            </Link>
+                                        )
+                                    })}
+                                </div>
+                            </div>
+                        ))}
                     </nav>
 
                     <div className="p-4 border-t border-slate-700/50">
@@ -533,52 +630,116 @@
         const Dashboard = () => {
             const [data, setData] = useState(null);
             const [error, setError] = useState(null);
+            const [refreshing, setRefreshing] = useState(false);
             const [deleteConfirm, setDeleteConfirm] = useState(null);
 
-            useEffect(() => {
-                api.get('dashboard/')
-                    .then(res => setData(res.data))
-                    .catch(err => {
-                        if (err.response?.status === 401) window.location.href = '/admin-login';
-                        setError("Failed to load dashboard")
-                    });
-            }, []);
+            const money = (value) => `Rs ${Number(value || 0).toLocaleString()}`;
+            const metric = (value) => Number(value || 0).toLocaleString();
 
-            if (error) return <Layout><div className="text-red-400 p-8">{error}</div></Layout>;
-            if (!data) return <Layout><div className="text-white p-8">Loading dashboard analytics...</div></Layout>;
+            const loadDashboard = async () => {
+                setRefreshing(true);
+                setError(null);
+                try {
+                    const res = await api.get('dashboard/');
+                    setData(res.data);
+                } catch (err) {
+                    setError(apiErrorMessage(err, "Failed to load dashboard analytics"));
+                } finally {
+                    setRefreshing(false);
+                }
+            };
+
+            useEffect(() => { loadDashboard(); }, []);
+
+            if (error) return (
+                <Layout>
+                    <div className="min-h-[60vh] flex items-center justify-center p-6">
+                        <div className="glass-card p-8 max-w-lg w-full text-center border border-red-500/20">
+                            <div className="w-14 h-14 rounded-2xl bg-red-500/10 text-red-400 mx-auto mb-5 flex items-center justify-center">
+                                <Icon name="AlertTriangle" size={28} />
+                            </div>
+                            <h2 className="text-2xl font-bold text-white mb-2">Dashboard needs a quick retry</h2>
+                            <p className="text-slate-400 mb-6">{error}</p>
+                            <Button onClick={loadDashboard} icon="RefreshCw" loading={refreshing} className="mx-auto">Reload Analytics</Button>
+                        </div>
+                    </div>
+                </Layout>
+            );
+
+            if (!data) return (
+                <Layout>
+                    <div className="space-y-8 animate-pulse">
+                        <div className="flex justify-between items-center">
+                            <div>
+                                <div className="h-8 w-72 bg-slate-800 rounded-xl mb-3"></div>
+                                <div className="h-4 w-48 bg-slate-800/70 rounded-lg"></div>
+                            </div>
+                            <div className="h-10 w-36 bg-slate-800 rounded-xl"></div>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
+                            {[1, 2, 3, 4, 5, 6].map(i => <div key={i} className="glass-card p-6 h-32 bg-slate-900/70"></div>)}
+                        </div>
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div className="glass-card p-6 h-80"></div>
+                            <div className="glass-card p-6 h-80"></div>
+                        </div>
+                    </div>
+                </Layout>
+            );
+
+            const pipelineItems = Object.entries(data.lead_status_breakdown || {});
+            const projectStatusItems = Object.entries(data.projects_by_status || {});
+            const revenueCollected = Number(data.total_payments_collected || 0);
+            const contractValue = Number(data.total_contract_value || 0);
+            const collectionPercent = contractValue > 0 ? Math.min(100, Math.round((revenueCollected / contractValue) * 100)) : 0;
 
             return (
                 <Layout>
                     <ConfirmModal isOpen={!!deleteConfirm} {...deleteConfirm} onCancel={() => setDeleteConfirm(null)} />
-                    <div className="mb-8">
-                        <h2 className="text-3xl font-bold text-white tracking-tight">Performance Overview</h2>
-                        <p className="text-slate-400 mt-1">Real-time metrics for {data.company_name}</p>
+                    <div className="mb-8 flex flex-col lg:flex-row lg:items-end justify-between gap-5">
+                        <div>
+                            <p className="text-xs uppercase tracking-[0.35em] text-emerald-400 font-bold mb-3">Enterprise Command Center</p>
+                            <h2 className="text-3xl md:text-4xl font-bold text-white tracking-tight">Performance Overview</h2>
+                            <p className="text-slate-400 mt-2">Real-time CRM, ERP, finance, and solar delivery intelligence for {data.company_name}</p>
+                        </div>
+                        <div className="flex gap-3">
+                            <Button onClick={loadDashboard} icon="RefreshCw" loading={refreshing} variant="outline">Refresh</Button>
+                            <Link to="/admin-dashboard/leads" className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium bg-blue-600 hover:bg-blue-500 text-white transition-all shadow-lg shadow-blue-500/20">
+                                <Icon name="Plus" size={18} /> New Lead
+                            </Link>
+                        </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6 mb-8">
                         <div className="glass-card glow-border p-6 flex flex-col justify-center group hover:-translate-y-1 transition-transform duration-300">
                             <span className="text-slate-400 text-xs font-medium uppercase tracking-wider mb-2">Total Leads</span>
-                            <div className="flex items-end gap-3"><span className="text-3xl font-bold text-white">{data.contact_lead_count}</span></div>
+                            <div className="flex items-end gap-3"><span className="text-3xl font-bold text-white">{metric(data.contact_lead_count)}</span></div>
+                            <span className="text-xs text-blue-300 mt-3">+{metric(data.new_lead_count)} new this month</span>
                         </div>
                         <div className="glass-card glow-border p-6 flex flex-col justify-center border border-emerald-500/30 text-emerald-400 group hover:-translate-y-1 transition-transform duration-300">
                             <span className="text-slate-400 text-xs font-medium uppercase tracking-wider mb-2">Won Rate</span>
                             <div className="flex items-end gap-3"><span className="text-3xl font-bold text-emerald-400">{data.conversion_rate}%</span></div>
+                            <span className="text-xs text-slate-400 mt-3">{metric(data.closed_leads_count)} won opportunities</span>
                         </div>
                         <div className="glass-card glow-border p-6 flex flex-col justify-center group hover:-translate-y-1 transition-transform duration-300">
                             <span className="text-slate-400 text-xs font-medium uppercase tracking-wider mb-2">Active Projects</span>
-                            <div className="flex items-end gap-3"><span className="text-3xl font-bold text-blue-400">{data.active_projects_count}</span></div>
+                            <div className="flex items-end gap-3"><span className="text-3xl font-bold text-blue-400">{metric(data.active_projects_count)}</span></div>
+                            <span className="text-xs text-slate-400 mt-3">Installation pipeline live</span>
                         </div>
                         <div className="glass-card glow-border p-6 flex flex-col justify-center group hover:-translate-y-1 transition-transform duration-300">
-                            <span className="text-slate-400 text-xs font-medium uppercase tracking-wider mb-2">Staff Count</span>
-                            <div className="flex items-end gap-3"><span className="text-3xl font-bold text-purple-400">{data.staff_count}</span></div>
+                            <span className="text-slate-400 text-xs font-medium uppercase tracking-wider mb-2">Payroll Pending</span>
+                            <div className="flex items-end gap-3"><span className="text-xl font-bold text-amber-300">{money(data.total_payroll_pending)}</span></div>
+                            <span className="text-xs text-slate-400 mt-3">{metric(data.staff_count)} staff managed</span>
                         </div>
                         <div className="glass-card glow-border p-6 flex flex-col justify-center group hover:-translate-y-1 transition-transform duration-300">
                             <span className="text-slate-400 text-xs font-medium uppercase tracking-wider mb-2">Quotations</span>
-                            <div className="flex items-end gap-3"><span className="text-3xl font-bold text-white">{data.quotation_count}</span></div>
+                            <div className="flex items-end gap-3"><span className="text-3xl font-bold text-white">{metric(data.quotation_count)}</span></div>
+                            <span className="text-xs text-slate-400 mt-3">Proposal workspace</span>
                         </div>
                         <div className="glass-card glow-border p-6 flex flex-col justify-center group hover:-translate-y-1 transition-transform duration-300 border-emerald-500/20">
                             <span className="text-slate-400 text-xs font-medium uppercase tracking-wider mb-2">Project Profit</span>
-                            <div className="flex items-end gap-3"><span className="text-xl font-bold text-emerald-400">RS {Number(data.total_project_profit).toLocaleString()}</span></div>
+                            <div className="flex items-end gap-3"><span className="text-xl font-bold text-emerald-400">{money(data.total_project_profit)}</span></div>
+                            <span className="text-xs text-slate-400 mt-3">{money(data.net_profit)} net position</span>
                         </div>
                     </div>
 
@@ -600,7 +761,7 @@
                                         <Tooltip
                                             contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: '0.5rem' }}
                                             itemStyle={{ color: '#fff' }}
-                                            formatter={(value) => [`Rs ${value.toLocaleString()}`, "Revenue"]}
+                                            formatter={(value) => [money(value), "Revenue"]}
                                         />
                                         <Area type="monotone" dataKey="revenue" stroke="#10b981" strokeWidth={3} fillOpacity={1} fill="url(#colorRev)" />
                                     </AreaChart>
@@ -627,7 +788,7 @@
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-6">
                         <div className="glass-card p-6 md:col-span-1">
                             <h3 className="text-lg font-semibold text-white mb-6">Quotation Pipeline</h3>
                             <div className="space-y-4">
@@ -642,24 +803,97 @@
                                 )}
                             </div>
                         </div>
-                        <div className="glass-card p-6 md:col-span-2">
-                            <h3 className="text-lg font-semibold text-white mb-6">Recent Status</h3>
-                            <div className="grid grid-cols-2 gap-4">
+                        <div className="glass-card p-6 xl:col-span-2">
+                            <div className="flex items-center justify-between mb-6">
+                                <h3 className="text-lg font-semibold text-white">ERP Health</h3>
+                                <span className="text-xs text-emerald-300 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full">Live</span>
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div className="bg-blue-500/5 p-4 rounded-xl border border-blue-500/10">
-                                    <p className="text-blue-400 font-bold text-xl">{data.active_projects_count}</p>
-                                    <p className="text-slate-400 text-xs uppercase tracking-tighter">Active Projects In Progress</p>
+                                    <p className="text-blue-400 font-bold text-xl">{money(data.total_contract_value)}</p>
+                                    <p className="text-slate-400 text-xs uppercase tracking-tighter">Contract Value</p>
                                 </div>
                                 <div className="bg-emerald-500/5 p-4 rounded-xl border border-emerald-500/10">
-                                    <p className="text-emerald-400 font-bold text-xl">{data.closed_leads_count}</p>
-                                    <p className="text-slate-400 text-xs uppercase tracking-tighter">Total Closed Deals (Won)</p>
+                                    <p className="text-emerald-400 font-bold text-xl">{money(data.total_payments_collected)}</p>
+                                    <p className="text-slate-400 text-xs uppercase tracking-tighter">Payments Collected</p>
+                                </div>
+                                <div className="bg-amber-500/5 p-4 rounded-xl border border-amber-500/10">
+                                    <p className="text-amber-300 font-bold text-xl">{collectionPercent}%</p>
+                                    <p className="text-slate-400 text-xs uppercase tracking-tighter">Collection Progress</p>
                                 </div>
                             </div>
-                            <div className="mt-6 flex justify-between items-center bg-slate-800/40 p-4 rounded-lg border border-slate-700/50">
+                            <div className="mt-6">
+                                <div className="flex justify-between text-xs text-slate-400 mb-2">
+                                    <span>Revenue collection</span>
+                                    <span>{money(revenueCollected)} / {money(contractValue)}</span>
+                                </div>
+                                <div className="h-3 rounded-full bg-slate-800 overflow-hidden border border-slate-700/50">
+                                    <div className="h-full rounded-full bg-gradient-to-r from-blue-500 to-emerald-400 shadow-lg shadow-emerald-500/20" style={{ width: `${collectionPercent}%` }}></div>
+                                </div>
+                            </div>
+                            <div className="mt-6 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 bg-slate-800/40 p-4 rounded-lg border border-slate-700/50">
                                 <div>
                                     <p className="text-white font-medium text-sm">Company: {data.company_name}</p>
-                                    <p className="text-slate-500 text-xs">Total Staff Managed: {data.staff_count}</p>
+                                    <p className="text-slate-500 text-xs">Payroll paid: {money(data.total_payroll_paid)} · Staff managed: {metric(data.staff_count)}</p>
                                 </div>
-                                <Link to="/admin-dashboard/projects" className="text-blue-400 hover:text-blue-300 text-xs font-bold flex items-center gap-1">Manage All Projects <Icon name="ArrowRight" size={12} /></Link>
+                                <Link to="/admin-dashboard/projects" className="text-blue-400 hover:text-blue-300 text-xs font-bold flex items-center gap-1">Manage Projects <Icon name="ArrowRight" size={12} /></Link>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div className="glass-card p-6">
+                            <h3 className="text-lg font-semibold text-white mb-5">Lead Conversion Board</h3>
+                            <div className="space-y-3">
+                                {pipelineItems.map(([status, count]) => {
+                                    const percent = data.contact_lead_count ? Math.min(100, Math.round((count / data.contact_lead_count) * 100)) : 0;
+                                    return (
+                                        <div key={status}>
+                                            <div className="flex justify-between text-sm mb-1">
+                                                <span className="text-slate-300 capitalize">{status.replace('_', ' ')}</span>
+                                                <span className="text-slate-500">{count}</span>
+                                            </div>
+                                            <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
+                                                <div className="h-full bg-blue-400 rounded-full" style={{ width: `${percent}%` }}></div>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                                {pipelineItems.length === 0 && <p className="text-slate-500 text-sm">No lead stages available yet.</p>}
+                            </div>
+                        </div>
+
+                        <div className="glass-card p-6">
+                            <h3 className="text-lg font-semibold text-white mb-5">Project Status</h3>
+                            <div className="space-y-3">
+                                {projectStatusItems.map(([status, count]) => (
+                                    <div key={status} className="flex items-center justify-between p-3 rounded-xl bg-slate-800/50 border border-slate-700/40">
+                                        <div className="flex items-center gap-3">
+                                            <span className="w-2.5 h-2.5 rounded-full bg-gradient-to-r from-blue-400 to-emerald-400"></span>
+                                            <span className="text-slate-300 capitalize text-sm">{status.replace('_', ' ')}</span>
+                                        </div>
+                                        <span className="text-white font-bold">{count}</span>
+                                    </div>
+                                ))}
+                                {projectStatusItems.length === 0 && <p className="text-slate-500 text-sm">No projects have been created yet.</p>}
+                            </div>
+                        </div>
+
+                        <div className="glass-card p-6">
+                            <h3 className="text-lg font-semibold text-white mb-5">Recent Activity</h3>
+                            <div className="space-y-4">
+                                {(data.recent_leads || []).slice(0, 5).map((lead, index) => (
+                                    <div key={lead.id || index} className="flex items-start gap-3">
+                                        <div className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-blue-300">
+                                            <Icon name="UserPlus" size={16} />
+                                        </div>
+                                        <div className="min-w-0">
+                                            <p className="text-white text-sm font-medium truncate">{lead.name || 'New lead'}</p>
+                                            <p className="text-slate-500 text-xs truncate">{lead.phone || lead.email || lead.city_area || 'Lead captured'}</p>
+                                        </div>
+                                    </div>
+                                ))}
+                                {(!data.recent_leads || data.recent_leads.length === 0) && <p className="text-slate-500 text-sm">No recent activity yet.</p>}
                             </div>
                         </div>
                     </div>
@@ -717,6 +951,8 @@
             const navigate = useNavigate();
             const [lead, setLead] = useState(null);
             const [loadingLead, setLoadingLead] = useState(true);
+            const [loadError, setLoadError] = useState(null);
+            const [reloadKey, setReloadKey] = useState(0);
 
             const [openSection, setOpenSection] = useState('system');
 
@@ -777,6 +1013,8 @@
 
             useEffect(() => {
                 const loadData = async () => {
+                    setLoadingLead(true);
+                    setLoadError(null);
                     try {
                         let currentLead = null;
                         if (leadId && leadId !== 'new' && leadId !== 'none') {
@@ -822,14 +1060,16 @@
                             }));
                         }
                     } catch (e) {
-                        console.error(e);
-                        alert("Error loading data");
+                        console.error("Quotation builder failed to load", e);
+                        const message = apiErrorMessage(e, "Unable to load quotation data. Please retry.");
+                        setLoadError(message);
+                        toast(message, "error");
                     } finally {
                         setLoadingLead(false);
                     }
                 };
                 loadData();
-            }, [leadId, editId]);
+            }, [leadId, editId, reloadKey]);
 
             // Engineering Calculations Logic
             useEffect(() => {
@@ -992,7 +1232,10 @@
                     const res = await api.post('quotations/', payload);
                     setGeneratedQuote(res.data);
                     toast(editingQuote ? "Revision created successfully!" : "Quotation generated!");
-                } catch (e) { alert("Failed to build quote: " + JSON.stringify(e.response?.data || e.message)); } finally { setLoading(false); }
+                } catch (e) {
+                    const message = apiErrorMessage(e, "Failed to build quote");
+                    toast(message, "error");
+                } finally { setLoading(false); }
             };
 
             const finalizeQuote = async () => {
@@ -1006,7 +1249,9 @@
                             await api.post(`quotations/${editingQuote.id}/finalize/`);
                             toast("Quotation finalized and locked!", "success");
                             navigate('/admin-dashboard/quotations');
-                        } catch (e) { alert("Finalization failed: " + e.message); } finally { setLoading(false); setDeleteConfirm(null); }
+                        } catch (e) {
+                            toast(apiErrorMessage(e, "Finalization failed"), "error");
+                        } finally { setLoading(false); setDeleteConfirm(null); }
                     }
                 });
             };
@@ -1041,7 +1286,40 @@
                 </div>
             );
 
-            if (loadingLead) return <Layout><div className="text-white p-8">Loading Lead Information...</div></Layout>;
+            if (loadingLead) return (
+                <Layout>
+                    <div className="space-y-6 animate-pulse">
+                        <div className="glass-card p-8">
+                            <div className="h-8 w-72 bg-slate-800 rounded-xl mb-3"></div>
+                            <div className="h-4 w-96 max-w-full bg-slate-800/70 rounded-lg"></div>
+                        </div>
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <div className="glass-card p-6 h-80 lg:col-span-2"></div>
+                            <div className="glass-card p-6 h-80"></div>
+                        </div>
+                    </div>
+                </Layout>
+            );
+
+            if (loadError) return (
+                <Layout>
+                    <div className="min-h-[60vh] flex items-center justify-center p-6">
+                        <div className="glass-card p-8 max-w-xl w-full text-center border border-amber-500/20">
+                            <div className="w-14 h-14 rounded-2xl bg-amber-500/10 text-amber-300 mx-auto mb-5 flex items-center justify-center">
+                                <Icon name="RefreshCw" size={28} />
+                            </div>
+                            <h2 className="text-2xl font-bold text-white mb-2">Quotation workspace could not load</h2>
+                            <p className="text-slate-400 mb-6">{loadError}</p>
+                            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                                <Button onClick={() => setReloadKey(k => k + 1)} icon="RefreshCw">Retry</Button>
+                                <Link to="/admin-dashboard/leads" className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium border border-slate-600 hover:border-slate-500 text-slate-300 hover:text-white transition-all">
+                                    <Icon name="ArrowLeft" size={18} /> Back to Leads
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+                </Layout>
+            );
 
             return (
                 <Layout>
@@ -2917,8 +3195,12 @@
             };
 
 
-            const downloadSlip = (id) => {
-                window.open(`/api/payroll/${id}/download_slip/`, '_blank');
+            const downloadStaffSlip = async (staffId) => {
+                await downloadPayrollPdf(`/api/staff/${staffId}/download_slip/`, toast);
+            };
+
+            const downloadPayrollSlip = async (payrollId) => {
+                await downloadPayrollPdf(`/api/payroll/${payrollId}/download_slip/`, toast);
             };
 
             const roleColor = (r) => ({
@@ -3011,7 +3293,7 @@
                                                     <td className="p-5 text-right">
                                                         <div className="flex gap-2 justify-end opacity-0 group-hover:opacity-100 transition-opacity">
                                                             <button onClick={() => openEdit(m)} className="bg-slate-700 hover:bg-blue-600 text-white p-2 rounded-lg transition-colors shadow-lg"><Icon name="Pencil" size={14} /></button>
-                                                            <button onClick={() => downloadSlip(m.id)} className="bg-slate-700 hover:bg-emerald-600 text-white p-2 rounded-lg transition-colors shadow-lg" title="Quick Slip Preview"><Icon name="FileText" size={14} /></button>
+                                                            <button onClick={() => downloadStaffSlip(m.id)} className="bg-slate-700 hover:bg-emerald-600 text-white p-2 rounded-lg transition-colors shadow-lg" title="Download latest salary slip"><Icon name="FileText" size={14} /></button>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -3108,7 +3390,7 @@
                                                         <td className="p-5 text-right">
                                                             <div className="flex gap-2 justify-end">
                                                                 <button onClick={() => openEditPayroll(r)} className="bg-slate-700 hover:bg-emerald-600 text-white p-2 rounded-lg transition-colors shadow-lg" title="Edit / Mark Paid"><Icon name="Edit" size={14} /></button>
-                                                                <button onClick={() => window.open(`/api/payroll/${r.id}/download_slip/`, '_blank')} className="bg-slate-700 hover:bg-blue-600 text-white p-2 rounded-lg transition-colors shadow-lg" title="Download Slip"><Icon name="Download" size={14} /></button>
+                                                                <button onClick={() => downloadPayrollSlip(r.id)} className="bg-slate-700 hover:bg-blue-600 text-white p-2 rounded-lg transition-colors shadow-lg" title="Download Slip"><Icon name="Download" size={14} /></button>
                                                             </div>
                                                         </td>
                                                     </tr>

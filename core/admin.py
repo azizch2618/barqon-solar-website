@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
 from django.urls import reverse
-from .models import CompanyProfile, Contact, Project, StaffProfile
+from .models import CompanyProfile, Contact, Project, StaffProfile, InventoryItem
 from quotations.models import Quotation
 
 
@@ -98,6 +98,13 @@ class ProjectAdmin(admin.ModelAdmin):
             obj.get_status_display()
         )
     status_badge.short_description = "Status"
+
+
+@admin.register(InventoryItem)
+class InventoryItemAdmin(admin.ModelAdmin):
+    list_display = ("name", "sku", "category", "quantity_on_hand", "reorder_level", "unit_cost", "supplier")
+    list_filter = ("category",)
+    search_fields = ("name", "sku", "supplier")
 
 
 @admin.register(StaffProfile)

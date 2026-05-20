@@ -28,6 +28,7 @@ urlpatterns = [
     path("portal/quotations/<int:id>/view/", quotation_view_page, name="customer-quotation-view"),
 
     path("admin-dashboard/payroll/<int:payroll_id>/pdf/", generate_payroll_slip_pdf, name="payroll-slip-pdf"),
+    path("admin-dashboard/quotation-builder/new/", admin_dashboard, name="owner-quotation-create"),
     path("gallery/", projects_gallery_view, name="projects-gallery"),
     path("reviews/", reviews_gallery_view, name="reviews-gallery"),
     path("about/", about_us_view, name="about-page"),
@@ -36,6 +37,7 @@ urlpatterns = [
     path("careers/general-apply/", general_apply_view, name="general-apply"),
     path("insights/", blog_list_page, name="blog-page"),
     path("insights/<slug:slug>/", blog_detail_page, name="blog-detail-page"),
+    path("admin-dashboard/", admin_dashboard, name="react-app-root"),
     path("admin-dashboard/", admin_dashboard, name="admin_dashboard"),
     path("admin-dashboard/<path:path>/", admin_dashboard, name="react-app-catchall"),
     path("admin-login/", admin_dashboard, name="react-app-login"),

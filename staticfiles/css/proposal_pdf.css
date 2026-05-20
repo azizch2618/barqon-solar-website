@@ -13,7 +13,7 @@
     --dark: #0B0F19;
     --darker: #05070a;
     --slate: #64748b;
-    --border: rgba(0, 0, 0, 0.06);
+    --border: rgba(0,0,0,0.06);
 }
 
 body {
@@ -82,7 +82,7 @@ body {
     bottom: 40mm;
     left: 20mm;
     right: 20mm;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid rgba(255,255,255,0.1);
     padding-top: 30px;
 }
 

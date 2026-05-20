@@ -8,61 +8,79 @@
 {% endblock %}
 
 {% block content %}
-<!-- Page Hero -->
-<section class="bq-page-hero">
-    <div class="bq-container">
-        <div class="bq-page-hero-content" data-reveal>
-            <span class="bq-page-hero-kicker">Solar Insights</span>
-            <h1 class="bq-page-hero-h1">Latest from our engineers</h1>
-            <p class="bq-page-hero-sub">Expert guides, technical deep-dives, and energy saving tips from the BARQON engineering team.</p>
+<!-- ════════════════════════════════════════════════════════
+     BLOG HERO
+════════════════════════════════════════════════════════ -->
+<section class="bq-section" style="padding: 180px 0 100px; background: var(--navy-dark); position: relative; overflow: hidden; border-bottom: 1px solid rgba(255,255,255,0.03);">
+    <!-- Ambient glowing background -->
+    <div style="position: absolute; top: -10%; right: -10%; width: 50vw; height: 50vw; background: radial-gradient(circle, rgba(255,200,87,0.08) 0%, transparent 60%); pointer-events: none;"></div>
+    <!-- Mesh Background -->
+    <div class="mesh-bg" style="opacity: 0.3;"></div>
+
+    <div class="bq-wrap" style="position: relative; z-index: 2;">
+        <div style="max-width: 900px; margin: 0 auto; text-align: center;" class="reveal-up">
+            <div style="display: inline-flex; align-items: center; gap: 12px; background: rgba(255, 200, 87, 0.05); border: 1px solid rgba(255, 200, 87, 0.2); padding: 8px 20px; border-radius: 50px; margin-bottom: 32px;">
+                <span style="display: block; width: 6px; height: 6px; background: var(--gold); border-radius: 50%; box-shadow: 0 0 10px var(--gold);"></span>
+                <span style="font-size: 0.75rem; font-weight: 800; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold);">Solar Insights</span>
+            </div>
+            
+            <h1 style="font-size: clamp(3rem, 7vw, 5.5rem); font-weight: 900; line-height: 0.95; letter-spacing: -0.04em; color: #fff; margin-bottom: 24px;">
+                Latest from our<br>
+                <span style="background: linear-gradient(90deg, var(--gold), #fff); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">Engineering Desk.</span>
+            </h1>
+            
+            <p style="font-size: 1.25rem; color: var(--text-secondary); line-height: 1.6; max-width: 650px; margin: 0 auto;">
+                Expert guides, technical deep-dives, and energy saving strategies from the BARQON engineering team.
+            </p>
         </div>
     </div>
 </section>
 
-<!-- Blog Grid Section -->
-<section class="bq-content-section">
-    <div class="bq-container">
-        <!-- Blog Grid -->
-        <div class="bq-grid-3">
+<!-- ════════════════════════════════════════════════════════
+     BLOG GRID
+════════════════════════════════════════════════════════ -->
+<section class="bq-section" style="background: var(--navy-dark); padding-top: 80px; padding-bottom: 120px; min-height: 50vh;">
+    <div class="bq-wrap">
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 40px;" class="reveal-stagger">
             {% for post in posts %}
-            <article class="stagger-reveal-{{ forloop.counter|default:1 }}" data-reveal>
-                <a href="{% url 'blog-detail-page' post.slug %}" class="blog-card-ultra">
-                    <div class="blog-card-image-wrap">
-                        {% if post.image_url %}
-                            <img src="{{ post.image_url }}" alt="{{ post.title }}" class="bq-img-standard" loading="lazy">
-                        {% elif post.image %}
-                            <img src="{{ post.image.url }}" alt="{{ post.title }}" class="bq-img-standard" loading="lazy">
-                        {% else %}
-                            <img src="https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?auto=format&fit=crop&w=800&q=80" alt="Solar energy" class="bq-img-standard">
-                        {% endif %}
-                        <div class="bottom-fade"></div>
-                        <span class="category-pill">{{ post.category|default:"Solar Insights" }}</span>
-                    </div>
-                    
-                    <div class="blog-card-content">
-                        <h3 class="blog-card-title">{{ post.title }}</h3>
-                        <p class="blog-card-excerpt">
-                            {{ post.excerpt|default:post.content|striptags|truncatechars:120 }}
-                        </p>
-                        
-                        <div class="blog-card-footer">
-                            <span class="read-guide-link">
-                                Read Guide <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                            </span>
-                            <span class="reading-time">
-                                {{ post.read_time|default:"5 min read" }}
-                            </span>
-                        </div>
-                    </div>
-                </a>
-            </article>
-            {% empty %}
-            <div class="col-span-full py-20 text-center" data-reveal>
-                <div class="inline-flex p-6 rounded-full bg-slate-100 mb-6">
-                    <i data-lucide="book-open" class="w-12 h-12 text-slate-300"></i>
+            <a href="{% url 'blog-detail-page' post.slug %}" style="display: block; text-decoration: none; border-radius: 32px; overflow: hidden; background: var(--navy-deep); border: 1px solid var(--glass-border); box-shadow: 0 20px 40px rgba(0,0,0,0.3); transition: transform 0.4s ease, border-color 0.4s ease;" onmouseover="this.style.transform='translateY(-10px)'; this.style.borderColor='rgba(255,200,87,0.3)';" onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='var(--glass-border)';">
+                <div style="position: relative; aspect-ratio: 16 / 10; overflow: hidden; background: #000;">
+                    {% if post.image_url %}
+                        <img src="{{ post.image_url }}" alt="{{ post.title }}" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.85; transition: transform 0.6s ease;" loading="lazy" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                    {% elif post.image %}
+                        <img src="{{ post.image.url }}" alt="{{ post.title }}" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.85; transition: transform 0.6s ease;" loading="lazy" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                    {% else %}
+                        <img src="https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?auto=format&fit=crop&w=800&q=80" alt="Solar energy" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.85; transition: transform 0.6s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                    {% endif %}
+                    <div style="position: absolute; inset: 0; background: linear-gradient(180deg, transparent 40%, var(--navy-deep) 100%); pointer-events: none;"></div>
+                    <span style="position: absolute; top: 24px; left: 24px; background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); color: var(--gold); border: 1px solid rgba(255,200,87,0.3); padding: 6px 16px; border-radius: 50px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; pointer-events: none;">
+                        {{ post.category|default:"Solar Insights" }}
+                    </span>
                 </div>
-                <h3 class="text-2xl font-bold text-navy-900 mb-2">No Insights Published Yet</h3>
-                <p class="text-slate-500">Check back soon for expert guides and solar technology news.</p>
+                
+                <div style="padding: 40px; display: flex; flex-direction: column;">
+                    <h3 style="font-size: 1.5rem; font-weight: 800; color: #fff; margin-bottom: 16px; line-height: 1.3; letter-spacing: -0.02em;">{{ post.title }}</h3>
+                    <p style="font-size: 1.05rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 32px; display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+                        {{ post.excerpt|default:post.content|striptags|truncatechars:150 }}
+                    </p>
+                    
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.05); margin-top: auto;">
+                        <span style="color: var(--gold); font-weight: 800; font-size: 0.9rem; display: flex; align-items: center; gap: 8px;">
+                            Read Guide <i data-lucide="arrow-right" size="16"></i>
+                        </span>
+                        <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.1em;">
+                            {{ post.read_time|default:"5 min read" }}
+                        </span>
+                    </div>
+                </div>
+            </a>
+            {% empty %}
+            <div style="grid-column: 1 / -1; text-align: center; padding: 100px 40px; background: rgba(255,255,255,0.01); border: 1px dashed rgba(255,255,255,0.1); border-radius: 40px;" class="reveal-up">
+                <div style="width: 80px; height: 80px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 50%; display: grid; place-items: center; margin: 0 auto 24px; color: var(--text-muted);">
+                    <i data-lucide="book-open" size="32"></i>
+                </div>
+                <h3 style="color: #fff; font-size: 2rem; font-weight: 900; margin-bottom: 12px; letter-spacing: -0.03em;">No Insights Published Yet</h3>
+                <p style="color: var(--text-muted); font-size: 1.1rem;">Check back soon for expert guides and solar technology news.</p>
             </div>
             {% endfor %}
         </div>

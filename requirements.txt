@@ -10,3 +10,4 @@ djangorestframework_simplejwt==5.5.1
 reportlab==4.4.10
 requests==2.33.1
 django-compressor==4.6.0
+psycopg[binary]==3.3.2

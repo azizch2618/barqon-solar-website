@@ -1,4 +1,3 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,13 +7,14 @@
     <meta name="description" content="{% block meta_description %}BARQON Solar Solutions provides solar installation in Pakistan with clear system sizing, pricing, net metering support, and dependable after-sales service.{% endblock %}">
     {% block extra_meta %}{% endblock %}
     <meta name="keywords" content="solar company Pakistan, solar installation Pakistan, solar system price Pakistan, net metering Pakistan, residential solar Pakistan, commercial solar Pakistan">
+    {% load static %}
 
     <!-- Preconnect to external domains -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <!-- Preload critical above-the-fold assets -->
-    <link rel="preload" as="image" href="{% static 'images/logo_premium.png' %}" fetchpriority="high">
+    <link rel="preload" as="image" href="{% static 'images/logo_premium.png' %}">
     {% block preload_hero %}{% endblock %}
 
     <!-- Google Fonts: non-render-blocking (font-display:swap via media trick) -->
@@ -25,24 +25,270 @@
     <script src="{% static 'js/lucide.min.js' %}" defer></script>
 
     <link rel="icon" href="{% static 'images/logo.png' %}">
-    <link rel="stylesheet" href="{% static 'css/bq.css' %}?v=1.8">
+    <link rel="stylesheet" href="{% static 'css/bq.css' %}?v=4.3">
+    <link rel="stylesheet" href="{% static 'css/bq-enterprise.css' %}?v=1.1">
     <style>
-        .bq-project-modal-grid {
-            display: grid;
-            grid-template-columns: 1.2fr 0.8fr;
-            gap: 0;
+        /* â”€â”€ GLOBAL RESET â”€â”€ */
+        body, html {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            background: #071120;
         }
-        @media (max-width: 768px) {
-            .bq-project-modal-grid {
-                grid-template-columns: 1fr;
+
+        /* â”€â”€ FIXED NAVIGATION WRAPPER â”€â”€ */
+        .bq-nav-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            z-index: 10000;
+            background: rgba(7, 17, 32, 0.85);
+            -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(244, 182, 61, 0.1);
+            transition: all 0.4s cubic-bezier(0.16,1,0.3,1);
+            transform: translateZ(0); /* GPU Accelerated */
+        }
+        .bq-nav-wrapper .bq-wrap {
+            max-width: 1280px;
+            width: min(1280px, calc(100% - 48px));
+            margin-inline: auto;
+        }
+
+        /* â•â• ULTRA-PREMIUM NAVBAR v2 â•â• */
+        .bq-topbar {
+            background: rgba(7, 17, 32, 0.6);
+            border-bottom: 1px solid rgba(244, 182, 61, 0.1);
+            font-size: 0.72rem;
+            color: rgba(217, 226, 242, 0.7);
+            min-height: 34px;
+            padding: 8px 0;
+            display: flex;
+            align-items: center;
+            transition: height 0.3s ease, opacity 0.3s ease;
+        }
+        .bq-nav-wrapper.scrolled .bq-topbar {
+            height: 0;
+            padding: 0;
+            opacity: 0;
+            pointer-events: none;
+            overflow: hidden;
+            border-bottom: none;
+        }
+        .bq-topbar-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 24px;
+        }
+        .bq-topbar-left, .bq-topbar-center, .bq-topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .bq-topbar-center {
+            font-weight: 500;
+            color: #F4B63D;
+            letter-spacing: 0.05em;
+        }
+        .bq-topbar-right a {
+            color: inherit;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.3s ease;
+        }
+        .bq-topbar-right a:hover {
+            color: #F4B63D;
+        }
+        .bq-topbar-right svg {
+            width: 14px;
+            height: 14px;
+            color: #F4B63D;
+        }
+        
+        .bq-header {
+            min-height: 72px;
+            padding: 12px 0;
+            display: flex;
+            align-items: center;
+            transition: all 0.4s cubic-bezier(0.16,1,0.3,1);
+        }
+        .bq-nav-wrapper.scrolled .bq-header {
+            min-height: 62px;
+            padding: 8px 0;
+            background: rgba(7, 17, 32, 0.98);
+        }
+        
+        .bq-nav-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            gap: 20px;
+        }
+
+        .bq-nav-brand { flex: 0 0 auto; display: flex; align-items: center; min-width: 200px; }
+        .bq-nav-menu { flex: 1; display: flex; justify-content: center; gap: 24px; }
+        .bq-nav-cta { flex: 0 0 auto; display: flex; align-items: center; gap: 10px; }
+
+        @media (max-width: 1024px) {
+            .bq-nav-menu { display: none; }
+            .bq-nav-brand { min-width: auto; }
+            .bq-nav-cta .bq-btn-gold-fill { display: none; }
+            .bq-mobile-toggle { display: block !important; }
+        }
+        @media (max-width: 760px) {
+            .bq-nav-wrapper .bq-wrap {
+                width: min(100% - 32px, 1280px);
+            }
+            .bq-header {
+                min-height: 66px;
+                padding: 10px 0;
+            }
+            .bq-logo-img {
+                width: 38px !important;
+                height: 38px !important;
             }
         }
-        @keyframes bqModalIn {
-            from { opacity: 0; transform: scale(0.9) translateY(20px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
+
+        .bq-mobile-toggle {
+            display: none;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
         }
-        .bq-modal-content-animated {
-            animation: bqModalIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        .bq-mobile-toggle:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--gold);
+        }
+
+        /* â”€â”€ PREMIUM MOBILE MENU â”€â”€ */
+        .bq-mobile-menu {
+            position: fixed;
+            inset: 0;
+            background: rgba(7, 17, 32, 0.98);
+            -webkit-backdrop-filter: blur(25px);
+            backdrop-filter: blur(25px);
+            z-index: 10001;
+            padding: 120px 40px 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            gap: 12px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateY(-20px);
+        }
+        .bq-mobile-menu.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+        .bq-mobile-item {
+            font-size: 2rem;
+            font-weight: 900;
+            color: #fff;
+            text-decoration: none;
+            letter-spacing: -0.02em;
+            transition: color 0.3s ease, transform 0.3s ease;
+            display: block;
+        }
+        .bq-mobile-item:hover {
+            color: var(--gold);
+            transform: translateX(10px);
+        }
+        .bq-mobile-cta {
+            margin-top: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* Sub-tagline under brand name */
+        .bq-brand-sub {
+            font-size: 0.65rem;
+            font-weight: 800;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-top: 2px;
+            display: block;
+            opacity: 0.9;
+        }
+        /* Nav links premium hover */
+        .bq-nav-item {
+            position: relative;
+            overflow: hidden;
+        }
+        .bq-nav-item::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 50%; right: 50%;
+            height: 2px;
+            background: linear-gradient(90deg, #F5A623, #ff8c42);
+            transition: left 0.3s cubic-bezier(0.16,1,0.3,1), right 0.3s cubic-bezier(0.16,1,0.3,1);
+            border-radius: 2px;
+        }
+        .bq-nav-item:hover::after { left: 12px; right: 12px; }
+        /* Scroll-reveal animation */
+        [data-reveal] {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1);
+        }
+        [data-reveal].revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* â”€â”€ MODAL SYSTEM â”€â”€ */
+        .bq-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(7, 17, 32, 0.9);
+            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
+            z-index: 10005;
+            display: grid;
+            place-items: center;
+            padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+        .bq-modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .bq-modal-content {
+            background: var(--navy-deep);
+            border: 1px solid var(--glass-border);
+            border-radius: 32px;
+            width: 100%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: clamp(32px, 5vw, 64px);
+            position: relative;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.6);
+            transform: scale(0.95) translateY(20px);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .bq-modal.active .bq-modal-content {
+            transform: scale(1) translateY(0);
+        }
+        
+        @media (max-width: 768px) {
+            .bq-modal-content { padding: 32px 24px; border-radius: 24px; }
         }
         .bq-flex-responsive {
             display: flex;
@@ -62,62 +308,341 @@
         .avatar-blue { background: hsl(210, 100%, 50%); }
         .avatar-emerald { background: hsl(150, 100%, 40%); }
         .avatar-amber { background: hsl(40, 100%, 50%); }
+        .bq-topbar-left-strong { font-weight: 600; font-size: 0.75rem; }
+        .bq-topbar-slogan,
+        .bq-topbar-link,
+        .bq-nav-icon-link,
+        .bq-footer-contact-link,
+        .bq-footer-address {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .bq-topbar-icon { width: 13px; height: 13px; color: var(--gold); }
+        .bq-topbar-link-icon { width: 13px; height: 13px; }
+        .bq-topbar-center-muted { font-size: 0.78rem; color: rgba(255,255,255,0.5); }
+        .bq-topbar-right-spaced { gap: 20px; }
+        .bq-topbar-support { font-weight: 600; }
+        .bq-topbar-phone { font-weight: 700; color: #fff; }
+        .bq-header-glass {
+            background: rgba(2, 6, 23, 0.65);
+            -webkit-backdrop-filter: blur(40px);
+            backdrop-filter: blur(40px);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            transition: background 0.4s ease, border-color 0.4s ease;
+        }
+        .bq-nav-flex-full { height: 100%; }
+        .bq-logo-img-compact { height: 32px !important; }
+        .bq-brand-stack { display: flex; flex-direction: column; justify-content: center; }
+        .bq-brand-name-compact {
+            font-size: 1.2rem;
+            font-weight: 900;
+            letter-spacing: -0.04em;
+            line-height: 0.9;
+        }
+        .bq-brand-sub-compact {
+            font-size: 0.52rem;
+            letter-spacing: 0.22em;
+            margin-top: 4px;
+        }
+        .bq-nav-menu-tight { gap: 4px; }
+        .bq-nav-small-cta {
+            padding: 9px 18px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+        }
+        .bq-nav-icon { width: 14px; height: 14px; }
+        .bq-messages-stack {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9998;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: min(500px, calc(100% - 32px));
+        }
+        .bq-footer-luxe {
+            background: #01030B;
+            position: relative;
+            border-top: 1px solid rgba(255,200,87,0.15);
+            box-shadow: inset 0 20px 40px rgba(255,200,87,0.02);
+            padding-top: 120px;
+            overflow: hidden;
+        }
+        .mesh-bg-subtle { opacity: 0.3; }
+        .bq-footer-grid-layer { position: relative; z-index: 1; }
+        .bq-footer-logo-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            margin-bottom: 24px;
+        }
+        .bq-footer-logo-img { height: 36px; }
+        .bq-footer-brand-name {
+            font-size: 1.6rem;
+            font-weight: 900;
+            color: #fff;
+            letter-spacing: -0.04em;
+            line-height: 0.9;
+        }
+        .bq-footer-brand-sub {
+            font-size: 0.6rem;
+            letter-spacing: 0.25em;
+            color: var(--gold);
+            text-transform: uppercase;
+        }
+        .bq-footer-socials-row { gap: 16px; display: flex; }
+        .bq-footer-social {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            padding: 12px;
+            border-radius: 50%;
+            color: #fff;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .bq-footer-social:hover {
+            background: var(--gold);
+            color: #01030B;
+            transform: translateY(-4px);
+        }
+        .bq-delay-1 { transition-delay: 0.1s; }
+        .bq-delay-2 { transition-delay: 0.2s; }
+        .bq-delay-3 { transition-delay: 0.3s; }
+        .bq-footer-h4-luxe {
+            color: #fff;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            margin-bottom: 24px;
+        }
+        .bq-footer-text-link {
+            color: var(--text-muted);
+            transition: color 0.3s;
+            font-size: 1.05rem;
+        }
+        .bq-footer-contact-link,
+        .bq-footer-address {
+            color: var(--text-muted);
+            transition: color 0.3s;
+            font-size: 1.05rem;
+            gap: 12px;
+        }
+        .bq-footer-contact-icon { width: 16px; }
+        .bq-modal-hidden { display: none; }
+        .bq-modal-narrow { max-width: 560px; }
+        .bq-modal-eyebrow { margin-bottom: 18px; }
+        .bq-modal-title-tight { margin-bottom: 8px; }
+        .bq-modal-copy { margin: 0 0 28px; }
+        .bq-field-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+        }
+        .bq-review-textarea { min-height: 120px; resize: vertical; }
+        .bq-solution-title { margin-bottom: 16px; }
+        .bq-solution-body { margin-bottom: 40px; font-size: 1.1rem; }
+        .bq-solution-grid {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 40px;
+        }
+        .bq-solution-subtitle {
+            color: var(--gold);
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 16px;
+        }
+        .bq-benefits-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .bq-benefit-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+        .bq-benefit-icon { width: 18px; height: 18px; color: var(--gold); }
+        .bq-next-step-copy {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+        .bq-success-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.9);
+            -webkit-backdrop-filter: blur(15px);
+            backdrop-filter: blur(15px);
+            z-index: 99999;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .bq-success-content {
+            background: #0b1c2c;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 24px;
+            width: 100%;
+            max-width: 550px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 20px 30px;
+            position: relative;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+        }
+        .bq-success-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+        }
+        .bq-success-icon-wrap {
+            width: 80px;
+            height: 80px;
+            background: rgba(16,185,129,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            border: 1px solid rgba(16,185,129,0.2);
+        }
+        .bq-success-icon { color: #10b981; width: 40px; height: 40px; }
+        .bq-success-title {
+            color: #fff;
+            font-size: 32px;
+            font-weight: 900;
+            margin-bottom: 12px;
+        }
+        .bq-success-message {
+            color: #94a3b8;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 32px;
+        }
+        .bq-success-actions { display: grid; gap: 12px; }
+        .bq-success-action { justify-content: center; }
+        .bq-success-close-btn {
+            justify-content: center;
+            color: #fff;
+            border-color: rgba(255,255,255,0.2);
+        }
     </style>
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <div class="page-shell">
-        <!-- ── PREMIUM NAVBAR V1.6 FORCED ───────────────────────────── -->
-        <header class="bq-header">
-            <div class="bq-wrap bq-nav-flex">
-                <!-- Left: Brand -->
-                <div class="bq-nav-brand">
-                    <a href="{% url 'home' %}" class="bq-logo-link">
-                        <img src="{% static 'images/logo_premium.png' %}" alt="BARQON" class="bq-logo-img">
-                        <span class="bq-brand-name">BARQON</span>
-                    </a>
-                </div>
-
-                <!-- Center: Links (Desktop) -->
-                <nav class="bq-nav-menu">
-                    <a href="{% url 'home' %}#services" class="bq-nav-item">Services</a>
-                    <a href="{% url 'home' %}#projects" class="bq-nav-item">Projects</a>
-                    <a href="{% url 'home' %}#reviews" class="bq-nav-item">Reviews</a>
-                    <a href="{% url 'blog-page' %}#guides" class="bq-nav-item">Guides</a>
-                    <a href="{% url 'about-page' %}" class="bq-nav-item">About</a>
-                    <a href="{% url 'careers-page' %}" class="bq-nav-item">Careers</a>
-                </nav>
-
-                <!-- Right: CTA -->
-                <div class="bq-nav-cta">
-                    <button onclick="openReviewModal()" class="bq-btn bq-btn-ghost bq-desktop-only">Review</button>
-                    <a href="{% url 'home' %}#quote" class="bq-btn bq-btn-primary bq-desktop-only">Get Free Quote</a>
-                    
-                    <button class="bq-nav-toggle" id="navToggle" aria-label="Toggle Menu">
-                        <i data-lucide="menu"></i>
-                    </button>
+    <div class="page-shell has-topbar">
+        <div class="bq-nav-wrapper" id="navWrapper">
+        <!-- â”€â”€ FIXED NAVIGATION WRAPPER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â            <!-- â”€â”€ PREMIUM TOP BAR â”€â”€ -->
+            <div class="bq-topbar bq-desktop-only">
+                <div class="bq-wrap bq-topbar-inner">
+                    <div class="bq-topbar-left bq-topbar-left-strong">
+                        <span class="bq-topbar-slogan"><i data-lucide="sun" class="bq-topbar-icon"></i> Engineering a Sustainable Future</span>
+                    </div>
+                    <div class="bq-topbar-center bq-topbar-center-muted">
+                        <span>Pakistan's Trusted Solar Engineering Partner</span>
+                    </div>
+                    <div class="bq-topbar-right bq-topbar-right-spaced">
+                        <a href="tel:+923009132042" class="bq-topbar-link bq-topbar-support"><i data-lucide="headphones" class="bq-topbar-link-icon"></i> Support 24/7</a>
+                        <a href="tel:+923009132042" class="bq-topbar-link bq-topbar-phone"><i data-lucide="phone" class="bq-topbar-link-icon"></i> +92 300 9132042</a>
+                    </div>
                 </div>
             </div>
 
-            <!-- Mobile Menu Dropdown -->
-            <div class="bq-mobile-dropdown" id="navDropdown">
-                <div class="bq-wrap bq-mobile-inner">
-                    <a href="/#services" class="bq-mobile-link">Services</a>
-                    <a href="/#projects" class="bq-mobile-link">Projects</a>
-                    <a href="/#reviews" class="bq-mobile-link">Reviews</a>
-                    <a href="/blog/#guides" class="bq-mobile-link">Guides</a>
-                    <a href="{% url 'about-page' %}" class="bq-mobile-link">About Us</a>
-                    <a href="{% url 'careers-page' %}" class="bq-mobile-link">Careers</a>
-                    <div style="height:1px; background:rgba(255,255,255,0.08); margin:8px 0;"></div>
-                    <a href="/#quote" class="bq-btn bq-btn-primary bq-btn-full">Get Free Quote</a>
-                    <button onclick="openReviewModal()" class="bq-btn bq-btn-ghost bq-btn-full" style="margin-top:12px;">Write a Review</button>
+            <!-- â”€â”€ MAIN NAVBAR â”€â”€ -->
+            <header class="bq-header bq-header-glass" id="site-header">
+                <div class="bq-wrap bq-nav-flex bq-nav-flex-full">
+                    <!-- Left: Brand -->
+                    <div class="bq-nav-brand">
+                        <a href="{% url 'home' %}" class="bq-brand-premium bq-logo-link">
+                            <span class="bq-brand-premium__mark">
+                                <img src="{% static 'images/logo_premium.png' %}" alt="" width="40" height="40">
+                            </span>
+                            <span class="bq-brand-premium__text">
+                                <span class="bq-brand-premium__name">BARQON</span>
+                                <span class="bq-brand-premium__tag">Solar Engineering</span>
+                            </span>
+                        </a>
+                    </div>
+
+                    <!-- Center: Links (Desktop) -->
+                    <nav class="bq-nav-menu bq-nav-menu-premium bq-desktop-only bq-nav-menu-tight">
+                        <a href="{% url 'home' %}#services" class="bq-nav-item">Services</a>
+                        <a href="{% url 'home' %}#projects" class="bq-nav-item">Projects</a>
+                        <a href="{% url 'home' %}#reviews" class="bq-nav-item">Reviews</a>
+                        <a href="{% url 'blog-page' %}" class="bq-nav-item">Guides</a>
+                        <a href="{% url 'about-page' %}" class="bq-nav-item{% if request.path == '/about/' %} active{% endif %}">About</a>
+                        <a href="{% url 'careers-page' %}" class="bq-nav-item">Careers</a>
+                    </nav>
+
+                    <!-- Right: Dual CTA -->
+                    <div class="bq-nav-cta">
+                        <a href="#quote" class="bq-btn bq-btn-outline-gold bq-desktop-only bq-nav-small-cta bq-nav-icon-link"><i data-lucide="zap" class="bq-nav-icon"></i> Get Free Quote</a>
+                        <a href="tel:+923009132042" class="bq-btn bq-btn-gold-fill bq-desktop-only bq-nav-small-cta bq-nav-icon-link">Call BARQON <i data-lucide="arrow-right" class="bq-nav-icon"></i></a>
+                        <button class="bq-mobile-toggle" id="navToggle">
+                            <i data-lucide="menu"></i>
+                        </button>
+                    </div>
                 </div>
+            </header>
+        </div>
+
+        <!-- Mobile Menu Overlay -->
+        <div class="bq-mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Site navigation">
+            <div class="bq-mobile-menu-header bq-wrap" style="width:100%;max-width:none;padding:0;">
+                <a href="{% url 'home' %}" class="bq-brand-premium bq-logo-link" onclick="toggleMobileMenu()">
+                    <span class="bq-brand-premium__mark">
+                        <img src="{% static 'images/logo_premium.png' %}" alt="" width="40" height="40">
+                    </span>
+                    <span class="bq-brand-premium__text">
+                        <span class="bq-brand-premium__name">BARQON</span>
+                        <span class="bq-brand-premium__tag">Solar Engineering</span>
+                    </span>
+                </a>
+                <button type="button" class="bq-mobile-menu-close" id="mobileMenuClose" aria-label="Close menu" onclick="toggleMobileMenu()">
+                    <i data-lucide="x"></i>
+                </button>
             </div>
-        </header>
+            <p class="bq-mobile-section-label">Explore</p>
+            <a href="tel:+923009132042" class="bq-mobile-phone" onclick="toggleMobileMenu()">
+                <i data-lucide="phone"></i>
+                <span>+92 300 9132042</span>
+            </a>
+            <a href="{% url 'home' %}#services" class="bq-mobile-item" onclick="toggleMobileMenu()">Services</a>
+            <a href="{% url 'home' %}#projects" class="bq-mobile-item" onclick="toggleMobileMenu()">Projects</a>
+            <a href="{% url 'home' %}#reviews" class="bq-mobile-item" onclick="toggleMobileMenu()">Reviews</a>
+            <a href="{% url 'blog-page' %}" class="bq-mobile-item" onclick="toggleMobileMenu()">Guides</a>
+            <a href="{% url 'about-page' %}" class="bq-mobile-item{% if request.path == '/about/' %} active{% endif %}" onclick="toggleMobileMenu()">About</a>
+            <a href="{% url 'careers-page' %}" class="bq-mobile-item" onclick="toggleMobileMenu()">Careers</a>
+            <div class="bq-mobile-cta">
+                <a href="#quote" class="bq-btn bq-btn-gold-fill" onclick="toggleMobileMenu()">Get Free Quote</a>
+                <a href="tel:+923009132042" class="bq-btn bq-btn-glass-outline" onclick="toggleMobileMenu()">Call Support</a>
+            </div>
+        </div>
 
         <!-- Messages -->
         {% if messages %}
-            <div style="position:fixed;top:80px;left:50%;transform:translateX(-50%);z-index:9998;display:flex;flex-direction:column;gap:8px;width:min(500px,calc(100%-32px));">
+            <div class="bq-messages-stack">
                 {% for message in messages %}
                     <div class="bq-alert {% if 'error' in message.tags %}bq-alert-error{% else %}bq-alert-success{% endif %}">
                         {{ message }}
@@ -137,78 +662,67 @@
             {% endif %}
         {% endblock %}
 
-        <!-- ════════════════════════════════════════════════════════
-             FOOTER
-        ════════════════════════════════════════════════════════ -->
-        <footer class="bq-footer">
-            <div class="bq-wrap bq-footer-grid">
+        <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+             FOOTER (AWWWARDS LUXURY)
+        â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+        <footer class="bq-footer bq-footer-luxe">
+            <div class="mesh-bg mesh-bg-subtle"></div>
+            
+            <div class="bq-wrap bq-footer-grid bq-footer-grid-layer">
                 <!-- Brand -->
                 <div class="bq-footer-brand">
-                    <a class="bq-brand" href="{% url 'home' %}">
-                        <div class="bq-logo-wrap">
-                            <img src="{% static 'images/logo_premium.png' %}" alt="BARQON" class="bq-logo-img">
-                        </div>
-                        <span class="bq-brand-name">BARQON</span>
+                    <a href="{% url 'home' %}" class="bq-footer-logo-link">
+                        <img src="{% static 'images/logo_premium.png' %}" alt="BARQON" class="bq-footer-logo-img">
+                        <span class="bq-brand-name bq-footer-brand-name">BARQON<br><span class="bq-footer-brand-sub">Engineering</span></span>
                     </a>
-                    <p class="bq-footer-tagline">Engineering-first solar solutions for Pakistan. Tier-1 equipment, transparent pricing, net metering handled.</p>
-                    <div class="bq-footer-socials">
-                        <a href="https://facebook.com" target="_blank" aria-label="Facebook">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                    <p class="bq-footer-tagline">
+                        Leading the transition to sustainable energy in Pakistan through engineering excellence.
+                    </p>
+                    <div class="bq-footer-socials bq-footer-socials-row">
+                        <a href="https://facebook.com" class="reveal-up bq-footer-social bq-delay-1" aria-label="BARQON on Facebook" title="BARQON on Facebook">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
                         </a>
-                        <a href="https://instagram.com" target="_blank" aria-label="Instagram">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                        <a href="https://instagram.com" class="reveal-up bq-footer-social bq-delay-2" aria-label="BARQON on Instagram" title="BARQON on Instagram">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
                         </a>
-                        <a href="https://linkedin.com" target="_blank" aria-label="LinkedIn">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
-                        </a>
-                        <a href="https://wa.me/{{ company.cleaned_whatsapp }}" target="_blank" aria-label="WhatsApp">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                        <a href="https://linkedin.com" class="reveal-up bq-footer-social bq-delay-3" aria-label="BARQON on LinkedIn" title="BARQON on LinkedIn">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
                         </a>
                     </div>
                 </div>
 
                 <!-- Company links -->
                 <div class="bq-footer-col">
-                    <h4 class="bq-footer-h4">Company</h4>
-                    <a href="{% url 'about-page' %}">About Us</a>
-                    <a href="{% url 'careers-page' %}">Careers</a>
-                    <a href="{% url 'home' %}#services">Services</a>
-                    <a href="{% url 'home' %}#projects">Portfolio</a>
-                    <a href="{% url 'blog-page' %}">Solar Guide</a>
-                    <a href="{% url 'home' %}#why">Why Barqon</a>
-                    <a href="{% url 'login' %}">Staff Login</a>
+                    <h4 class="bq-footer-h4 bq-footer-h4-luxe">Company</h4>
+                    <a href="{% url 'about-page' %}" class="bq-footer-text-link">About Us</a>
+                    <a href="{% url 'careers-page' %}" class="bq-footer-text-link">Careers</a>
+                    <a href="{% url 'home' %}#services" class="bq-footer-text-link">Services</a>
+                    <a href="{% url 'home' %}#projects" class="bq-footer-text-link">Portfolio</a>
+                    <a href="{% url 'blog-page' %}" class="bq-footer-text-link">Insights</a>
+                    <a href="{% url 'login' %}" class="bq-footer-staff-link"><i data-lucide="shield-check" class="bq-footer-contact-icon"></i> Staff Login</a>
                 </div>
 
                 <!-- Services -->
                 <div class="bq-footer-col">
-                    <h4 class="bq-footer-h4">Services</h4>
-                    <a href="{% url 'home' %}#services">Residential Solar</a>
-                    <a href="{% url 'home' %}#services">Commercial Solar</a>
-                    <a href="{% url 'home' %}#services">Industrial Solar</a>
-                    <a href="{% url 'home' %}#services">Battery Systems</a>
-                </div>
-
-                <!-- Cities -->
-                <div class="bq-footer-col">
-                    <h4 class="bq-footer-h4">Cities</h4>
-                    <span>Multan</span>
-                    <span>Lahore</span>
-                    <span>Bahawalpur</span>
-                    <span>Rahim Yar Khan</span>
+                    <h4 class="bq-footer-h4 bq-footer-h4-luxe">Services</h4>
+                    <a href="{% url 'home' %}#services" class="bq-footer-text-link">Residential Solar</a>
+                    <a href="{% url 'home' %}#services" class="bq-footer-text-link">Commercial Solar</a>
+                    <a href="{% url 'home' %}#services" class="bq-footer-text-link">Industrial Solar</a>
+                    <a href="{% url 'home' %}#services" class="bq-footer-text-link">Battery Systems</a>
                 </div>
 
                 <!-- Contact -->
                 <div class="bq-footer-col">
-                    <h4 class="bq-footer-h4">Contact</h4>
-                    <a href="tel:+923156132042">+92 315 6132042</a>
-                    <a href="mailto:info@barqon.pk">info@barqon.pk</a>
-                    <span>Multan, Pakistan</span>
+                    <h4 class="bq-footer-h4 bq-footer-h4-luxe">Headquarters</h4>
+                    <a href="tel:+923009132042" class="bq-footer-contact-link"><i data-lucide="phone" class="bq-footer-contact-icon"></i> +92 300 9132042</a>
+                    <a href="mailto:info@barqon.pk" class="bq-footer-contact-link"><i data-lucide="mail" class="bq-footer-contact-icon"></i> info@barqon.pk</a>
+                    <span class="bq-footer-address"><i data-lucide="map-pin" class="bq-footer-contact-icon"></i> Multan, Pakistan</span>
                 </div>
             </div>
 
             <div class="bq-footer-bottom">
                 <div class="bq-wrap bq-footer-bottom-inner">
-                    <p>© {% now "Y" %} BARQON Solar Engineering. All rights reserved.</p>
+                    <p>&copy; {% now "Y" %} BARQON Solar Engineering. All rights reserved.</p>
                     <div class="bq-footer-legal">
                         <a href="#">Privacy Policy</a>
                         <a href="#">Terms of Service</a>
@@ -219,49 +733,97 @@
     </div>
 
     <!-- Review Submission Modal -->
-    <div id="review-modal" class="bq-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); backdrop-filter:blur(15px); z-index:9999; align-items:center; justify-content:center; padding:20px;">
-        <div class="bq-modal-content bq-modal-content-animated" style="background:#0b1c2c; border:1px solid rgba(255,255,255,0.1); border-radius:24px; width:100%; max-width:480px; max-height:90vh; overflow-y:auto; padding:24px; position:relative; box-shadow:0 25px 50px -12px rgba(0,0,0,0.5);">
-            <button onclick="closeReviewModal()" style="position:absolute; top:20px; right:20px; background:none; border:none; color:#64748b; cursor:pointer;"><i data-lucide="x"></i></button>
-            <h3 style="color:#fff; font-size:22px; font-weight:900; margin-bottom:4px;">Share Your Review</h3>
-            <p style="color:#94a3b8; font-size:13px; margin-bottom:20px;">Help others by sharing your BARQON experience.</p>
-            
-            <form id="review-form" class="bq-form">
-                <div class="bq-field" style="margin-bottom:12px;">
-                    <label style="font-size:11px; text-transform:uppercase; letter-spacing:1px; color:#64748b; margin-bottom:6px; display:block;">YOUR NAME</label>
-                    <input type="text" name="customer_name" placeholder="Ahmed Raza" required style="padding:10px;">
+    <div id="review-modal" class="bq-modal bq-modal-hidden">
+        <div class="bq-modal-content bq-modal-content-animated bq-modal-narrow">
+            <button class="bq-modal-close" onclick="closeReviewModal()" aria-label="Close review form">
+                <i data-lucide="x"></i>
+            </button>
+
+            <div class="bq-eyebrow bq-modal-eyebrow">Client Review</div>
+            <h3 class="bq-h3 bq-modal-title-tight">Share Your BARQON Experience</h3>
+            <p class="bq-text-muted bq-modal-copy">Help future solar clients understand the service, installation quality, and savings you experienced.</p>
+
+            <form id="review-form" class="bq-form" enctype="multipart/form-data">
+                <div class="bq-field">
+                    <input type="text" name="customer_name" class="bq-floating-input" placeholder=" " required>
+                    <label class="bq-floating-label">Your Name</label>
                 </div>
-                <div class="bq-field" style="margin-bottom:12px;">
-                    <label style="font-size:11px; text-transform:uppercase; letter-spacing:1px; color:#64748b; margin-bottom:6px; display:block;">LOCATION & SYSTEM SIZE</label>
-                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                        <input type="text" name="customer_location" placeholder="Lahore" required style="padding:10px;">
-                        <input type="text" name="system_size" placeholder="10 kW" required style="padding:10px;">
+                <div class="bq-form-grid">
+                    <div class="bq-field">
+                        <input type="text" name="customer_location" class="bq-floating-input" placeholder=" " required>
+                        <label class="bq-floating-label">Location</label>
+                    </div>
+                    <div class="bq-field">
+                        <input type="text" name="system_size" class="bq-floating-input" placeholder=" " required>
+                        <label class="bq-floating-label">System Size</label>
                     </div>
                 </div>
-                <div class="bq-field" style="margin-bottom:12px;">
-                    <label style="font-size:11px; text-transform:uppercase; letter-spacing:1px; color:#64748b; margin-bottom:6px; display:block;">RATING</label>
-                    <select name="rating" required style="width:100%; padding:10px; border-radius:10px; background:#111827; border:1px solid rgba(255,255,255,0.1); color:#fff; font-size:14px;">
-                        <option value="5">★★★★★ (Excellent)</option>
-                        <option value="4">★★★★☆ (Very Good)</option>
-                        <option value="3">★★★☆☆ (Good)</option>
-                        <option value="2">★★☆☆☆ (Fair)</option>
-                        <option value="1">★☆☆☆☆ (Poor)</option>
+                <div class="bq-field">
+                    <label class="bq-field-label">Rating</label>
+                    <select name="rating" required>
+                        <option value="5">5 Stars - Excellent</option>
+                        <option value="4">4 Stars - Very Good</option>
+                        <option value="3">3 Stars - Good</option>
+                        <option value="2">2 Stars - Fair</option>
+                        <option value="1">1 Star - Poor</option>
                     </select>
                 </div>
-                <div class="bq-field" style="margin-bottom:12px;">
-                    <label style="font-size:11px; text-transform:uppercase; letter-spacing:1px; color:#64748b; margin-bottom:6px; display:block;">REVIEW</label>
-                    <textarea name="review_text" rows="2" placeholder="Tell us about the savings and service..." required style="height:70px; resize:none; padding:10px; font-size:14px;"></textarea>
+                <div class="bq-field">
+                    <textarea name="review_text" class="bq-floating-input bq-review-textarea" rows="4" placeholder=" " required></textarea>
+                    <label class="bq-floating-label">Review</label>
                 </div>
-                <div class="bq-field" style="margin-bottom:16px;">
-                    <label style="font-size:11px; text-transform:uppercase; letter-spacing:1px; color:#64748b; margin-bottom:6px; display:block;">UPLOAD SITE PICTURES</label>
-                    <input type="file" name="uploaded_photos" multiple accept="image/*" style="font-size:11px; color:#94a3b8;">
+                <div class="bq-field">
+                    <label class="bq-field-label">Site Pictures</label>
+                    <label class="bq-review-dropzone" id="review-dropzone">
+                        <input id="review-photo-input" type="file" name="uploaded_photos" multiple accept="image/*">
+                        <span class="bq-review-dropzone-icon"><i data-lucide="image-plus"></i></span>
+                        <strong>Drop installation photos here</strong>
+                        <small>Optional, up to multiple JPG/PNG/WebP images</small>
+                    </label>
+                    <div class="bq-review-previews" id="review-photo-previews" aria-live="polite"></div>
                 </div>
-                <button type="submit" class="bq-btn bq-btn-primary" style="width:100%; padding:14px; border-radius:12px; font-weight:bold;">Submit for Approval</button>
+                <button type="submit" class="bq-btn bq-btn-primary bq-btn-full bq-btn-lg" data-default-text="Submit for Approval">
+                    <span class="bq-submit-label">Submit for Approval</span>
+                </button>
             </form>
+        </div>
+    </div>
+
+    <!-- Premium Solar Solution Modal -->
+    <div id="solution-modal" class="bq-modal">
+        <div class="bq-modal-content">
+            <button class="bq-modal-close" onclick="closeSolutionModal()" aria-label="Close">
+                <i data-lucide="x"></i>
+            </button>
+            
+            <div id="modal-icon-wrap" class="bq-card-icon">
+                <i data-lucide="sun" id="modal-icon"></i>
+            </div>
+
+            <h2 id="modal-title" class="bq-h2 bq-solution-title">Solar Solution</h2>
+            <div id="modal-body" class="bq-card-desc bq-solution-body">
+                <!-- Content injected via JS -->
+            </div>
+
+            <div class="bq-grid-2 bq-solution-grid">
+                <div>
+                    <h4 class="bq-solution-subtitle">Key Benefits</h4>
+                    <ul id="modal-benefits" class="bq-benefits-list">
+                        <!-- Benefits injected -->
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="bq-solution-subtitle">Next Step</h4>
+                    <p class="bq-text-muted bq-next-step-copy">Ready to start your solar journey? Get a customized proposal today.</p>
+                    <a href="#quote" onclick="closeSolutionModal()" class="bq-btn bq-btn-gold-fill bq-btn-full">Get Free Quote</a>
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- site.js: deferred so it never blocks the parser -->
     <script src="{% static 'js/site.js' %}" defer></script>
+    <script src="{% static 'js/bq-ui.js' %}" defer></script>
     <script>
         // Wait for deferred Lucide to load, then init icons
         function bqInitLucide() {
@@ -269,114 +831,288 @@
         }
         document.addEventListener('DOMContentLoaded', bqInitLucide);
 
-        // Navbar scroll effect
-        document.addEventListener('DOMContentLoaded', function() {
-            const nav = document.getElementById('site-header');
-            if (nav) {
-                window.addEventListener('scroll', () => {
-                    nav.classList.toggle('bq-nav--scrolled', window.scrollY > 40);
-                }, { passive: true });
+        // Premium Navbar Scroll Effect
+        const navWrapper = document.getElementById('navWrapper');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 40) {
+                navWrapper.classList.add('scrolled');
+            } else {
+                navWrapper.classList.remove('scrolled');
             }
+        }, { passive: true });
 
-            // Mobile Toggle Logic
-            const navToggle = document.getElementById('navToggle');
-            const navDropdown = document.getElementById('navDropdown');
+        // Solution Modal Logic
+        const solutionModal = document.getElementById('solution-modal');
+        const modalContent = solutionModal.querySelector('.bq-modal-content');
 
-            navToggle?.addEventListener('click', () => {
-                const isActive = navDropdown?.classList.toggle('active');
-                const icon = navToggle.querySelector('i');
-                if (icon) {
-                    icon.setAttribute('data-lucide', isActive ? 'x' : 'menu');
-                    if (window.lucide) lucide.createIcons();
-                }
-            });
+        const serviceDetails = {
+            'residential': {
+                title: 'Residential Solar Solutions',
+                icon: 'home',
+                desc: 'Take control of your home energy costs. Our residential systems are engineered for maximum efficiency, ensuring your family stays powered up while reducing your monthly electricity bill by up to 100%. We handle everything from site survey to net metering activation.',
+                benefits: ['70-100% Bill Reduction', '25-Year Panel Warranty', 'Net Metering Approval', 'App-Based Monitoring']
+            },
+            'commercial': {
+                title: 'Commercial Solar Energy',
+                icon: 'building-2',
+                desc: 'Fuel your business growth with sustainable energy. Our commercial solutions provide significant operational savings for offices, hospitals, and schools. Protect your business from rising energy tariffs and improve your corporate sustainability profile.',
+                benefits: ['Significant Tax Benefits', 'Low Maintenance Costs', 'Rapid ROI (2.5-4 Years)', 'Tier-1 High Load Tech']
+            },
+            'industrial': {
+                title: 'Industrial Power Systems',
+                icon: 'factory',
+                desc: 'Heavy-duty solar for industrial giants. We provide grid-tied and multi-source synchronization for textile units, cold storage, and manufacturing plants. Our engineering ensures zero downtime and peak performance for heavy machinery.',
+                benefits: ['Optimized Energy Mix', 'Grid Synchronization', 'Structural Engineering', '24/7 Priority Support']
+            },
+            'hybrid': {
+                title: 'Hybrid Backup Solutions',
+                icon: 'battery-charging',
+                desc: 'The ultimate energy safety net. A hybrid system combines solar power with intelligent battery storage, keeping your essential loads running during grid failure or load-shedding while still selling excess energy through net metering.',
+                benefits: ['Seamless Backup Power', 'Smart Energy Storage', 'Load Prioritization', 'Modular Scalability']
+            },
+            'net-metering': {
+                title: 'Net Metering Services',
+                icon: 'arrow-left-right',
+                desc: 'Turn your electricity meter into a profit-making asset. We handle the entire bureaucratic process with LESCO, WAPDA, and GEPCO to ensure your system can export excess energy back to the grid for credits on your bill.',
+                benefits: ['Full Application Handling', 'License Processing', 'Bi-Directional Meter', 'Billing Coordination']
+            },
+            'maintenance': {
+                title: 'Operation & Maintenance',
+                icon: 'settings',
+                desc: 'Your solar system is a long-term investment. Keep it performing at 100% with our professional O&M services. From ionic panel cleaning to detailed inverter health audits, we ensure you never lose a kilowatt of production.',
+                benefits: ['Monthly Health Audits', 'Ionic Panel Cleaning', 'Remote Monitoring', 'Warranty Protection']
+            }
+        };
 
-            // Close on link click
-            document.querySelectorAll('#navDropdown .bq-nav-item, #navDropdown .bq-mobile-link').forEach(link => {
-                link.addEventListener('click', () => {
-                    navDropdown?.classList.remove('active');
-                    const icon = navToggle?.querySelector('i');
-                    if (icon) {
-                        icon.setAttribute('data-lucide', 'menu');
-                        if (window.lucide) lucide.createIcons();
-                    }
-                });
-            });
+        function openSolutionModal(type) {
+            const data = serviceDetails[type];
+            if (!data) return;
+
+            document.getElementById('modal-title').textContent = data.title;
+            document.getElementById('modal-body').textContent = data.desc;
+            
+            const benefitsList = document.getElementById('modal-benefits');
+            benefitsList.innerHTML = data.benefits.map(b => `
+                <li class="bq-benefit-item">
+                    <i data-lucide="check" class="bq-benefit-icon"></i> ${b}
+                </li>
+            `).join('');
+
+            const iconEl = document.getElementById('modal-icon');
+            iconEl.setAttribute('data-lucide', data.icon);
+
+            solutionModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function closeSolutionModal() {
+            solutionModal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        window.onclick = function(event) {
+            if (event.target == solutionModal) closeSolutionModal();
+        }
+    </script>
+    <script>
+        // Navbar mobile toggle logic
+        const mobileMenu = document.getElementById('mobileMenu');
+        const navToggle = document.getElementById('navToggle');
+
+        function toggleMobileMenu() {
+            mobileMenu.classList.toggle('active');
+            const icon = navToggle.querySelector('i');
+            if (mobileMenu.classList.contains('active')) {
+                icon.setAttribute('data-lucide', 'x');
+            } else {
+                icon.setAttribute('data-lucide', 'menu');
+            }
+            if (window.lucide) lucide.createIcons();
+        }
+
+        navToggle.addEventListener('click', toggleMobileMenu);
+
+        // Close mobile menu on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && mobileMenu.classList.contains('active')) {
+                toggleMobileMenu();
+            }
         });
 
-        // Review Modal Functions — kept global for onclick= attributes
-        function openReviewModal() {
-            document.getElementById('review-modal').style.display = 'flex';
+        window.openReviewModal = function() {
+            const modal = document.getElementById('review-modal');
+            if (!modal) return;
+            modal.style.display = 'grid';
+            modal.classList.add('active');
             document.body.style.overflow = 'hidden';
-        }
-        function closeReviewModal() {
-            document.getElementById('review-modal').style.display = 'none';
-            document.body.style.overflow = 'auto';
+            if (window.lucide) lucide.createIcons();
+        };
+
+        window.closeReviewModal = function() {
+            const modal = document.getElementById('review-modal');
+            if (!modal) return;
+            modal.classList.remove('active');
+            modal.style.display = 'none';
+            document.body.style.overflow = '';
+        };
+
+        window.showBqToast = function(message, tone = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `bq-toast bq-toast-${tone}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            requestAnimationFrame(() => toast.classList.add('visible'));
+            setTimeout(() => {
+                toast.classList.remove('visible');
+                setTimeout(() => toast.remove(), 300);
+            }, 4200);
+        };
+
+        function getCookie(name) {
+            const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+            return match ? decodeURIComponent(match[2]) : '';
         }
 
+        function renderReviewPhotoPreviews(input) {
+            const previewWrap = document.getElementById('review-photo-previews');
+            if (!previewWrap) return;
+            previewWrap.innerHTML = '';
+            Array.from(input.files || []).slice(0, 8).forEach((file) => {
+                if (!file.type.startsWith('image/')) return;
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const img = document.createElement('img');
+                    img.src = event.target.result;
+                    img.alt = file.name;
+                    previewWrap.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+        
+        // Scroll-reveal observer
         document.addEventListener('DOMContentLoaded', function() {
+            const revealEls = document.querySelectorAll('.reveal-up, .reveal-stagger, [data-reveal]');
+            if (revealEls.length) {
+                const io = new IntersectionObserver((entries) => {
+                    entries.forEach(e => {
+                        if (e.isIntersecting) {
+                            e.target.classList.add('is-visible');
+                            e.target.classList.add('revealed'); // For legacy [data-reveal] support
+                            io.unobserve(e.target);
+                        }
+                    });
+                }, { threshold: 0.15 });
+                revealEls.forEach(el => io.observe(el));
+            }
+
+            // Review Modal Functions â€” kept global for onclick= attributes
+            const reviewInput = document.getElementById('review-photo-input');
+            const reviewDropzone = document.getElementById('review-dropzone');
+            reviewInput?.addEventListener('change', () => renderReviewPhotoPreviews(reviewInput));
+            ['dragenter', 'dragover'].forEach((eventName) => {
+                reviewDropzone?.addEventListener(eventName, (event) => {
+                    event.preventDefault();
+                    reviewDropzone.classList.add('is-dragging');
+                });
+            });
+            ['dragleave', 'drop'].forEach((eventName) => {
+                reviewDropzone?.addEventListener(eventName, (event) => {
+                    event.preventDefault();
+                    reviewDropzone.classList.remove('is-dragging');
+                });
+            });
+            reviewDropzone?.addEventListener('drop', (event) => {
+                if (!reviewInput || !event.dataTransfer?.files?.length) return;
+                reviewInput.files = event.dataTransfer.files;
+                renderReviewPhotoPreviews(reviewInput);
+            });
+
             document.getElementById('review-form')?.addEventListener('submit', async function(e) {
                 e.preventDefault();
                 const btn = e.target.querySelector('button');
-                const originalText = btn.innerText;
+                const label = btn.querySelector('.bq-submit-label');
+                const originalText = label ? label.textContent : btn.innerText;
                 btn.disabled = true;
-                btn.innerText = 'Submitting...';
+                btn.setAttribute('aria-busy', 'true');
+                if (label) {
+                    label.innerHTML = '<span class="bq-spinner"></span> Submitting...';
+                } else {
+                    btn.innerText = 'Submitting...';
+                }
                 
                 const formData = new FormData(this);
                 try {
                     const response = await fetch('/api/site-reviews/', {
                         method: 'POST',
                         body: formData,
-                        headers: { 'X-CSRFToken': '{{ csrf_token }}' }
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-CSRFToken': getCookie('csrftoken') || '{{ csrf_token }}'
+                        }
                     });
                     if (response.ok) {
                         showBqSuccessModal('Review Received!', 'Thank you for sharing your experience. Your review will appear on the site once it is approved by our team.', false);
-                        closeReviewModal();
+                        window.closeReviewModal();
                         this.reset();
+                        const previews = document.getElementById('review-photo-previews');
+                        if (previews) previews.innerHTML = '';
                     } else {
-                        alert('Error submitting review. Please try again.');
+                        const data = await response.json().catch(() => ({}));
+                        const message = data.detail || Object.values(data).flat().join(' ') || 'Error submitting review. Please try again.';
+                        showBqToast(message, 'error');
                     }
                 } catch (err) {
-                    alert('Network error. Check your connection.');
+                    showBqToast('Network error. Check your connection.', 'error');
                 } finally {
                     btn.disabled = false;
-                    btn.innerText = originalText;
+                    btn.removeAttribute('aria-busy');
+                    if (label) {
+                        label.textContent = originalText;
+                    } else {
+                        btn.innerText = originalText;
+                    }
                 }
             });
         });
 
         function showBqSuccessModal(title, message, showWhatsapp = true) {
+            const modal = document.getElementById('bq-success-modal');
             document.getElementById('bq-success-title').innerText = title;
             document.getElementById('bq-success-message').innerText = message;
             document.getElementById('bq-success-whatsapp').style.display = showWhatsapp ? 'flex' : 'none';
-            document.getElementById('bq-success-modal').style.display = 'flex';
+            modal.style.display = 'flex';
+            modal.classList.add('active');
             document.body.style.overflow = 'hidden';
             if (window.lucide) lucide.createIcons();
         }
 
         function closeBqSuccessModal() {
-            document.getElementById('bq-success-modal').style.display = 'none';
-            document.body.style.overflow = 'auto';
+            const modal = document.getElementById('bq-success-modal');
+            modal.classList.remove('active');
+            modal.style.display = 'none';
+            document.body.style.overflow = '';
         }
     </script>
     {% block extra_js %}{% endblock %}
     <!-- Generic Success Modal -->
-    <div id="bq-success-modal" class="bq-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); backdrop-filter:blur(15px); z-index:99999; align-items:center; justify-content:center; padding:20px;">
-        <div class="bq-modal-content bq-modal-content-animated" style="background:#0b1c2c; border:1px solid rgba(255,255,255,0.1); border-radius:24px; width:100%; max-width:550px; max-height:90vh; overflow-y:auto; padding:20px 30px; position:relative; box-shadow:0 25px 50px -12px rgba(0,0,0,0.5);">
-            <button onclick="closeBqSuccessModal()" style="position:absolute; top:20px; right:20px; background:none; border:none; color:#94a3b8; cursor:pointer;"><i data-lucide="x"></i></button>
+    <div id="bq-success-modal" class="bq-modal bq-success-modal">
+        <div class="bq-modal-content bq-modal-content-animated bq-success-content">
+            <button onclick="closeBqSuccessModal()" class="bq-success-close" aria-label="Close success message"><i data-lucide="x"></i></button>
             
-            <div style="width:80px; height:80px; background:rgba(16,185,129,0.1); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 24px; border:1px solid rgba(16,185,129,0.2);">
-                <i data-lucide="check-circle-2" style="color:#10b981; width:40px; height:40px;"></i>
+            <div class="bq-success-icon-wrap">
+                <i data-lucide="check-circle-2" class="bq-success-icon"></i>
             </div>
             
-            <h2 id="bq-success-title" style="color:#fff; font-size:32px; font-weight:900; margin-bottom:12px;">Thank You!</h2>
-            <p id="bq-success-message" style="color:#94a3b8; font-size:16px; line-height:1.6; margin-bottom:32px;">Your submission was successful.</p>
+            <h2 id="bq-success-title" class="bq-success-title">Thank You!</h2>
+            <p id="bq-success-message" class="bq-success-message">Your submission was successful.</p>
             
-            <div id="bq-success-actions" style="display:grid; gap:12px;">
-                <a id="bq-success-whatsapp" href="https://wa.me/{{ company.cleaned_whatsapp }}" target="_blank" class="bq-btn bq-btn-primary" style="justify-content:center;">
+            <div id="bq-success-actions" class="bq-success-actions">
+                <a id="bq-success-whatsapp" href="https://wa.me/{{ company.cleaned_whatsapp }}" target="_blank" rel="noopener" class="bq-btn bq-btn-primary bq-success-action">
                     <i data-lucide="message-circle"></i> WhatsApp Chat
                 </a>
-                <button onclick="closeBqSuccessModal()" class="bq-btn bq-btn-ghost" style="justify-content:center; color:#fff; border-color:rgba(255,255,255,0.2);">Close</button>
+                <button onclick="closeBqSuccessModal()" class="bq-btn bq-btn-ghost bq-success-close-btn">Close</button>
             </div>
         </div>
     </div>

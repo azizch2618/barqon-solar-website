@@ -3,17 +3,19 @@ Django settings for barqon_project project.
 """
 
 import os
+from urllib.parse import urlparse
 from pathlib import Path
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = "django-insecure-xv+*5qt5cyx5sq-f#r$lj67c7q0b*cdsflecgob!*ig8ayc8gx"
-DEBUG = False
+DEBUG = True
 ALLOWED_HOSTS = [
     "barqon-solar-website-production.up.railway.app",
     "127.0.0.1",
     "localhost",
+    "testserver",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
@@ -45,6 +47,7 @@ MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware',
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
+    "core.middleware.DatabaseStabilityMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
@@ -71,12 +74,36 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "barqon_project.wsgi.application"
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+DATABASE_URL = os.getenv("DATABASE_URL", "").strip()
+
+if DATABASE_URL:
+    parsed_db = urlparse(DATABASE_URL)
+    if parsed_db.scheme in {"postgres", "postgresql"}:
+        DATABASES = {
+            "default": {
+                "ENGINE": "django.db.backends.postgresql",
+                "NAME": parsed_db.path.lstrip("/"),
+                "USER": parsed_db.username or "",
+                "PASSWORD": parsed_db.password or "",
+                "HOST": parsed_db.hostname or "",
+                "PORT": parsed_db.port or "",
+                "CONN_MAX_AGE": 60,
+                "CONN_HEALTH_CHECKS": True,
+            }
+        }
+    else:
+        raise ValueError("DATABASE_URL must use postgres:// or postgresql://")
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+            "OPTIONS": {
+                "timeout": 30,
+            },
+            "CONN_MAX_AGE": 0,
+        }
     }
-}
 
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
@@ -123,6 +150,35 @@ AUTH_USER_MODEL = "accounts.User"
 LOGIN_URL = "/login/"
 LOGIN_REDIRECT_URL = "/admin-dashboard/"
 LOGOUT_REDIRECT_URL = "/"
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "{levelname} {asctime} {name} {message}",
+            "style": "{",
+        },
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        },
+    },
+    "loggers": {
+        "django.request": {
+            "handlers": ["console"],
+            "level": "ERROR",
+            "propagate": False,
+        },
+        "barqon": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
+        },
+    },
+}
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (

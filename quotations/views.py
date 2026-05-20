@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.template.loader import render_to_string
@@ -351,14 +352,20 @@ class QuotationViewSet(viewsets.ModelViewSet):
         return queryset
 
     def perform_create(self, serializer):
-        serializer.save(prepared_by=self.request.user)
+        with transaction.atomic():
+            serializer.save(prepared_by=self.request.user)
+
+    def perform_update(self, serializer):
+        with transaction.atomic():
+            serializer.save()
 
     @action(detail=True, methods=['post'])
     def finalize(self, request, pk=None):
-        quotation = self.get_object()
-        quotation.is_final = True
-        quotation.status = Quotation.STATUS_APPROVED
-        quotation.save()
+        with transaction.atomic():
+            quotation = self.get_object()
+            quotation.is_final = True
+            quotation.status = Quotation.STATUS_APPROVED
+            quotation.save(update_fields=["is_final", "status", "updated_at"])
         return Response({'status': 'Quotation finalized and locked.'})
 
 
@@ -397,4 +404,3 @@ def render_quotation_view(request, id):
         "yearly_savings": yearly_savings,
     }
     return render(request, "quotations/premium_quotation.html", context)
-

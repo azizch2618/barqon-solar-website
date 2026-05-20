@@ -1,6 +1,5 @@
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
-from django.contrib.auth.decorators import login_required
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image, PageBreak
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.pagesizes import A4
@@ -11,7 +10,6 @@ import os
 from django.conf import settings
 from .models import StaffProfile, CompanyProfile, Payroll
 
-@login_required
 def generate_payroll_slip_pdf(request, payroll_id):
     payroll = get_object_or_404(Payroll, id=payroll_id)
     staff = payroll.staff

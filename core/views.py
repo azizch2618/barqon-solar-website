@@ -1,8 +1,10 @@
 from decimal import Decimal
+import logging
 
 from django.contrib import messages
 from django.contrib.auth import authenticate, get_user_model, login, logout
 from django.contrib.auth.decorators import login_required
+from django.db import OperationalError, close_old_connections, transaction
 from django.db.models import Count, Q, Sum
 from django.db.models.functions import TruncMonth
 from django.shortcuts import get_object_or_404, redirect, render
@@ -26,7 +28,8 @@ from .forms import (
 )
 from .models import (
     CompanyProfile, Contact, Project, StaffProfile, Payroll,
-    SiteReview, InstallationProject, ProjectFinancials, JobPosition, JobApplication, ProjectPayment
+    SiteReview, InstallationProject, ProjectFinancials, JobPosition, JobApplication,
+    ProjectPayment, InventoryItem,
 )
 from .permissions import IsOwnerOrAdmin
 from .serializers import (
@@ -40,8 +43,11 @@ from .serializers import (
     ProjectFinancialsSerializer,
     JobPositionSerializer,
     JobApplicationSerializer,
-    ProjectPaymentSerializer
+    ProjectPaymentSerializer,
+    InventoryItemSerializer,
 )
+
+logger = logging.getLogger("barqon")
 
 
 class SiteReviewViewSet(viewsets.ModelViewSet):
@@ -63,6 +69,27 @@ class SiteReviewViewSet(viewsets.ModelViewSet):
         if is_owner_user(self.request.user):
             return qs
         return qs.filter(is_approved=True)
+
+    def create(self, request, *args, **kwargs):
+        close_old_connections()
+        try:
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            self.perform_create(serializer)
+        except OperationalError:
+            logger.exception("Database failure while saving site review.")
+            return Response(
+                {"detail": "The server is busy. Please try submitting your review again in a moment."},
+                status=status.HTTP_503_SERVICE_UNAVAILABLE,
+            )
+        except Exception:
+            logger.exception("Review submission failed.")
+            raise
+        finally:
+            close_old_connections()
+
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
     def approve(self, request, pk=None):
@@ -599,6 +626,9 @@ def dashboard_summary(request):
         'id', 'name', 'phone', 'city_area', 'lead_status', 'created_at', 'monthly_bill'
     ))
 
+    inventory_item_count = InventoryItem.objects.count()
+    inventory_low_stock_count = sum(1 for item in InventoryItem.objects.only("quantity_on_hand", "reorder_level") if item.is_low_stock)
+
     return Response(
         {
             "company_name": CompanyProfile.objects.first().company_name
@@ -629,6 +659,8 @@ def dashboard_summary(request):
             "total_contract_value": float(total_contract_value),
             "total_payments_collected": float(total_payments_collected),
             "net_profit": float(revenue_estimate) - float(total_payroll_paid),
+            "inventory_item_count": inventory_item_count,
+            "inventory_low_stock_count": inventory_low_stock_count,
         }
     )
 
@@ -642,6 +674,11 @@ class CompanyProfileViewSet(viewsets.ModelViewSet):
 class ContactViewSet(viewsets.ModelViewSet):
     serializer_class = ContactSerializer
     permission_classes = [IsOwnerOrAdmin]
+
+    def get_permissions(self):
+        if self.action == "create":
+            return [AllowAny()]
+        return [permission() for permission in self.permission_classes]
 
     def get_queryset(self):
         return _lead_queryset_for_user(self.request.user)
@@ -660,76 +697,77 @@ class ContactViewSet(viewsets.ModelViewSet):
         return Response({'status': 'all marked as viewed'})
 
     def perform_create(self, serializer):
-        data = self.request.data
-        linked_user = self.request.user if self.request.user.is_authenticated and not is_owner_user(self.request.user) else None
-        lead = serializer.save(linked_user=linked_user)
-        
-        # Robust appliance_data parsing
         import json
-        app_data = lead.appliance_data
-        if isinstance(app_data, str):
-            try:
-                app_data = json.loads(app_data)
-            except:
-                app_data = {}
-        
-        # Complex calculation logic moved from old FBV
-        total = (lead.fans * 80) + (lead.lights * 15) + (lead.fridge * 300) + (lead.iron * 1000) + (lead.computers * 100) + (lead.other_load_watts or 0)
-        if lead.motors == 1: total += 750
-        elif lead.motors == 2: total += 1500
 
-        if isinstance(app_data, dict):
-            acs = app_data.get('acs', [])
-            if isinstance(acs, list):
-                for ac_item in acs:
-                    try:
-                        ton = float(ac_item.get('ton', 0))
-                    except (ValueError, TypeError):
-                        ton = 0
-                    if ton > 0:
-                        total += (1200 if ton == 1 else 1800 if ton == 1.5 else 2400 if ton == 2 else 3500)
+        with transaction.atomic():
+            linked_user = self.request.user if self.request.user.is_authenticated and not is_owner_user(self.request.user) else None
+            lead = serializer.save(linked_user=linked_user)
             
-            def safe_int(val):
-                try: return int(val)
-                except: return 0
+            app_data = lead.appliance_data
+            if isinstance(app_data, str):
+                try:
+                    app_data = json.loads(app_data)
+                except (TypeError, ValueError):
+                    app_data = {}
+            
+            total = (lead.fans * 80) + (lead.lights * 15) + (lead.fridge * 300) + (lead.iron * 1000) + (lead.computers * 100) + (lead.other_load_watts or 0)
+            if lead.motors == 1:
+                total += 750
+            elif lead.motors == 2:
+                total += 1500
 
-            wash_qty = safe_int(app_data.get('washing_machine', 0))
-            total += (wash_qty * 500)
-            deep_qty = safe_int(app_data.get('deep_freezer', 0))
-            total += (deep_qty * 400)
+            if isinstance(app_data, dict):
+                acs = app_data.get('acs', [])
+                if isinstance(acs, list):
+                    for ac_item in acs:
+                        try:
+                            ton = float(ac_item.get('ton', 0))
+                        except (ValueError, TypeError):
+                            ton = 0
+                        if ton > 0:
+                            total += (1200 if ton == 1 else 1800 if ton == 1.5 else 2400 if ton == 2 else 3500)
+                
+                def safe_int(val):
+                    try:
+                        return int(val)
+                    except (TypeError, ValueError):
+                        return 0
 
-            lead.load_details = (
-                f"Detailed Engineering Lead.\n"
-                f"Fans: {lead.fans}, Lights: {lead.lights}, ACs: {len(acs)}, Iron: {lead.iron}, "
-                f"Laptops: {lead.computers}, Washing Machine: {wash_qty}, Freezer: {deep_qty}\n"
-                f"Roof: {app_data.get('roof_type', 'N/A')}, Phase: {app_data.get('connection_phase', 'N/A')}"
-            )
-            # Update the JSON field with the parsed dict to ensure it's saved as JSON
-            lead.appliance_data = app_data
-        
-        lead.total_load_watts = total
-        lead.save()
+                wash_qty = safe_int(app_data.get('washing_machine', 0))
+                total += (wash_qty * 500)
+                deep_qty = safe_int(app_data.get('deep_freezer', 0))
+                total += (deep_qty * 400)
 
-        # Auto-account creation logic
-        if not lead.linked_user and lead.email:
-            user_model = get_user_model()
-            if not user_model.objects.filter(Q(email__iexact=lead.email) | Q(username__iexact=lead.email)).exists():
-                username = lead.email.split('@')[0]
-                base_username = username
-                counter = 1
-                while user_model.objects.filter(username=username).exists():
-                    username = f"{base_username}{counter}"
-                    counter += 1
-                temp_pass = get_random_string(length=12)
-                new_user = user_model.objects.create_user(
-                    username=username, email=lead.email, password=temp_pass,
-                    first_name=lead.name.split(' ')[0] if lead.name else "Solar",
-                    last_name=" ".join(lead.name.split(' ')[1:]) if lead.name and ' ' in lead.name else "Customer",
-                    phone=lead.phone
+                lead.load_details = (
+                    f"Detailed Engineering Lead.\n"
+                    f"Fans: {lead.fans}, Lights: {lead.lights}, ACs: {len(acs)}, Iron: {lead.iron}, "
+                    f"Laptops: {lead.computers}, Washing Machine: {wash_qty}, Freezer: {deep_qty}\n"
+                    f"Roof: {app_data.get('roof_type', 'N/A')}, Phase: {app_data.get('connection_phase', 'N/A')}"
                 )
-                lead.linked_user = new_user
-                lead.save()
-                print(f"DEBUG: Auto-created user {username} for lead {lead.id}")
+                lead.appliance_data = app_data
+            
+            lead.total_load_watts = total
+            lead.save(update_fields=["appliance_data", "load_details", "total_load_watts"])
+
+            if not lead.linked_user and lead.email:
+                user_model = get_user_model()
+                if not user_model.objects.filter(Q(email__iexact=lead.email) | Q(username__iexact=lead.email)).exists():
+                    username = lead.email.split('@')[0]
+                    base_username = username
+                    counter = 1
+                    while user_model.objects.filter(username=username).exists():
+                        username = f"{base_username}{counter}"
+                        counter += 1
+                    temp_pass = get_random_string(length=12)
+                    new_user = user_model.objects.create_user(
+                        username=username, email=lead.email, password=temp_pass,
+                        first_name=lead.name.split(' ')[0] if lead.name else "Solar",
+                        last_name=" ".join(lead.name.split(' ')[1:]) if lead.name and ' ' in lead.name else "Customer",
+                        phone=lead.phone
+                    )
+                    lead.linked_user = new_user
+                    lead.save(update_fields=["linked_user"])
+                    logger.info("Auto-created user %s for lead %s", username, lead.id)
 
 
 class ProjectViewSet(viewsets.ModelViewSet):
@@ -741,7 +779,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
         from django.db import models
         from django.db.models import Sum, F, Value
         from django.db.models.functions import Coalesce
-        return Project.objects.annotate(
+        return Project.objects.select_related("lead", "assigned_engineer").prefetch_related("payments").annotate(
             annotated_total_paid=Coalesce(Sum('payments__amount'), Value(0, output_field=models.DecimalField()))
         ).annotate(
             annotated_balance_remaining=F('contract_value') - F('annotated_total_paid')
@@ -754,7 +792,7 @@ class ProjectPaymentViewSet(viewsets.ModelViewSet):
     permission_classes = [IsOwnerOrAdmin]
 
     def get_queryset(self):
-        qs = ProjectPayment.objects.all()
+        qs = ProjectPayment.objects.select_related("project")
         project_id = self.request.query_params.get('project')
         if project_id:
             qs = qs.filter(project_id=project_id)
@@ -765,6 +803,18 @@ class StaffProfileViewSet(viewsets.ModelViewSet):
     queryset = StaffProfile.objects.all()
     serializer_class = StaffProfileSerializer
     permission_classes = [IsOwnerOrAdmin]
+
+    @action(detail=True, methods=["get"], url_path="download_slip")
+    def download_slip(self, request, pk=None):
+        staff = self.get_object()
+        payroll = Payroll.objects.filter(staff=staff).order_by("-month_year").first()
+        if not payroll:
+            return Response(
+                {"detail": "No payroll record for this employee. Process monthly payroll first."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        from .payroll_views import generate_payroll_slip_pdf
+        return generate_payroll_slip_pdf(request, payroll.id)
 
     def perform_create(self, serializer):
         email = self.request.data.get('email')
@@ -804,11 +854,18 @@ class StaffProfileViewSet(viewsets.ModelViewSet):
 
 
 class PayrollViewSet(viewsets.ModelViewSet):
-    queryset = Payroll.objects.all()
+    queryset = Payroll.objects.select_related("staff")
     serializer_class = PayrollSerializer
     permission_classes = [IsOwnerOrAdmin]
 
-    @action(detail=True, methods=['get'])
+    def get_queryset(self):
+        qs = super().get_queryset()
+        staff_id = self.request.query_params.get("staff")
+        if staff_id:
+            qs = qs.filter(staff_id=staff_id)
+        return qs
+
+    @action(detail=True, methods=["get"])
     def download_slip(self, request, pk=None):
         from .payroll_views import generate_payroll_slip_pdf
         return generate_payroll_slip_pdf(request, pk)
@@ -824,20 +881,21 @@ class PayrollViewSet(viewsets.ModelViewSet):
         except:
             return Response({"error": "Invalid date"}, status=400)
 
-        active_staff = StaffProfile.objects.filter(status=StaffProfile.STATUS_ACTIVE)
+        active_staff = StaffProfile.objects.select_related("user").filter(status=StaffProfile.STATUS_ACTIVE)
         created = 0
-        for staff in active_staff:
-            if not Payroll.objects.filter(staff=staff, month_year=month_date).exists():
-                basic = staff.monthly_salary if staff.salary_type == StaffProfile.SALARY_MONTHLY else (staff.daily_wage * 26)
-                commissions = Contact.objects.filter(
-                    assigned_to=staff.user, lead_status=Contact.LEAD_WON,
-                    created_at__month=month_date.month, created_at__year=month_date.year
-                ).count() * staff.commission_per_lead if staff.user else 0
-                Payroll.objects.create(
-                    staff=staff, month_year=month_date, basic_salary=basic,
-                    commissions=commissions, total_amount=basic + commissions
-                )
-                created += 1
+        with transaction.atomic():
+            for staff in active_staff:
+                if not Payroll.objects.filter(staff=staff, month_year=month_date).exists():
+                    basic = staff.monthly_salary if staff.salary_type == StaffProfile.SALARY_MONTHLY else (staff.daily_wage * 26)
+                    commissions = Contact.objects.filter(
+                        assigned_to=staff.user, lead_status=Contact.LEAD_WON,
+                        created_at__month=month_date.month, created_at__year=month_date.year
+                    ).count() * staff.commission_per_lead if staff.user else 0
+                    Payroll.objects.create(
+                        staff=staff, month_year=month_date, basic_salary=basic,
+                        commissions=commissions, total_amount=basic + commissions
+                    )
+                    created += 1
         return Response({"message": f"Processed {created} records."}, status=201)
         
 
@@ -850,6 +908,12 @@ class ProjectFinancialsViewSet(viewsets.ModelViewSet):
     def download_report(self, request, pk=None):
         from .project_pdf_views import generate_project_report_pdf
         return generate_project_report_pdf(request, pk)
+
+
+class InventoryItemViewSet(viewsets.ModelViewSet):
+    queryset = InventoryItem.objects.all()
+    serializer_class = InventoryItemSerializer
+    permission_classes = [permissions.IsAuthenticated, IsOwnerOrAdmin]
 
 
 class JobPositionViewSet(viewsets.ModelViewSet):

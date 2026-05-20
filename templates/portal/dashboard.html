@@ -505,7 +505,10 @@
                             <tbody>
                                 {% for quote in customer_quotations %}
                                 <tr>
-                                    <td style="font-size: 0.85rem; font-weight: 700;">{{ quote.created_at|date:"M d, Y" }}</td>
+                                    <td style="font-size: 0.85rem; font-weight: 700;">
+                                        <span style="display: block; color: #fff;">{{ quote.quotation_number }}</span>
+                                        <span style="display: block; color: var(--text-dim); font-size: 0.7rem;">{{ quote.created_at|date:"M d, Y" }}</span>
+                                    </td>
                                     <td style="font-weight: 900; color: var(--accent);">{{ quote.system_size }} kW</td>
                                     <td style="font-weight: 900; color: var(--success);">PKR {{ quote.total_cost|floatformat:0 }}</td>
                                     <td><span class="status-chip st-{{ quote.status }}">{{ quote.get_status_display }}</span></td>

@@ -523,6 +523,49 @@ class JobPosition(models.Model):
         return f"{self.title} ({self.get_job_type_display()})"
 
 
+class InventoryItem(models.Model):
+    """Warehouse stock for panels, inverters, and installation materials."""
+
+    CATEGORY_PANELS = "panels"
+    CATEGORY_INVERTERS = "inverters"
+    CATEGORY_BATTERIES = "batteries"
+    CATEGORY_MOUNTING = "mounting"
+    CATEGORY_ELECTRICAL = "electrical"
+    CATEGORY_OTHER = "other"
+
+    CATEGORY_CHOICES = [
+        (CATEGORY_PANELS, "Solar Panels"),
+        (CATEGORY_INVERTERS, "Inverters"),
+        (CATEGORY_BATTERIES, "Batteries"),
+        (CATEGORY_MOUNTING, "Mounting"),
+        (CATEGORY_ELECTRICAL, "Electrical"),
+        (CATEGORY_OTHER, "Other"),
+    ]
+
+    name = models.CharField(max_length=200)
+    sku = models.CharField(max_length=64, blank=True, db_index=True)
+    category = models.CharField(max_length=32, choices=CATEGORY_CHOICES, default=CATEGORY_OTHER)
+    quantity_on_hand = models.PositiveIntegerField(default=0)
+    reorder_level = models.PositiveIntegerField(default=5)
+    unit_cost = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    supplier = models.CharField(max_length=200, blank=True)
+    notes = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["name"]
+        verbose_name = "inventory item"
+        verbose_name_plural = "inventory items"
+
+    def __str__(self):
+        return f"{self.name} ({self.quantity_on_hand} in stock)"
+
+    @property
+    def is_low_stock(self):
+        return self.quantity_on_hand <= self.reorder_level
+
+
 class JobApplication(models.Model):
     STATUS_CHOICES = [
         ('new', 'New'),

@@ -363,8 +363,11 @@ class Quotation(models.Model):
         if not self.valid_until:
             self.valid_until = timezone.localdate() + timedelta(days=15)
 
-        # Dynamic Subtotal Calculation
-        self.subtotal = self.itemized_subtotal()
+        # Dynamic subtotal calculation. If no itemized component pricing was
+        # provided, preserve the submitted subtotal for manual/API quotations.
+        calculated_subtotal = self.itemized_subtotal()
+        if calculated_subtotal > Decimal("0.00"):
+            self.subtotal = calculated_subtotal
         
         # Enhanced Tax Calculation
         if self.tax_type == self.TAX_TYPE_PERCENTAGE:

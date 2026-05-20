@@ -13,7 +13,8 @@ from .views import (
     ProjectFinancialsViewSet,
     JobPositionViewSet,
     JobApplicationViewSet,
-    ProjectPaymentViewSet
+    ProjectPaymentViewSet,
+    InventoryItemViewSet,
 )
 
 router = DefaultRouter()
@@ -28,12 +29,13 @@ router.register(r'project-financials', ProjectFinancialsViewSet, basename='proje
 router.register(r'job-positions', JobPositionViewSet, basename='job-position')
 router.register(r'job-applications', JobApplicationViewSet, basename='job-application')
 router.register(r'project-payments', ProjectPaymentViewSet, basename='project-payment')
+router.register(r'inventory', InventoryItemViewSet, basename='inventory')
 
 
 urlpatterns = [
+    path("contact/submit/", ContactViewSet.as_view({"post": "create"}), name="contact-list-create"),
     path("", include(router.urls)),
     path("api-root/", api_home, name="api-home"),
     path("dashboard-summary/", dashboard_summary, name="dashboard-summary"),
     path("dashboard/", dashboard_summary, name="dashboard"),
 ]
-
