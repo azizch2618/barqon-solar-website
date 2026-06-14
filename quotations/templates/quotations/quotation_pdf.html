@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Quotation {{ quotation.quotation_number }} - BARQON Solar Proposal</title>
     <style>
         @page { size: A4; margin: 26px; }
         body { margin: 0; font-family: Arial, sans-serif; color: #0b1c2c; font-size: 11px; line-height: 1.55; }
@@ -10,6 +12,7 @@
         .cover { background: #0b1c2c; color: white; border: 0; }
         .brand-line { height: 8px; width: 160px; background: #ffa500; margin-bottom: 34px; }
         .logo { max-width: 190px; max-height: 82px; margin-bottom: 30px; }
+        .cover-summary { max-width: 520px; color: rgba(255,255,255,.72); font-size: 15px; }
         .kicker { color: #ffa500; font-size: 10px; font-weight: 800; letter-spacing: 1.6px; text-transform: uppercase; }
         .cover-title { margin: 18px 0 22px; font-size: 54px; line-height: 0.95; font-weight: 900; }
         .cover-grid { position: absolute; left: 34px; right: 34px; bottom: 52px; width: auto; border-collapse: collapse; }
@@ -29,6 +32,9 @@
         .label { color: #64748b; font-size: 9px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; }
         .value { margin-top: 6px; font-size: 18px; font-weight: 900; }
         .panel { padding: 18px; border: 1px solid #dfe7f0; border-radius: 8px; background: #fbfdff; }
+        .panel-spaced { margin-top: 24px; }
+        .panel-spaced-large { margin-top: 28px; }
+        .micro-note { font-size: 8px; color: #64748b; }
         .note { white-space: pre-wrap; color: #334155; }
         .table { width: 100%; border-collapse: collapse; margin-top: 16px; }
         .table th, .table td { padding: 12px 10px; border-bottom: 1px solid #dfe7f0; text-align: left; }
@@ -49,7 +55,7 @@
         <img src="static/images/logo.png" alt="BARQON" class="logo">
         <div class="kicker">{% if company %}{{ company.company_name }}{% else %}BARQON Solar Solutions{% endif %}</div>
         <div class="cover-title">Solar Proposal</div>
-        <p style="max-width:520px; color:rgba(255,255,255,.72); font-size:15px;">A premium system recommendation with customer requirements, pricing, and delivery notes.</p>
+        <p class="cover-summary">A premium system recommendation with customer requirements, pricing, and delivery notes.</p>
         <table class="cover-grid">
             <tr><td><strong>Customer Name</strong></td><td>{{ quotation.customer_name }}</td></tr>
             <tr><td><strong>Date</strong></td><td>{{ quotation.created_at|date:"d M Y" }}</td></tr>
@@ -61,7 +67,7 @@
     {% macro page_header(title, page_num) %}
     <div class="header">
         <div class="header-left">
-            <img src="static/images/logo.png" class="header-logo">
+            <img src="static/images/logo.png" alt="BARQON" class="header-logo">
         </div>
         <div class="header-center">
             <div class="company-name">BARQON Solar Energy Solutions</div>
@@ -80,7 +86,7 @@
 
     <section class="page">
         <div class="header">
-            <div class="header-left"><img src="static/images/logo.png" class="header-logo"></div>
+            <div class="header-left"><img src="static/images/logo.png" alt="BARQON" class="header-logo"></div>
             <div class="header-center">
                 <div class="company-name">BARQON Solar Energy Solutions</div>
                 <div class="company-info">{{ company.phone|default:"+92 000 0000000" }} | {{ company.email|default:"info@barqon.pk" }}</div>
@@ -109,7 +115,7 @@
 
     <section class="page">
         <div class="header">
-            <div class="header-left"><img src="static/images/logo.png" class="header-logo"></div>
+            <div class="header-left"><img src="static/images/logo.png" alt="BARQON" class="header-logo"></div>
             <div class="header-center">
                 <div class="company-name">BARQON Solar Energy Solutions</div>
                 <div class="company-info">{{ company.phone|default:"+92 000 0000000" }} | {{ company.email|default:"info@barqon.pk" }}</div>
@@ -131,10 +137,10 @@
             </tr>
             <tr>
                 <td><div class="label">Protection</div><div class="value">{{ quotation.breaker_count }} breakers</div><div>{{ quotation.spd_count }} SPDs</div></td>
-                <td><div class="label">Wiring</div><div class="value">Site Variable</div><div>DC {{ quotation.dc_wire_size_mm }} · AC {{ quotation.ac_wire_size_mm }}</div><div style="font-size:8px; color:#64748b;">*Length confirmed after survey</div></td>
+                <td><div class="label">Wiring</div><div class="value">Site Variable</div><div>DC {{ quotation.dc_wire_size_mm }} · AC {{ quotation.ac_wire_size_mm }}</div><div class="micro-note">*Length confirmed after survey</div></td>
             </tr>
         </table>
-        <div class="panel" style="margin-top:24px;">
+        <div class="panel panel-spaced">
             <div class="label">Engineering note</div>
             <div class="note">{{ quotation.notes|default:"Site survey, mounting layout, protection ratings, and cable route will be confirmed before installation." }}</div>
         </div>
@@ -143,7 +149,7 @@
 
     <section class="page">
         <div class="header">
-            <div class="header-left"><img src="static/images/logo.png" class="header-logo"></div>
+            <div class="header-left"><img src="static/images/logo.png" alt="BARQON" class="header-logo"></div>
             <div class="header-center">
                 <div class="company-name">BARQON Solar Energy Solutions</div>
                 <div class="company-info">{{ company.phone|default:"+92 000 0000000" }} | {{ company.email|default:"info@barqon.pk" }}</div>
@@ -175,7 +181,7 @@
 
     <section class="page">
         <div class="header">
-            <div class="header-left"><img src="static/images/logo.png" class="header-logo"></div>
+            <div class="header-left"><img src="static/images/logo.png" alt="BARQON" class="header-logo"></div>
             <div class="header-center">
                 <div class="company-name">BARQON Solar Energy Solutions</div>
                 <div class="company-info">{{ company.phone|default:"+92 000 0000000" }} | {{ company.email|default:"info@barqon.pk" }}</div>
@@ -196,7 +202,7 @@
                 <td><div class="label">Preferred contact</div><div class="value">{% if quotation.lead %}{{ quotation.lead.get_preferred_contact_method_display }}{% else %}-{% endif %}</div></td>
             </tr>
         </table>
-        <div class="panel" style="margin-top:24px;">
+        <div class="panel panel-spaced">
             <div class="label">Notes</div>
             <div class="note">{{ quotation.client_request_summary|default:"Customer requirements will be finalized during consultation." }}</div>
         </div>
@@ -205,7 +211,7 @@
 
     <section class="page">
         <div class="header">
-            <div class="header-left"><img src="static/images/logo.png" class="header-logo"></div>
+            <div class="header-left"><img src="static/images/logo.png" alt="BARQON" class="header-logo"></div>
             <div class="header-center">
                 <div class="company-name">BARQON Solar Energy Solutions</div>
                 <div class="company-info">{{ company.phone|default:"+92 000 0000000" }} | {{ company.email|default:"info@barqon.pk" }}</div>
@@ -222,7 +228,7 @@
                 <td><h2>Professional handover</h2><div>Customers receive branded documentation they can review easily.</div></td>
             </tr>
         </table>
-        <div class="panel" style="margin-top:28px;">
+        <div class="panel panel-spaced-large">
             <div class="label">Contact info</div>
             <div class="note">
 {% if company and company.phone %}Phone: {{ company.phone }}
@@ -232,7 +238,7 @@
 {% endif %}{% if company and company.address %}{{ company.address }}{% endif %}
             </div>
         </div>
-        <div class="panel" style="margin-top:24px;">
+        <div class="panel panel-spaced">
             <div class="label">Terms</div>
             <div class="note">Payment: {{ quotation.payment_terms|default:"To be finalized before order confirmation." }}
 

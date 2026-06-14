@@ -6,20 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {% load static %}
     <title>BARQON Solar - CRM & Engineering</title>
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-    <!-- Tailwind CSS (Play CDN) -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tailwind CSS (local browser build) -->
+    <script src="{% static 'js/vendor/tailwindcss.com.js' %}"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Outfit', 'system-ui', 'sans-serif'],
+                        sans: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
                     },
                     colors: {
                         dark: {
@@ -59,33 +54,33 @@
     </script>
 
     <!-- React & ReactDOM -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script crossorigin src="{% static 'js/vendor/react.production.min.js' %}"></script>
+    <script crossorigin src="{% static 'js/vendor/react-dom.production.min.js' %}"></script>
 
     <!-- Babel for JSX -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="{% static 'js/vendor/babel.min.js' %}"></script>
 
     <!-- React Router -->
-    <script src="https://unpkg.com/@remix-run/router@1.16.0/dist/router.umd.min.js"></script>
-    <script src="https://unpkg.com/react-router@6.23.0/dist/umd/react-router.production.min.js"></script>
-    <script src="https://unpkg.com/react-router-dom@6.23.0/dist/umd/react-router-dom.production.min.js"></script>
+    <script src="{% static 'js/vendor/router.umd.min.js' %}"></script>
+    <script src="{% static 'js/vendor/react-router.production.min.js' %}"></script>
+    <script src="{% static 'js/vendor/react-router-dom.production.min.js' %}"></script>
 
     <!-- Axios -->
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="{% static 'js/vendor/axios.min.js' %}"></script>
 
     <!-- Recharts and its dependencies -->
-    <script src="https://unpkg.com/prop-types@15.8.1/prop-types.min.js"></script>
-    <script src="https://unpkg.com/recharts@2.12.7/umd/Recharts.js"></script>
+    <script src="{% static 'js/vendor/prop-types.min.js' %}"></script>
+    <script src="{% static 'js/vendor/Recharts.js' %}"></script>
 
     <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="{% static 'js/lucide.min.js' %}"></script>
 
     <style>
         body {
             background-color: #0B0F19;
             /* Premium deep dark */
             color: #f8fafc;
-            font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             background-image: radial-gradient(circle at top right, rgba(16, 185, 129, 0.03), transparent 40%),
                 radial-gradient(circle at bottom left, rgba(59, 130, 246, 0.03), transparent 40%);
             background-attachment: fixed;
